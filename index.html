@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEUVLE Online Examination System - HCI Project</title>
+    <title>VeriTest - Unified Online Examination Platform</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -13,12 +13,13 @@
             theme: {
                 extend: {
                     colors: {
-                        neu: {
-                            blue: '#0284c7',
-                            navy: '#0f172a',
-                            gold: '#f59e0b',
-                            brick: '#8b4513',
-                            accent: '#1e40af'
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a'
                         }
                     }
                 }
@@ -29,67 +30,60 @@
     <!-- FontAwesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Custom Stylesheet -->
+    <!-- Custom Stylesheet (Predominantly White & Minimal) -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans antialiased pb-24 selection:bg-blue-600 selection:text-white">
+<body class="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans antialiased pb-24 selection:bg-blue-600 selection:text-white">
 
     <!-- Toast Notification Container -->
     <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
 
     <!-- ========================================================== -->
-    <!-- NAVIGATION BAR 1: INSTITUTIONAL LANDING NAV (NEUVLE STYLE) -->
+    <!-- NAVIGATION BAR 1: INSTITUTIONAL LANDING NAV (VERITEST)     -->
     <!-- ========================================================== -->
-    <header id="landingNav" class="sticky top-0 z-40 glass-nav transition-all">
-        <!-- Top Institutional Brand Strip -->
-        <div class="border-b border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-900/50 text-xs py-1.5 px-4 sm:px-8 flex justify-between items-center text-slate-500 dark:text-slate-400">
-            <div class="flex items-center gap-3">
-                <span class="inline-flex items-center gap-1 font-medium"><i class="fas fa-university text-blue-600 dark:text-blue-400"></i> New Era University Online Academic Portal</span>
-                <span class="hidden md:inline">•</span>
-                <span class="hidden md:inline font-mono text-[11px] text-emerald-600 dark:text-emerald-400"><i class="fas fa-circle text-[8px] animate-pulse"></i> Automated Examination Engine v2.4</span>
+    <header id="landingNav" class="sticky top-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-all">
+        <!-- Top Operational Status Bar -->
+        <div class="border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/40 text-xs py-1.5 px-4 sm:px-8 flex justify-between items-center text-slate-500 dark:text-slate-400">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 font-medium"><i class="fas fa-shield-check text-blue-600 dark:text-blue-400"></i> VeriTest Assessment Infrastructure</span>
+                <span class="hidden sm:inline">•</span>
+                <span class="hidden sm:inline font-mono text-[11px] text-emerald-600 dark:text-emerald-400"><i class="fas fa-circle text-[8px] animate-pulse"></i> Proctoring Engine Active</span>
             </div>
             <div class="flex items-center gap-4">
-                <span class="hidden sm:inline hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">Helpdesk: support@neu.edu.ph</span>
+                <span class="hidden sm:inline hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">Examinations Helpdesk: support@veritest.edu</span>
                 <button onclick="app.toggleTheme()" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition" title="Toggle Dark/Light Mode">
                     <i class="fas fa-moon theme-toggle-icon text-slate-600 dark:text-amber-400"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Main NEUVLE Header Bar -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <!-- Main VeriTest Header Bar (Exam-Relevant Links Only) -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
             <!-- Brand Logo -->
             <div class="flex items-center gap-3 cursor-pointer" onclick="app.showView('view-landing')">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-700 via-blue-600 to-amber-500 p-0.5 shadow-md flex items-center justify-center">
-                    <div class="w-full h-full bg-white dark:bg-slate-900 rounded-full flex items-center justify-center">
-                        <i class="fas fa-shield-halved text-blue-600 dark:text-blue-400 text-lg"></i>
-                    </div>
+                <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
+                    <i class="fas fa-check-double text-base"></i>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="font-extrabold text-2xl tracking-tight text-blue-900 dark:text-blue-400">NEUVLE</span>
-                        <span class="px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 rounded">ExamPortal</span>
+                        <span class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">VeriTest</span>
+                        <span class="px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 rounded border border-blue-200 dark:border-blue-800">ExamPortal</span>
                     </div>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Virtual Learning & Assessment Environment</p>
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider font-medium">Online Examination & Assessment System</p>
                 </div>
             </div>
 
-            <!-- NEUVLE Menu Items (From Inspiration Screenshot) -->
-            <nav class="hidden xl:flex items-center gap-6 text-sm font-medium text-slate-700 dark:text-slate-300">
-                <a href="#programs" class="hover:text-blue-600 dark:hover:text-blue-400 transition">K to 12 Integrated School</a>
-                <a href="#programs" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Undergraduate Programs</a>
-                <a href="#programs" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Graduate Programs</a>
-                <div class="relative group cursor-pointer">
-                    <span class="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1">Virtual Office <i class="fas fa-chevron-down text-[10px] text-slate-400"></i></span>
-                </div>
-                <a href="#contact" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Contact Us</a>
-                <a href="#forms" class="hover:text-blue-600 dark:hover:text-blue-400 transition">ID Processing Form</a>
-                <a href="#privacy" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Privacy Notice</a>
+            <!-- Strictly Exam-Relevant Navigation Links -->
+            <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300">
+                <a href="#portals" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Examination Portals</a>
+                <a href="#features" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Assessment Security</a>
+                <a href="#heuristics" class="hover:text-blue-600 dark:hover:text-blue-400 transition">HCI Usability Framework</a>
+                <a href="#schedule" class="hover:text-blue-600 dark:hover:text-blue-400 transition">Live Schedules</a>
             </nav>
 
             <!-- Sign In / Role Selection CTA -->
             <div class="flex items-center gap-3">
-                <button onclick="app.openLoginModal('student')" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:scale-95 rounded-xl shadow-sm transition-all flex items-center gap-2">
+                <button onclick="app.openLoginModal('student')" class="px-4 py-2 text-sm font-semibold text-white bg-slate-900 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 active:scale-95 rounded-xl shadow-sm transition-all flex items-center gap-2">
                     <i class="fas fa-arrow-right-to-bracket text-xs"></i>
                     <span>Portal Sign In</span>
                 </button>
@@ -98,19 +92,19 @@
     </header>
 
     <!-- ========================================================== -->
-    <!-- NAVIGATION BAR 2: AUTHENTICATED PORTAL NAV (DRAFT HEADER)   -->
+    <!-- NAVIGATION BAR 2: AUTHENTICATED PORTAL NAV                 -->
     <!-- ========================================================== -->
-    <header id="mainPortalNav" class="hidden sticky top-0 z-40 glass-nav border-b border-slate-200 dark:border-slate-800">
+    <header id="mainPortalNav" class="hidden sticky top-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2 cursor-pointer" onclick="app.showView('view-landing')">
                     <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center">
-                        <i class="fas fa-shield-alt text-sm"></i>
+                        <i class="fas fa-check-double text-xs"></i>
                     </div>
-                    <span class="font-bold text-lg text-slate-900 dark:text-slate-100">ExamPortal</span>
+                    <span class="font-bold text-lg text-slate-900 dark:text-slate-100">VeriTest</span>
                 </div>
-                <div class="h-5 w-[1px] bg-slate-300 dark:bg-slate-700 hidden sm:block"></div>
-                <span id="portalActiveSectionName" class="text-sm font-semibold text-slate-600 dark:text-slate-300 hidden sm:inline">Online Examination Workspace</span>
+                <div class="h-5 w-[1px] bg-slate-200 dark:bg-slate-700 hidden sm:block"></div>
+                <span id="portalActiveSectionName" class="text-xs font-semibold text-slate-500 uppercase tracking-wider hidden sm:inline">Online Examination Workspace</span>
             </div>
 
             <!-- User status & role pill -->
@@ -126,12 +120,12 @@
                     <i class="fas fa-moon theme-toggle-icon"></i>
                 </button>
 
-                <!-- Role Badge (STUDENT / TEACHER / ADMIN) -->
-                <span id="currentRoleBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wider uppercase bg-blue-100 text-blue-800">ROLE</span>
+                <!-- Role Badge (STUDENT / PROFESSOR / ADMIN) -->
+                <span id="currentRoleBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wider uppercase bg-blue-50 text-blue-700 border border-blue-200">ROLE</span>
 
                 <!-- User profile / logout -->
                 <div class="flex items-center gap-2.5 border-l border-slate-200 dark:border-slate-800 pl-4">
-                    <div id="currentUserAvatar" class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center">
+                    <div id="currentUserAvatar" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center border border-slate-200 dark:border-slate-700">
                         <i class="fas fa-user"></i>
                     </div>
                     <span id="currentUserName" class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 hidden md:inline">User</span>
@@ -144,187 +138,132 @@
     </header>
 
     <!-- ========================================================== -->
-    <!-- VIEW 1: INSTITUTIONAL HOME / LANDING PAGE (NEUVLE STYLE)  -->
+    <!-- VIEW 1: INSTITUTIONAL HOME / LANDING PAGE                  -->
+    <!-- Predominantly White, Minimalist & Assessment-Focused       -->
     <!-- ========================================================== -->
     <main id="view-landing" class="app-view flex-1">
-        <!-- Hero Section with Architectural Illustration of New Era University -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-blue-900 via-slate-900 to-slate-950 text-white shadow-2xl border border-blue-900/40">
-                <!-- Decorative Glows -->
-                <div class="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute bottom-0 left-1/4 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16">
+            <div class="text-center max-w-3xl mx-auto">
+                <span class="px-3.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800 mb-6 inline-flex items-center gap-2">
+                    <i class="fas fa-laptop-code text-blue-600 dark:text-blue-400"></i> Next-Gen Online Examination System
+                </span>
+                
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-3 mb-5 leading-tight">
+                    Assess Domain Knowledge <br class="hidden sm:inline">
+                    <span class="text-blue-600 dark:text-blue-400">Accurately & Seamlessly</span>
+                </h1>
 
-                <!-- Hero Content & Architectural Facade -->
-                <div class="relative z-10 px-6 sm:px-12 pt-12 pb-8 flex flex-col items-center text-center">
-                    <span class="px-3.5 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-400/30 mb-4 inline-flex items-center gap-2">
-                        <i class="fas fa-sparkles text-amber-400"></i> Next-Gen HCI Examination Platform
-                    </span>
-                    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white mb-4">
-                        NEUVLE <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-sky-200">Online Examination System</span>
-                    </h1>
-                    <p class="text-base sm:text-xl text-blue-100/90 max-w-3xl font-light mb-8">
-                        "We innovate to make things easier, secure, and automated for you."
-                    </p>
+                <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 font-normal leading-relaxed mb-8">
+                    VeriTest automates manual, time-consuming examination procedures into a secure web-based technical assessment system—empowering students, professors, and administrators with zero human grading bias.
+                </p>
 
-                    <!-- Problem Statement Card (Exact prompt text embedded for HCI Project evaluation!) -->
-                    <div class="max-w-4xl bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl text-left mb-8 shadow-inner">
-                        <div class="flex items-start gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <i class="fas fa-quote-left text-sm"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xs font-bold text-amber-300 tracking-wider uppercase mb-1">HCI System Mission & Academic Scope</h4>
-                                <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
-                                    "The purpose of the system is to develop an <strong>Online Examination System</strong> used to test the Domain knowledge of students and employees with respect to particular technology. The manual procedure used for conducting exams is a time-consuming process and error-prone due to human limitations. The System purpose is to completely automate the old manual procedure of conducting exams into an Online Web-Based Examination System for technical evaluation."
-                                </p>
-                            </div>
+                <!-- Purpose Statement Callout Card -->
+                <div class="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl text-left shadow-sm mb-10">
+                    <div class="flex items-start gap-3">
+                        <div class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i class="fas fa-bullseye text-xs"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1">System Purpose & Problem Statement</h4>
+                            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                "The purpose of the system is to develop an <strong>Online Examination System</strong> used to test the Domain knowledge of students and employees with respect to particular technology. The manual procedure used for conducting exams is a time-consuming process and error-prone due to human limitations. The System purpose is to completely automate the old manual procedure of conducting exams into an Online Web-Based Examination System for technical evaluation."
+                            </p>
                         </div>
                     </div>
+                </div>
 
-                    <!-- SVG Campus Building Graphic (Faithful homage to the NEUVLE inspiration screenshot!) -->
-                    <div class="w-full max-w-4xl rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-gradient-to-b from-sky-300/20 to-sky-950/40 p-4">
-                        <svg viewBox="0 0 900 320" class="w-full h-auto drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Sky & Clouds Background -->
-                            <rect width="900" height="320" rx="12" fill="#1e293b" opacity="0.4"/>
-                            <ellipse cx="200" cy="50" rx="90" ry="25" fill="#ffffff" opacity="0.12"/>
-                            <ellipse cx="700" cy="65" rx="110" ry="30" fill="#ffffff" opacity="0.12"/>
-
-                            <!-- Trees flanking left and right -->
-                            <ellipse cx="50" cy="230" rx="35" ry="50" fill="#15803d"/>
-                            <ellipse cx="80" cy="220" rx="40" ry="55" fill="#16a34a"/>
-                            <ellipse cx="110" cy="240" rx="30" ry="45" fill="#22c55e"/>
-                            <ellipse cx="850" cy="230" rx="35" ry="50" fill="#15803d"/>
-                            <ellipse cx="820" cy="220" rx="40" ry="55" fill="#16a34a"/>
-                            <ellipse cx="790" cy="240" rx="30" ry="45" fill="#22c55e"/>
-
-                            <!-- Main Building Wings (Left & Right) -->
-                            <!-- Left Wing -->
-                            <rect x="140" y="110" width="220" height="150" fill="#a0522d" stroke="#5c2e17" stroke-width="2"/>
-                            <polygon points="135,110 365,110 360,95 145,95" fill="#334155"/>
-                            <!-- Windows Left Wing (Grid) -->
-                            <g fill="#93c5fd" opacity="0.85" stroke="#1e3a8a" stroke-width="1.5">
-                                <rect x="160" y="125" width="28" height="38" rx="2"/><rect x="200" y="125" width="28" height="38" rx="2"/><rect x="240" y="125" width="28" height="38" rx="2"/><rect x="280" y="125" width="28" height="38" rx="2"/><rect x="320" y="125" width="28" height="38" rx="2"/>
-                                <rect x="160" y="180" width="28" height="42" rx="2"/><rect x="200" y="180" width="28" height="42" rx="2"/><rect x="240" y="180" width="28" height="42" rx="2"/><rect x="280" y="180" width="28" height="42" rx="2"/><rect x="320" y="180" width="28" height="42" rx="2"/>
-                            </g>
-
-                            <!-- Right Wing -->
-                            <rect x="540" y="110" width="220" height="150" fill="#a0522d" stroke="#5c2e17" stroke-width="2"/>
-                            <polygon points="535,110 765,110 760,95 540,95" fill="#334155"/>
-                            <!-- Windows Right Wing (Grid) -->
-                            <g fill="#93c5fd" opacity="0.85" stroke="#1e3a8a" stroke-width="1.5">
-                                <rect x="560" y="125" width="28" height="38" rx="2"/><rect x="600" y="125" width="28" height="38" rx="2"/><rect x="640" y="125" width="28" height="38" rx="2"/><rect x="680" y="125" width="28" height="38" rx="2"/><rect x="720" y="125" width="28" height="38" rx="2"/>
-                                <rect x="560" y="180" width="28" height="42" rx="2"/><rect x="600" y="180" width="28" height="42" rx="2"/><rect x="640" y="180" width="28" height="42" rx="2"/><rect x="680" y="180" width="28" height="42" rx="2"/><rect x="720" y="180" width="28" height="42" rx="2"/>
-                            </g>
-
-                            <!-- Central Grand Facade with Neoclassical Portico -->
-                            <rect x="340" y="80" width="220" height="180" fill="#8b4513" stroke="#4a1e06" stroke-width="2"/>
-                            <!-- Triangular Pediment -->
-                            <polygon points="330,80 450,30 570,80" fill="#64748b" stroke="#334155" stroke-width="3"/>
-                            <!-- Portico Header Band with NEW ERA UNIVERSITY Title -->
-                            <rect x="350" y="82" width="200" height="28" fill="#d97706" rx="3"/>
-                            <text x="450" y="101" font-family="Inter, sans-serif" font-size="14" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2">NEW ERA UNIVERSITY</text>
-
-                            <!-- Classical Pillars / Columns -->
-                            <g fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5">
-                                <rect x="365" y="115" width="16" height="120" rx="1"/>
-                                <rect x="395" y="115" width="16" height="120" rx="1"/>
-                                <rect x="425" y="115" width="16" height="120" rx="1"/>
-                                <rect x="460" y="115" width="16" height="120" rx="1"/>
-                                <rect x="490" y="115" width="16" height="120" rx="1"/>
-                                <rect x="520" y="115" width="16" height="120" rx="1"/>
-                            </g>
-
-                            <!-- Grand Staircase Steps -->
-                            <rect x="370" y="235" width="160" height="7" fill="#cbd5e1"/>
-                            <rect x="360" y="242" width="180" height="7" fill="#94a3b8"/>
-                            <rect x="350" y="249" width="200" height="8" fill="#64748b"/>
-                            <!-- Campus Lawn / Foundation -->
-                            <rect x="0" y="260" width="900" height="60" fill="#3f6212"/>
-                            <rect x="0" y="258" width="900" height="3" fill="#65a30d"/>
-                        </svg>
-                    </div>
+                <!-- Quick Action Buttons -->
+                <div class="flex flex-wrap items-center justify-center gap-4">
+                    <a href="#portals" class="px-6 py-3 rounded-xl font-bold text-sm bg-slate-900 hover:bg-blue-600 text-white dark:bg-blue-600 dark:hover:bg-blue-700 shadow-sm transition">
+                        Select Your Portal Below ↓
+                    </a>
+                    <button onclick="app.beginLiveExam()" class="px-6 py-3 rounded-xl font-semibold text-sm border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-900 transition flex items-center gap-2">
+                        <i class="fas fa-play text-blue-600 text-xs"></i>
+                        <span>Try Live Exam Demo</span>
+                    </button>
                 </div>
             </div>
         </section>
 
         <!-- ========================================================== -->
-        <!-- 3 DISTINCT ROLE LOGIN ENTRY POINTS (SOLVING DRAFT ISSUE)   -->
+        <!-- 3 DISTINCT ROLE LOGIN ENTRY POINTS                         -->
         <!-- ========================================================== -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <section id="portals" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 border-t border-slate-100 dark:border-slate-800">
             <div class="text-center mb-10">
                 <span class="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-wider uppercase">Authentication Gateways</span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">Select Your Institutional Portal</h2>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">Select Your Designated Workspace</h2>
                 <p class="text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto mt-2">
-                    ExamPortal provides specialized, role-tailored interfaces compliant with Nielsen's Human-Computer Interaction heuristics.
+                    Separate, role-tailored interfaces engineered specifically for student examinees, examining professors, and academic administrators.
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
                 <!-- CARD 1: STUDENT PORTAL -->
-                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-blue-500 dark:hover:border-blue-500 transition-all flex flex-col justify-between group">
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between group">
                     <div>
-                        <div class="w-14 h-14 rounded-2xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl mb-5 group-hover:scale-105 transition-transform border border-emerald-100 dark:border-emerald-900">
                             <i class="fas fa-user-graduate"></i>
                         </div>
-                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">Examinee Access</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200">Examinee</span>
                         <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-2 mb-2">Student Portal</h3>
                         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                            Take assigned technical examinations, agree to the digital honor code, navigate with the live question ledger, and view verified performance breakdown certificates.
+                            Log in to know what exams are scheduled across your enrolled subjects, take tests under secure proctoring, and review instant score breakdowns right after submission.
                         </p>
-                        <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 mb-6">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Auto-saved real-time answer sync</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Anti-cheat tab switch monitoring</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Question flag & review ledger</li>
+                        <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-2 mb-6">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> View active & upcoming exams per subject</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Interactive 20-bubble Question Ledger & Timer</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500"></i> Immediate grade breakdowns & certificate</li>
                         </ul>
                     </div>
-                    <button onclick="app.loginAs('student')" class="w-full py-3 px-4 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center justify-center gap-2 group-hover:gap-3">
-                        <span>Access Student Portal</span>
+                    <button onclick="app.loginAs('student')" class="w-full py-3 px-4 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center justify-center gap-2">
+                        <span>Sign In as Student</span>
                         <i class="fas fa-arrow-right text-xs"></i>
                     </button>
                 </div>
 
-                <!-- CARD 2: FACULTY / PROFESSOR PORTAL -->
-                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-indigo-500 dark:hover:border-indigo-500 transition-all flex flex-col justify-between group">
+                <!-- CARD 2: PROFESSOR PORTAL -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between group">
                     <div>
-                        <div class="w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl mb-5 group-hover:scale-105 transition-transform border border-indigo-100 dark:border-indigo-900">
                             <i class="fas fa-chalkboard-user"></i>
                         </div>
-                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">Instructor Access</span>
-                        <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-2 mb-2">Faculty / Teacher Portal</h3>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200">Instructor</span>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-2 mb-2">Professor Portal</h3>
                         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                            Build multi-format assessments (MCQ, True/False, Essay), curate categorized Question Banks, evaluate candidate scores, and export detailed CSV grade sheets.
+                            Review your assigned subjects, author and publish exam templates, manage Question Banks, and check submission results to convert them directly into official grades.
                         </p>
-                        <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 mb-6">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500"></i> Dynamic exam builder & timers</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500"></i> Subject question bank repository</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500"></i> 1-Click CSV results export</li>
+                        <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-2 mb-6">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500"></i> Subject directory & 1-click exam builder</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500"></i> Instant conversion of scores to letter grades</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-indigo-500"></i> CSV grade sheet exports for registrar</li>
                         </ul>
                     </div>
-                    <button onclick="app.loginAs('teacher')" class="w-full py-3 px-4 rounded-xl font-semibold text-sm bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition flex items-center justify-center gap-2 group-hover:gap-3">
-                        <span>Access Faculty Portal</span>
+                    <button onclick="app.loginAs('teacher')" class="w-full py-3 px-4 rounded-xl font-semibold text-sm bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition flex items-center justify-center gap-2">
+                        <span>Sign In as Professor</span>
                         <i class="fas fa-arrow-right text-xs"></i>
                     </button>
                 </div>
 
                 <!-- CARD 3: ADMINISTRATOR PORTAL -->
-                <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-purple-500 dark:hover:border-purple-500 transition-all flex flex-col justify-between group">
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between group">
                     <div>
-                        <div class="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-950/70 text-purple-600 dark:text-purple-400 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl mb-5 group-hover:scale-105 transition-transform border border-purple-100 dark:border-purple-900">
                             <i class="fas fa-user-shield"></i>
                         </div>
-                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300">Higher Authority</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200">Higher Authority</span>
                         <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-2 mb-2">Administrator Portal</h3>
                         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                            Oversee institutional governance, manage faculty registries and credential statuses, map subject curriculum domains, and inspect tamper-evident security audit logs.
+                            Exercise central authority: manage professor registries, assign which subjects are handled by which professors, and monitor tamper-evident proctoring audit trails.
                         </p>
-                        <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 mb-6">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> Real-time security audit trails</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> Faculty directory & roster sync</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> Domain & curriculum management</li>
+                        <ul class="text-xs text-slate-500 dark:text-slate-400 space-y-2 mb-6">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> Assign professors to academic subjects</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> Faculty management & roster authorization</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> Live security audit trail & anti-cheat logs</li>
                         </ul>
                     </div>
-                    <button onclick="app.loginAs('admin')" class="w-full py-3 px-4 rounded-xl font-semibold text-sm bg-purple-600 hover:bg-purple-700 text-white shadow-sm transition flex items-center justify-center gap-2 group-hover:gap-3">
-                        <span>Access Admin Portal</span>
+                    <button onclick="app.loginAs('admin')" class="w-full py-3 px-4 rounded-xl font-semibold text-sm bg-purple-600 hover:bg-purple-700 text-white shadow-sm transition flex items-center justify-center gap-2">
+                        <span>Sign In as Administrator</span>
                         <i class="fas fa-arrow-right text-xs"></i>
                     </button>
                 </div>
@@ -332,58 +271,56 @@
         </section>
 
         <!-- ========================================================== -->
-        <!-- SYSTEM OVERVIEW & HCI PRINCIPLES SECTION (FROM NEUVLE)     -->
+        <!-- CORE CAPABILITIES / HCI HEURISTICS SECTION                 -->
         <!-- ========================================================== -->
-        <section id="programs" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 lg:p-12">
-                <div class="max-w-3xl mb-10">
-                    <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">HCI Architectural Framework</span>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">Engineered for Usability, Integrity & Scale</h2>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">
-                        How our online examination system fulfills Jakob Nielsen’s usability heuristics to solve manual paper-exam pitfalls.
+        <section id="heuristics" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 border-t border-slate-100 dark:border-slate-800">
+            <div class="mb-10 text-center max-w-2xl mx-auto">
+                <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">HCI Usability Architecture</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">Built to Jakob Nielsen's Heuristics</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-2">
+                    Eliminating stress and error through clear status visibility, proactive error prevention, and flexible direct manipulation.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">Status Visibility</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Synchronized countdown timers, dynamic auto-save status pulses, and progress bars prevent student uncertainty.
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
-                            <i class="fas fa-heart-pulse"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">Status Visibility</h4>
-                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                            Live synchronized countdown timer, real-time question progress bar, and animated auto-save indicators eliminate user anxiety.
-                        </p>
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3">
+                        <i class="fas fa-triangle-exclamation"></i>
                     </div>
+                    <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">Error Prevention</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Unfinished questions warning dialog alerts candidates before premature submissions receive zero points.
+                    </p>
+                </div>
 
-                    <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-4">
-                            <i class="fas fa-shield-virus"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">Error Prevention</h4>
-                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                            Pre-submission unfinished questions modal dialog alerts examinees to unanswered prompts before zero-point locks occur.
-                        </p>
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3">
+                        <i class="fas fa-list-ol"></i>
                     </div>
+                    <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">Direct Manipulation</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Interactive 20-bubble Question Ledger enables non-linear jumping and "Flag for Review" tagging.
+                    </p>
+                </div>
 
-                    <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
-                            <i class="fas fa-table-cells-large"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">User Control & Freedom</h4>
-                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                            The 20-bubble Question Ledger allows non-linear navigation, quick question jumping, and "Flag for Review" state management.
-                        </p>
+                <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="w-9 h-9 rounded-lg bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3">
+                        <i class="fas fa-user-lock"></i>
                     </div>
-
-                    <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
-                            <i class="fas fa-network-wired"></i>
-                        </div>
-                        <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">Tamper-Proof Audit</h4>
-                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                            Centralized administrator audit trails continuously record tab-switch events, roster syncs, and examination lifecycle updates.
-                        </p>
-                    </div>
+                    <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm mb-1">Proctor Integrity</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Background tab-switch detection logs suspicious behavior directly to the centralized administrator audit log.
+                    </p>
                 </div>
             </div>
         </section>
@@ -395,14 +332,13 @@
     <div id="view-student" class="app-view hidden max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-1 flex flex-col md:flex-row gap-6">
         <!-- Student Sidebar -->
         <aside class="w-full md:w-64 flex-shrink-0 space-y-4">
-            <!-- Student Profile Badge (From Page 7) -->
             <div class="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-lg shadow-sm">
-                    Y
+                <div class="w-11 h-11 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center text-base shadow-sm">
+                    YS
                 </div>
                 <div>
-                    <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Ythanigga</h4>
-                    <p class="text-xs font-mono text-slate-500 dark:text-slate-400">ID: 2024-0892</p>
+                    <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Ythan S.</h4>
+                    <p class="text-xs font-mono text-slate-500 dark:text-slate-400">ID: STU-2024-0892</p>
                 </div>
             </div>
 
@@ -414,7 +350,7 @@
                 </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="student-my-exams" onclick="app.showSubview('student-my-exams')">
                     <i class="fas fa-book-open w-5 text-center"></i>
-                    <span>My Exams</span>
+                    <span>My Registered Exams</span>
                 </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="student-results" onclick="app.showSubview('student-results')">
                     <i class="fas fa-award w-5 text-center"></i>
@@ -424,7 +360,7 @@
                     <i class="fas fa-user-circle w-5 text-center"></i>
                     <span>Profile</span>
                 </button>
-                <div class="pt-2 border-t border-slate-200 dark:border-slate-800">
+                <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
                     <button onclick="app.logout()" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 text-left transition-colors">
                         <i class="fas fa-arrow-right-from-bracket w-5 text-center"></i>
                         <span>Logout</span>
@@ -437,25 +373,24 @@
         <section class="flex-1 space-y-6">
             <!-- SUBVIEW: Student Dashboard (Page 7 top) -->
             <div id="student-dashboard" class="subview-pane space-y-6">
-                <!-- Welcome Header -->
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Welcome back, Ythanigga !</h2>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">You have 1 exam available to take now and another one scheduled for today.</p>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Welcome back, Ythan !</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Here are your active assessments and upcoming examination schedules.</p>
                 </div>
 
                 <!-- Next Exam Alert Card (From Page 7) -->
-                <div class="p-5 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/20 border border-amber-200 dark:border-amber-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="p-5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="flex items-start gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 flex items-center justify-center flex-shrink-0 mt-0.5">
                             <i class="far fa-clock text-lg"></i>
                         </div>
                         <div>
                             <span class="text-[11px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">Next Exam Starts in 2 Hours</span>
                             <h4 class="text-base font-bold text-slate-900 dark:text-slate-100">CS101 - Midterm Examination</h4>
-                            <p class="text-xs text-slate-600 dark:text-slate-400">Today, 2:00 PM • 60 mins • 20 Multiple-Choice Items</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-400">Subject: Introduction to Computing • Today, 2:00 PM • 60 mins • 20 Items</p>
                         </div>
                     </div>
-                    <button onclick="app.startExamInstruction('CS-101')" class="px-5 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-sm transition whitespace-nowrap">
+                    <button onclick="app.startExamInstruction('CS-101')" class="px-5 py-2.5 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-sm transition whitespace-nowrap">
                         Preview Exam Sheet →
                     </button>
                 </div>
@@ -464,53 +399,53 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Exams Taken</span>
+                            <span class="text-xs font-semibold text-slate-500">Exams Completed</span>
                             <i class="far fa-file-lines text-slate-400"></i>
                         </div>
                         <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100">8</div>
-                        <p class="text-[11px] text-slate-500 mt-1">Completed this semester</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Current academic term</p>
                     </div>
 
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Average Score</span>
+                            <span class="text-xs font-semibold text-slate-500">Average Percentage</span>
                             <i class="fas fa-medal text-slate-400"></i>
                         </div>
-                        <div class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">67%</div>
-                        <p class="text-[11px] text-slate-500 mt-1">Top 15% of the class cohort</p>
+                        <div class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">87.4%</div>
+                        <p class="text-[11px] text-slate-400 mt-1">Equivalent Grade: 1.50 (Very Good)</p>
                     </div>
 
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Upcoming Exams</span>
+                            <span class="text-xs font-semibold text-slate-500">Upcoming Exams</span>
                             <i class="far fa-calendar-check text-slate-400"></i>
                         </div>
                         <div class="text-3xl font-extrabold text-blue-600 dark:text-blue-400">2</div>
-                        <p class="text-[11px] text-slate-500 mt-1">Scheduled this week</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Scheduled for this week</p>
                     </div>
                 </div>
 
                 <!-- Active Notifications & Advisories (From Page 7) -->
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-3">
-                    <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Active Notifications & Advisories</h4>
+                    <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Security & Network Advisories</h4>
                     
                     <div class="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 text-xs text-blue-800 dark:text-blue-300 flex items-start gap-3">
                         <i class="fas fa-info-circle text-blue-600 mt-0.5"></i>
-                        <span>Please ensure a stable internet connection before beginning any exam. System session tokens expire automatically if idle for more than 15 minutes.</span>
+                        <span>Please ensure an uninterrupted network connection before beginning any exam. The session heartbeat automatically saves your selected options in real-time.</span>
                     </div>
 
                     <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60 text-xs text-slate-700 dark:text-slate-300 flex items-start gap-3">
                         <i class="fas fa-shield-halved text-slate-500 mt-0.5"></i>
-                        <span>System security proctoring module updated. Browser tab-switching logs directly to the administrator registry.</span>
+                        <span>Anti-cheat monitoring is active. Switching browser tabs or minimizing the examination window triggers automated proctor alerts to the admin.</span>
                     </div>
                 </div>
             </div>
 
-            <!-- SUBVIEW: My Registered Exams (Page 7 bottom) -->
+            <!-- SUBVIEW: My Registered Exams by Subject (Page 7 bottom) -->
             <div id="student-my-exams" class="subview-pane hidden space-y-6">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">My Registered Exams</h2>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Currently Assigned & Scheduled Assessments</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Review scheduled assessments by subject and initiate available tests</p>
                 </div>
 
                 <div id="studentExamsContainer" class="space-y-4">
@@ -523,20 +458,20 @@
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm max-w-3xl mx-auto">
                     <div class="border-b border-slate-200 dark:border-slate-800 pb-5 mb-6">
                         <h2 id="preExamTitle" class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">CS101 - Midterm Examination</h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Department of Computer Science • School of Engineering</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Official Proctored Online Assessment</p>
                     </div>
 
                     <!-- Meta Badges (From Page 8) -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-center border border-slate-100 dark:border-slate-700">
                             <span class="text-[10px] uppercase font-bold text-slate-400">Subject Domain</span>
                             <p id="preExamDomain" class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5">Computer Science Basics</p>
                         </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-center border border-slate-100 dark:border-slate-700">
                             <span class="text-[10px] uppercase font-bold text-slate-400">Allowed Duration</span>
                             <p id="preExamDuration" class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5">60 minutes</p>
                         </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-center border border-slate-100 dark:border-slate-700">
                             <span class="text-[10px] uppercase font-bold text-slate-400">Question Volume</span>
                             <p id="preExamVolume" class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5">20 Multiple-Choice Items</p>
                         </div>
@@ -546,10 +481,10 @@
                     <div class="space-y-3 mb-8">
                         <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Important Security & Taking Instructions</h4>
                         <ol class="space-y-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed list-decimal list-inside pl-1">
-                            <li><strong>No tab or window switching:</strong> Browser activity is logged. Switching tabs more than 3 times triggers lock-out.</li>
-                            <li><strong>Automated session backup:</strong> Answers are saved dynamically as you tick them. In case of network drops, reconnect to resume.</li>
-                            <li><strong>System Timeout:</strong> Once duration elapses, your exam sheet submits automatically. Unanswered questions count as zero.</li>
-                            <li><strong>Sequential Submission:</strong> Once you submit the exam, your attempt is final and you cannot go back.</li>
+                            <li><strong>No tab or window switching:</strong> Browser activity is logged. Switching tabs more than 3 times triggers an automatic lockout.</li>
+                            <li><strong>Automated session backup:</strong> Answers are saved dynamically as you select them. In case of network interruption, reconnect to resume.</li>
+                            <li><strong>System Timeout:</strong> Once duration elapses, your exam sheet submits automatically. Unanswered questions receive zero points.</li>
+                            <li><strong>Sequential Submission:</strong> Once you submit the exam, your attempt is final and cannot be re-opened.</li>
                         </ol>
                     </div>
 
@@ -579,7 +514,7 @@
             <div id="student-results" class="subview-pane hidden space-y-6">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Exam History & Grades</h2>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Historical Log of Attempted Examinations</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Review attempted examinations, converted letter grades, and official score breakdowns</p>
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
@@ -592,7 +527,7 @@
                                     <th class="py-3 px-4">Date Attempted</th>
                                     <th class="py-3 px-4">Points Score</th>
                                     <th class="py-3 px-4">Percent Score</th>
-                                    <th class="py-3 px-4">Status</th>
+                                    <th class="py-3 px-4">Official Grade</th>
                                 </tr>
                             </thead>
                             <tbody id="studentHistoryTableBody">
@@ -606,23 +541,23 @@
             <!-- SUBVIEW: Student Profile -->
             <div id="student-profile" class="subview-pane hidden space-y-6">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm max-w-xl">
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">Student Profile & Security Status</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">Student Profile & Verification</h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
-                            <span class="text-slate-500">Full Name</span>
-                            <span class="font-semibold text-slate-900 dark:text-slate-100">Ythanigga</span>
+                            <span class="text-slate-500">Student Name</span>
+                            <span class="font-semibold text-slate-900 dark:text-slate-100">Ythan S.</span>
                         </div>
                         <div class="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
                             <span class="text-slate-500">Student ID</span>
-                            <span class="font-mono font-semibold text-slate-900 dark:text-slate-100">2024-0892</span>
+                            <span class="font-mono font-semibold text-slate-900 dark:text-slate-100">STU-2024-0892</span>
                         </div>
                         <div class="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
                             <span class="text-slate-500">Degree Program</span>
                             <span class="font-semibold text-slate-900 dark:text-slate-100">BS Computer Science</span>
                         </div>
                         <div class="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
-                            <span class="text-slate-500">Proctor Trust Rating</span>
-                            <span class="font-bold text-emerald-600">100% (High Integrity)</span>
+                            <span class="text-slate-500">Exam Integrity Rating</span>
+                            <span class="font-bold text-emerald-600">100% (High Trust Rating)</span>
                         </div>
                     </div>
                 </div>
@@ -643,7 +578,7 @@
                 </div>
                 <div>
                     <h3 class="font-bold text-sm sm:text-base text-white">CS101 - Midterm Exam</h3>
-                    <p class="text-[10px] text-slate-400">Department of Computer Science • Final Technical Evaluation</p>
+                    <p class="text-[10px] text-slate-400">VeriTest Proctored Technical Evaluation Session</p>
                 </div>
             </div>
 
@@ -735,7 +670,7 @@
                 <!-- Ledger Legend (From Page 8) -->
                 <div class="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2 text-xs text-slate-500">
                     <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-slate-600"></span>
+                        <span class="w-3 h-3 rounded-full bg-slate-900 dark:bg-blue-600"></span>
                         <span>Answered</span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -752,18 +687,18 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- VIEW 4: TEACHER / FACULTY PORTAL (PAGES 4, 5, 6 OF DRAFT)  -->
+    <!-- VIEW 4: PROFESSOR PORTAL (PAGES 4, 5, 6 OF DRAFT)          -->
     <!-- ========================================================== -->
     <div id="view-teacher" class="app-view hidden max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-1 flex flex-col md:flex-row gap-6">
-        <!-- Teacher Sidebar -->
+        <!-- Professor Sidebar -->
         <aside class="w-full md:w-64 flex-shrink-0 space-y-4">
             <div class="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-lg shadow-sm">
+                <div class="w-11 h-11 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center text-base shadow-sm">
                     MS
                 </div>
                 <div>
                     <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Prof. Maria Santos</h4>
-                    <p class="text-xs font-mono text-slate-500 dark:text-slate-400">ID: EMP-204</p>
+                    <p class="text-xs font-mono text-slate-500 dark:text-slate-400">ID: FAC-124</p>
                 </div>
             </div>
 
@@ -774,7 +709,7 @@
                 </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="teacher-subjects" onclick="app.showSubview('teacher-subjects')">
                     <i class="fas fa-book-bookmark w-5 text-center"></i>
-                    <span>My Subjects</span>
+                    <span>My Handled Subjects</span>
                 </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="teacher-create-exam" onclick="app.showSubview('teacher-create-exam')">
                     <i class="fas fa-plus-circle w-5 text-center"></i>
@@ -786,13 +721,13 @@
                 </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="teacher-results" onclick="app.showSubview('teacher-results')">
                     <i class="fas fa-square-poll-vertical w-5 text-center"></i>
-                    <span>Results</span>
+                    <span>Results & Grades</span>
                 </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="teacher-profile" onclick="app.showSubview('teacher-profile')">
                     <i class="fas fa-user-gear w-5 text-center"></i>
                     <span>Profile</span>
                 </button>
-                <div class="pt-2 border-t border-slate-200 dark:border-slate-800">
+                <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
                     <button onclick="app.logout()" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 text-left transition-colors">
                         <i class="fas fa-arrow-right-from-bracket w-5 text-center"></i>
                         <span>Logout</span>
@@ -801,21 +736,21 @@
             </nav>
         </aside>
 
-        <!-- Teacher Main Pane -->
+        <!-- Professor Main Pane -->
         <section class="flex-1 space-y-6">
-            <!-- SUBVIEW: Teacher Dashboard (Page 4 top) -->
+            <!-- SUBVIEW: Professor Dashboard (Page 4 top) -->
             <div id="teacher-dashboard" class="subview-pane space-y-6">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Welcome back, Prof. Maria Santos</h2>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Review your current subjects, active exams, and pending grade sheets below.</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Review your handled subjects, active exam templates, and convert student scores to final grades.</p>
                 </div>
 
-                <!-- Teacher Metrics (Page 4) -->
+                <!-- Professor Metrics (Page 4) -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <span class="text-xs font-semibold text-slate-500">Subjects Handled</span>
-                        <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">4</div>
-                        <p class="text-[11px] text-slate-400 mt-1">Curriculum term Q3-Q4</p>
+                        <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">3</div>
+                        <p class="text-[11px] text-slate-400 mt-1">Assigned by administration</p>
                     </div>
 
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -825,40 +760,40 @@
                     </div>
 
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <span class="text-xs font-semibold text-slate-500">Pending Grading</span>
-                        <div class="text-3xl font-extrabold text-amber-500 mt-1">3</div>
-                        <p class="text-[11px] text-slate-400 mt-1">Requires manual essay assessment</p>
+                        <span class="text-xs font-semibold text-slate-500">Pending Grade Conversion</span>
+                        <div class="text-3xl font-extrabold text-amber-500 mt-1">2</div>
+                        <p class="text-[11px] text-slate-400 mt-1">Requires letter grade conversion</p>
                     </div>
                 </div>
 
-                <!-- Recent Examination Activity (Page 4) -->
+                <!-- Recent Activity Feed (Page 4) -->
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-                    <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4">Recent Examination Activity</h4>
+                    <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4">Recent Examination Submissions</h4>
                     <div class="space-y-3">
                         <div class="flex items-center justify-between text-xs py-2 border-b border-slate-100 dark:border-slate-800">
-                            <span class="font-medium text-slate-700 dark:text-slate-300">Student Juan Perez submitted Midterm Exam in CS101</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-300">Candidate Alice Jenkins submitted CS101 Midterm (Score: 45/50 • 90%)</span>
                             <span class="text-slate-400">10 minutes ago</span>
                         </div>
                         <div class="flex items-center justify-between text-xs py-2 border-b border-slate-100 dark:border-slate-800">
-                            <span class="font-medium text-slate-700 dark:text-slate-300">You published a new quiz 'Recursion Basics' in CS202</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-300">Published new assessment template 'Recursion Basics' in CS202</span>
                             <span class="text-slate-400">2 hours ago</span>
                         </div>
                         <div class="flex items-center justify-between text-xs py-2">
-                            <span class="font-medium text-slate-700 dark:text-slate-300">Answer key updated for DB101 Final Assessment</span>
+                            <span class="font-medium text-slate-700 dark:text-slate-300">Converted CS202 quiz scores into institutional letter grades</span>
                             <span class="text-slate-400">1 day ago</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- SUBVIEW: My Subjects (Page 4 bottom) -->
+            <!-- SUBVIEW: My Handled Subjects (Know which subjects to make exams for!) -->
             <div id="teacher-subjects" class="subview-pane hidden space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">My Subjects</h2>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Assigned Domain Courses</p>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">My Handled Subjects</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Subjects assigned to you by administrators to conduct examinations for</p>
                     </div>
-                    <input type="text" placeholder="Search subjects..." class="px-4 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" placeholder="Search handled subjects..." class="px-4 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
@@ -869,7 +804,7 @@
                                 <th class="py-3 px-4">Subject Name</th>
                                 <th class="py-3 px-4">Domain</th>
                                 <th class="py-3 px-4">Students Enrolled</th>
-                                <th class="py-3 px-4 text-right">Actions</th>
+                                <th class="py-3 px-4 text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody id="teacherSubjectsTableBody">
@@ -881,14 +816,13 @@
 
             <!-- SUBVIEW: Create Exam (Page 5 top) -->
             <div id="teacher-create-exam" class="subview-pane hidden space-y-6">
-                <!-- Validation Alert Banner (From Page 5) -->
                 <div id="createExamAlert" class="hidden p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
                     <i class="fas fa-exclamation-circle text-rose-500"></i>
                     <span>Please fill in all required fields before publishing.</span>
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm max-w-2xl mx-auto">
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6">New Examination Template</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-6">Create New Examination Template</h3>
 
                     <form id="createExamForm" onsubmit="app.handlePublishExam(event)" class="space-y-4">
                         <div>
@@ -899,17 +833,17 @@
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Subject</label>
                             <select id="examSubjectSelect" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-blue-500">
-                                <option value="CS101 - Introduction to Computing">CS101 - Introduction to Computing</option>
-                                <option value="CS202 - Data Structures & Algorithms">CS202 - Data Structures & Algorithms</option>
-                                <option value="CS303 - Database Management Systems">CS303 - Database Management Systems</option>
-                                <option value="IT102 - Web Development Foundations">IT102 - Web Development Foundations</option>
+                                <option value="CS-101 - Introduction to Programming">CS-101 - Introduction to Programming</option>
+                                <option value="CS-202 - Data Structures & Algorithms">CS-202 - Data Structures & Algorithms</option>
+                                <option value="CS-303 - Database Management Systems">CS-303 - Database Management Systems</option>
+                                <option value="IT-102 - Web Development Foundations">IT-102 - Web Development Foundations</option>
                             </select>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Duration (in minutes)</label>
-                                <input type="number" id="examDurationInput" placeholder="e.g., 90" value="60" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm">
+                                <input type="number" id="examDurationInput" placeholder="e.g., 60" value="60" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Number of Items</label>
@@ -945,7 +879,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Question Bank</h2>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Multi-Domain Evaluation Prompts</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Multi-Domain Technical Question Prompts</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <select class="px-3 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
@@ -978,12 +912,12 @@
                 </div>
             </div>
 
-            <!-- SUBVIEW: Examination Results & CSV Export (Page 6 top) -->
+            <!-- SUBVIEW: Examination Results & Grade Conversion (Page 6 top) -->
             <div id="teacher-results" class="subview-pane hidden space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Examination Results</h2>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Evaluation & Grade Registry</p>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Examination Results & Grade Conversion</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Review raw scores and convert student performance directly to official letter grades</p>
                     </div>
                     <div class="flex items-center gap-3">
                         <select class="px-3 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
@@ -991,7 +925,7 @@
                             <option>Active Exam: CS202 Quiz 1</option>
                         </select>
                         <button onclick="app.exportResultsCSV()" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center gap-1.5">
-                            <i class="fas fa-file-csv"></i> Export CSV
+                            <i class="fas fa-file-csv"></i> Export Grade Sheet (CSV)
                         </button>
                     </div>
                 </div>
@@ -1002,10 +936,11 @@
                             <tr>
                                 <th class="py-3 px-4">Student ID</th>
                                 <th class="py-3 px-4">Student Name</th>
-                                <th class="py-3 px-4">Score</th>
+                                <th class="py-3 px-4">Raw Score</th>
                                 <th class="py-3 px-4">Percentage</th>
-                                <th class="py-3 px-4">Status</th>
-                                <th class="py-3 px-4">Date Taken</th>
+                                <th class="py-3 px-4">Official Grade</th>
+                                <th class="py-3 px-4">Pass Status</th>
+                                <th class="py-3 px-4 text-right">Convert to Grade</th>
                             </tr>
                         </thead>
                         <tbody id="teacherResultsTableBody">
@@ -1015,36 +950,36 @@
                 </div>
             </div>
 
-            <!-- SUBVIEW: Teacher Profile (Page 6 bottom) -->
+            <!-- SUBVIEW: Professor Profile (Page 6 bottom) -->
             <div id="teacher-profile" class="subview-pane hidden space-y-6">
                 <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm max-w-2xl mx-auto space-y-6">
                     <div class="flex items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
-                        <div class="w-16 h-16 rounded-2xl bg-indigo-600 text-white text-2xl font-bold flex items-center justify-center">
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-600 text-white text-xl font-bold flex items-center justify-center">
                             MS
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100">Prof. Maria Santos</h3>
-                            <p class="text-xs text-slate-500">maria.santos@examportal.edu</p>
-                            <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold mt-1">Dept: Computer Science • ID: EMP-204</p>
+                            <p class="text-xs text-slate-500">maria.santos@veritest.edu</p>
+                            <p class="text-xs text-indigo-600 dark:text-indigo-400 font-semibold mt-1">Dept: Computer Science • ID: FAC-124</p>
                         </div>
                     </div>
 
                     <form onsubmit="event.preventDefault(); app.showToast('Profile contact information updated.', 'success')" class="space-y-4">
-                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Update Contact Information</h4>
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Update Faculty Contact Details</h4>
 
                         <div>
-                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Office Phone / Ext</label>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Office Phone / Extension</label>
                             <input type="text" value="+1 (555) 234-5678" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm">
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Assigned Office Room</label>
-                                <input type="text" value="CS Building, Block B - Room 304" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm">
+                                <input type="text" value="Academic Complex - Room 304" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Consultation Hours</label>
-                                <input type="text" value="Mon/Wed 2PM - 4PM" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm">
+                                <input type="text" value="Mon/Wed 2:00 PM - 4:00 PM" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm">
                             </div>
                         </div>
 
@@ -1065,16 +1000,17 @@
 
     <!-- ========================================================== -->
     <!-- VIEW 5: ADMINISTRATOR PORTAL (PAGES 2, 3 OF DRAFT)        -->
+    <!-- Higher Authority Governance & Professor Assignment         -->
     <!-- ========================================================== -->
     <div id="view-admin" class="app-view hidden max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full flex-1 flex flex-col md:flex-row gap-6">
         <!-- Admin Sidebar -->
         <aside class="w-full md:w-64 flex-shrink-0 space-y-4">
             <div class="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-lg shadow-sm">
+                <div class="w-11 h-11 rounded-xl bg-purple-600 text-white font-bold flex items-center justify-center text-base shadow-sm">
                     AD
                 </div>
                 <div>
-                    <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Super Admin</h4>
+                    <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100">Super Administrator</h4>
                     <p class="text-xs font-mono text-slate-500 dark:text-slate-400">ID: ADM-001</p>
                 </div>
             </div>
@@ -1086,17 +1022,17 @@
                 </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="admin-faculty" onclick="app.showSubview('admin-faculty')">
                     <i class="fas fa-users-gear w-5 text-center"></i>
-                    <span>Faculty Management</span>
+                    <span>Manage Professors</span>
                 </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="admin-subjects" onclick="app.showSubview('admin-subjects')">
                     <i class="fas fa-folder-tree w-5 text-center"></i>
-                    <span>Subject Directory</span>
+                    <span>Assign Subjects</span>
                 </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="admin-audit-log" onclick="app.showSubview('admin-audit-log')">
                     <i class="fas fa-shield-virus w-5 text-center"></i>
                     <span>Security Audit Log</span>
                 </button>
-                <div class="pt-2 border-t border-slate-200 dark:border-slate-800">
+                <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
                     <button onclick="app.logout()" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 text-left transition-colors">
                         <i class="fas fa-arrow-right-from-bracket w-5 text-center"></i>
                         <span>Logout</span>
@@ -1110,62 +1046,62 @@
             <!-- SUBVIEW: Admin Dashboard (Page 2 top) -->
             <div id="admin-dashboard" class="subview-pane space-y-6">
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Welcome back, Admin</h2>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Here is the live status and operational registry of your examination portal today.</p>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Welcome back, Administrator</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Live status, faculty assignment registry, and examination governance.</p>
                 </div>
 
                 <!-- Admin Metrics (Page 2) -->
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <span class="text-xs font-semibold text-slate-500">Total faculty members</span>
-                        <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">24</div>
-                        <p class="text-[11px] text-slate-400 mt-1">3 active assigned this term</p>
+                        <span class="text-xs font-semibold text-slate-500">Registered Professors</span>
+                        <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">7</div>
+                        <p class="text-[11px] text-slate-400 mt-1">Active faculty accounts</p>
                     </div>
 
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <span class="text-xs font-semibold text-slate-500">Total Subjects</span>
-                        <div class="text-3xl font-extrabold text-purple-600 dark:text-purple-400 mt-1">18</div>
-                        <p class="text-[11px] text-slate-400 mt-1">4 domains fully registered</p>
+                        <span class="text-xs font-semibold text-slate-500">Academic Subjects</span>
+                        <div class="text-3xl font-extrabold text-purple-600 dark:text-purple-400 mt-1">8</div>
+                        <p class="text-[11px] text-slate-400 mt-1">Assigned across domains</p>
                     </div>
 
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <span class="text-xs font-semibold text-slate-500">Active Exams</span>
-                        <div class="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mt-1">7</div>
-                        <p class="text-[11px] text-slate-400 mt-1">Currently ongoing across campuses</p>
+                        <div class="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mt-1">3</div>
+                        <p class="text-[11px] text-slate-400 mt-1">Currently open for testing</p>
                     </div>
 
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <span class="text-xs font-semibold text-slate-500">Recent Activity</span>
+                        <span class="text-xs font-semibold text-slate-500">Security Events</span>
                         <div class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">12</div>
-                        <p class="text-[11px] text-slate-400 mt-1">Actions logged in past 24 hours</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Logged in audit registry</p>
                     </div>
                 </div>
 
-                <!-- Quick Navigation Cards (Page 2 bottom) -->
+                <!-- Quick Admin Action Cards (Page 2 bottom) -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                    <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                         <div>
-                            <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 flex items-center justify-center mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center mb-3">
                                 <i class="fas fa-users"></i>
                             </div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100">Faculty Management</h4>
-                            <p class="text-xs text-slate-500 mt-1">Add, archive, edit, or check assignment states for registered internal and external university proctors.</p>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100">Manage Professors</h4>
+                            <p class="text-xs text-slate-500 mt-1">Register new faculty members, modify status, archive inactive professors, and inspect handled subject counts.</p>
                         </div>
                         <button onclick="app.showSubview('admin-faculty')" class="mt-4 text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline flex items-center gap-1">
-                            Manage Faculty →
+                            Go to Faculty Management →
                         </button>
                     </div>
 
-                    <div class="p-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                    <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                         <div>
-                            <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 flex items-center justify-center mb-3">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center mb-3">
                                 <i class="fas fa-book-atlas"></i>
                             </div>
-                            <h4 class="font-bold text-slate-900 dark:text-slate-100">Subject Directory</h4>
-                            <p class="text-xs text-slate-500 mt-1">Map curricula, register domains, configure active cohorts, and link student rosters directly.</p>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100">Assign Subjects to Professors</h4>
+                            <p class="text-xs text-slate-500 mt-1">Directly assign which professors are responsible for creating examinations and managing cohorts in each subject.</p>
                         </div>
                         <button onclick="app.showSubview('admin-subjects')" class="mt-4 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
-                            View Directory →
+                            Go to Subject Assignment →
                         </button>
                     </div>
                 </div>
@@ -1175,13 +1111,13 @@
             <div id="admin-faculty" class="subview-pane hidden space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Faculty Management</h2>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Proctor Registry & Authorization</p>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Manage Professors</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Faculty Account Authorization & Registry</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <input type="text" placeholder="Search faculty by name or ID..." class="px-4 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
+                        <input type="text" placeholder="Search professor by name or ID..." class="px-4 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
                         <button onclick="app.handleAddFacultyModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 dark:bg-purple-600 text-white shadow-sm hover:bg-purple-700 transition flex items-center gap-1.5 whitespace-nowrap">
-                            <i class="fas fa-plus"></i> Add Faculty
+                            <i class="fas fa-plus"></i> Add Professor
                         </button>
                     </div>
                 </div>
@@ -1191,10 +1127,10 @@
                         <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
                             <tr>
                                 <th class="py-3 px-4">ID</th>
-                                <th class="py-3 px-4">Name</th>
-                                <th class="py-3 px-4">Email</th>
+                                <th class="py-3 px-4">Professor Name</th>
+                                <th class="py-3 px-4">Institutional Email</th>
                                 <th class="py-3 px-4">Department</th>
-                                <th class="py-3 px-4 text-center">Subjects</th>
+                                <th class="py-3 px-4 text-center">Subjects Handled</th>
                                 <th class="py-3 px-4">Status</th>
                                 <th class="py-3 px-4 text-right">Actions</th>
                             </tr>
@@ -1206,16 +1142,16 @@
                 </div>
             </div>
 
-            <!-- SUBVIEW: Subject Directory (Page 3 top) -->
+            <!-- SUBVIEW: Assign Subjects to Professors (Page 3 top) -->
             <div id="admin-subjects" class="subview-pane hidden space-y-6">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Subject Directory</h2>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Curriculum & Technical Domain Mapping</p>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Assign Subjects to Professors</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Directly map which professor handles and conducts exams for each subject</p>
                     </div>
                     <div class="flex items-center gap-3">
                         <input type="text" placeholder="Search subjects..." class="px-4 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
-                        <button onclick="app.showToast('Adding new academic subject', 'info')" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 dark:bg-purple-600 text-white shadow-sm flex items-center gap-1.5 whitespace-nowrap">
+                        <button onclick="app.showToast('Adding new curriculum subject', 'info')" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 dark:bg-purple-600 text-white shadow-sm flex items-center gap-1.5 whitespace-nowrap">
                             <i class="fas fa-plus"></i> Add Subject
                         </button>
                     </div>
@@ -1228,7 +1164,7 @@
                                 <th class="py-3 px-4">Code</th>
                                 <th class="py-3 px-4">Subject Name</th>
                                 <th class="py-3 px-4">Domain</th>
-                                <th class="py-3 px-4">Assigned Faculty</th>
+                                <th class="py-3 px-4">Assigned Professor</th>
                                 <th class="py-3 px-4 text-center">Enrolled</th>
                                 <th class="py-3 px-4">Status</th>
                                 <th class="py-3 px-4 text-right">Actions</th>
@@ -1246,11 +1182,11 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Security Audit Log</h2>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Tamper-evident activity recording</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Immutable activity registry tracking logins, subject assignments, and anti-cheat telemetry</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900">Date Range: Today</span>
-                        <span class="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900">Module: All Modules</span>
+                        <span class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900">Date Range: Today</span>
+                        <span class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-medium bg-white dark:bg-slate-900">Module: All Modules</span>
                     </div>
                 </div>
 
@@ -1275,10 +1211,10 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- MODAL 1: AUTHENTICATION / LOGIN DIALOG (PAGE 1 OF DRAFT)   -->
-    <!-- Supports Student, Teacher, and Administrator logins       -->
+    <!-- MODAL 1: AUTHENTICATION DIALOG (PAGE 1 OF DRAFT)           -->
+    <!-- 3 Roles: Student, Professor, Administrator                -->
     <!-- ========================================================== -->
-    <div id="loginModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+    <div id="loginModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 backdrop-blur-sm p-4">
         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full p-8 modal-enter relative">
             <button onclick="app.closeLoginModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                 <i class="fas fa-times text-lg"></i>
@@ -1286,27 +1222,27 @@
 
             <!-- Brand Header (From Page 1) -->
             <div class="text-center mb-6">
-                <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400 mx-auto flex items-center justify-center text-xl mb-3 shadow-inner">
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400 mx-auto flex items-center justify-center text-xl mb-3 shadow-sm border border-blue-100 dark:border-blue-900">
                     <i class="fas fa-shield-halved"></i>
                 </div>
-                <h3 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">ExamPortal</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Online Examination System</p>
+                <h3 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">VeriTest Portal</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Online Examination & Assessment System</p>
             </div>
 
-            <!-- Role Selector Tabs (Solving draft limitation of 1 login for 3 user roles) -->
+            <!-- Role Selector Tabs -->
             <div class="flex border-b border-slate-200 dark:border-slate-800 mb-6">
                 <button class="login-role-tab flex-1 pb-2.5 text-xs font-semibold text-center border-b-2 transition" data-role="student" onclick="app.selectLoginRoleTab('student')">
                     Student
                 </button>
                 <button class="login-role-tab flex-1 pb-2.5 text-xs font-semibold text-center border-b-2 transition" data-role="teacher" onclick="app.selectLoginRoleTab('teacher')">
-                    Faculty
+                    Professor
                 </button>
                 <button class="login-role-tab flex-1 pb-2.5 text-xs font-semibold text-center border-b-2 transition" data-role="admin" onclick="app.selectLoginRoleTab('admin')">
-                    Admin
+                    Administrator
                 </button>
             </div>
 
-            <!-- Validation Error Banner (From Page 1 bottom screenshot) -->
+            <!-- Validation Error Banner (From Page 1 bottom) -->
             <div id="loginErrorBanner" class="hidden mb-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
                 <i class="fas fa-circle-exclamation text-rose-500"></i>
                 <span>Login Failed! Incorrect username or password.</span>
@@ -1326,7 +1262,7 @@
                     <input type="password" id="loginPassword" placeholder="Enter password" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm focus:ring-2 focus:ring-blue-500" required>
                 </div>
 
-                <!-- reCAPTCHA Mockup Box (From Page 1) -->
+                <!-- reCAPTCHA Box (From Page 1) -->
                 <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between">
                     <label class="flex items-center gap-3 cursor-pointer">
                         <input type="checkbox" id="recaptchaCheck" checked class="w-5 h-5 rounded text-blue-600 border-slate-300 focus:ring-blue-500">
@@ -1343,17 +1279,17 @@
                 </button>
 
                 <div class="text-center pt-2">
-                    <a href="#" onclick="alert('Password reset instructions dispatched to registered institutional email.')" class="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">Forgot Password?</a>
+                    <a href="#" onclick="alert('Password reset link sent to your institutional email.')" class="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">Forgot Password?</a>
                 </div>
 
-                <!-- HCI Evaluation Simulation Quick-Triggers -->
+                <!-- 1-Click Quick Fill Demo Buttons -->
                 <div class="pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
-                    <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Evaluation Demo Quick Fill</span>
+                    <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Quick Demo Login</span>
                     <div class="flex items-center justify-center gap-2 mt-2">
-                        <button type="button" onclick="app.selectLoginRoleTab('student')" class="px-2 py-1 text-[11px] font-semibold rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Student</button>
-                        <button type="button" onclick="app.selectLoginRoleTab('teacher')" class="px-2 py-1 text-[11px] font-semibold rounded bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300">Faculty</button>
-                        <button type="button" onclick="app.selectLoginRoleTab('admin')" class="px-2 py-1 text-[11px] font-semibold rounded bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">Admin</button>
-                        <button type="button" onclick="document.getElementById('loginErrorBanner').classList.toggle('hidden')" class="px-2 py-1 text-[11px] font-semibold rounded bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300">Simulate Error</button>
+                        <button type="button" onclick="app.selectLoginRoleTab('student')" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300">Student</button>
+                        <button type="button" onclick="app.selectLoginRoleTab('teacher')" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950 dark:text-indigo-300">Professor</button>
+                        <button type="button" onclick="app.selectLoginRoleTab('admin')" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950 dark:text-purple-300">Admin</button>
+                        <button type="button" onclick="document.getElementById('loginErrorBanner').classList.toggle('hidden')" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-rose-50 text-rose-700 border border-rose-200">Simulate Error</button>
                     </div>
                 </div>
             </form>
@@ -1361,13 +1297,50 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- MODAL 2: UNFINISHED QUESTIONS WARNING DIALOG (PAGE 9)      -->
-    <!-- Heuristic: Error Prevention                                -->
+    <!-- MODAL 2: ASSIGN PROFESSOR TO SUBJECT (ADMIN FEATURE)       -->
+    <!-- ========================================================== -->
+    <div id="assignProfModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full p-6 modal-enter relative">
+            <button onclick="app.closeAssignProfModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <div class="mb-5">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-lg mb-2">
+                    <i class="fas fa-chalkboard-user"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Assign Professor to Subject</h3>
+                <p class="text-xs text-slate-500 mt-1">
+                    Subject: <strong id="assignSubjectCode" class="text-blue-600 font-mono">CS-101</strong> — <span id="assignSubjectName">Introduction to Programming</span>
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Select Professor in Charge</label>
+                    <select id="assignProfSelect" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-blue-500">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
+                <p class="text-xs text-slate-400">
+                    The assigned professor will be authorized to create examinations, curate questions, and finalize grades for this course cohort.
+                </p>
+
+                <div class="pt-3 flex justify-end gap-2">
+                    <button onclick="app.closeAssignProfModal()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100">Cancel</button>
+                    <button onclick="app.saveSubjectAssignment()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm">Save Assignment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL 3: UNFINISHED QUESTIONS WARNING DIALOG (PAGE 9)      -->
     <!-- ========================================================== -->
     <div id="unfinishedModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4">
         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-sm w-full p-6 modal-enter text-center">
-            <!-- Warning Icon (From Page 9) -->
-            <div class="w-14 h-14 rounded-full bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 mx-auto flex items-center justify-center text-2xl mb-4">
+            <div class="w-14 h-14 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 mx-auto flex items-center justify-center text-2xl mb-4 border border-rose-200">
                 <i class="fas fa-triangle-exclamation"></i>
             </div>
 
@@ -1388,33 +1361,33 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- MODAL 3: VERIFIED GRADE CERTIFICATE (FROM PAGE 9 LINK)     -->
+    <!-- MODAL 4: VERIFIED GRADE CERTIFICATE (FROM PAGE 9 LINK)     -->
     <!-- ========================================================== -->
-    <div id="certificateModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-4">
+    <div id="certificateModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4">
         <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-xl w-full p-8 modal-enter relative">
             <button onclick="app.closeCertificateModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 no-print">
                 <i class="fas fa-times text-lg"></i>
             </button>
 
             <!-- Printable Certificate Document -->
-            <div id="printableCertificate" class="border-4 border-double border-amber-600/40 p-6 rounded-2xl text-center space-y-4 bg-gradient-to-b from-amber-50/20 to-transparent">
-                <div class="w-12 h-12 rounded-full bg-blue-700 text-amber-400 mx-auto flex items-center justify-center text-xl shadow-md">
-                    <i class="fas fa-award"></i>
+            <div id="printableCertificate" class="border-2 border-slate-200 dark:border-slate-700 p-8 rounded-2xl text-center space-y-4 bg-white dark:bg-slate-900">
+                <div class="w-12 h-12 rounded-xl bg-blue-600 text-white mx-auto flex items-center justify-center text-xl shadow-md">
+                    <i class="fas fa-check-double"></i>
                 </div>
-                <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 tracking-widest uppercase">Verified Academic Examination Credential</span>
+                <span class="text-[10px] font-bold text-blue-600 dark:text-blue-400 tracking-widest uppercase">VeriTest Academic Examination Credential</span>
                 <h3 class="text-2xl font-serif font-extrabold text-slate-900 dark:text-slate-100">Certificate of Examination Completion</h3>
                 <p class="text-xs text-slate-500">This official document confirms that</p>
-                <h4 id="certStudentName" class="text-xl font-bold text-blue-700 dark:text-blue-400 underline decoration-blue-500/40 underline-offset-4">Ythanigga</h4>
+                <h4 id="certStudentName" class="text-xl font-bold text-slate-900 dark:text-white underline decoration-blue-500/40 underline-offset-4">Ythan S.</h4>
                 <p class="text-xs text-slate-600 dark:text-slate-400">has successfully concluded the proctored evaluation for</p>
-                <h5 id="certCourseName" class="text-base font-bold text-slate-800 dark:text-slate-200">CS101 - Final Assessment</h5>
+                <h5 id="certCourseName" class="text-base font-bold text-blue-600 dark:text-blue-400">CS101 - Final Assessment</h5>
                 <div class="pt-2">
-                    <span id="certScoreBadge" class="px-4 py-1.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                        96% Verified Grade
+                    <span id="certScoreBadge" class="px-4 py-1.5 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300">
+                        96% Verified Grade (1.00 / A+)
                     </span>
                 </div>
-                <div class="pt-4 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-400 flex justify-between items-center">
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400 flex justify-between items-center">
                     <span>Issued Date: <strong id="certDate">Today</strong></span>
-                    <span>Registry ID: <strong class="font-mono">NEU-EXAM-CERT-8842</strong></span>
+                    <span>Registry ID: <strong class="font-mono">VERITEST-CERT-8842</strong></span>
                 </div>
             </div>
 
@@ -1430,11 +1403,10 @@
 
     <!-- ========================================================== -->
     <!-- FLOATING HCI EVALUATION TOOLBAR                            -->
-    <!-- Allows teacher & graders to instantly test all 3 views!   -->
     <!-- ========================================================== -->
-    <div class="hci-floating-bar text-xs text-white shadow-2xl">
-        <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider pl-2 flex items-center gap-1.5">
-            <i class="fas fa-compass"></i> HCI Demo:
+    <div class="hci-floating-bar text-xs text-white shadow-xl">
+        <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider pl-2 flex items-center gap-1.5">
+            <i class="fas fa-compass"></i> HCI Bar:
         </span>
         <button onclick="app.showView('view-landing')" class="px-3 py-1.5 rounded-full hover:bg-white/20 transition flex items-center gap-1.5">
             <i class="fas fa-house"></i> <span>Home</span>
@@ -1443,7 +1415,7 @@
             <i class="fas fa-user-graduate"></i> <span>Student</span>
         </button>
         <button onclick="app.loginAs('teacher')" class="px-3 py-1.5 rounded-full hover:bg-white/20 transition flex items-center gap-1.5 text-indigo-400">
-            <i class="fas fa-chalkboard-user"></i> <span>Faculty</span>
+            <i class="fas fa-chalkboard-user"></i> <span>Professor</span>
         </button>
         <button onclick="app.loginAs('admin')" class="px-3 py-1.5 rounded-full hover:bg-white/20 transition flex items-center gap-1.5 text-purple-400">
             <i class="fas fa-user-shield"></i> <span>Admin</span>

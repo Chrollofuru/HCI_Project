@@ -1,11 +1,11 @@
 /**
- * EduExam / NEUVLE Online Examination System - Main Application Controller
- * Handles Navigation, Role Switching, Exam Engine, Proctoring Simulation, Modals, and Heuristics
+ * VeriTest - Online Examination & Assessment System
+ * Application Controller & Heuristics Engine
  */
 
 class AppController {
     constructor() {
-        this.data = window.EDUDATA;
+        this.data = window.VERITEST_DATA || window.EDUDATA;
         this.currentView = 'view-landing';
         this.currentRole = null;
         this.currentExam = null;
@@ -32,7 +32,7 @@ class AppController {
 
     // --- THEME MANAGEMENT ---
     initTheme() {
-        const savedTheme = localStorage.getItem('eduexam_theme');
+        const savedTheme = localStorage.getItem('veritest_theme');
         if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             this.setDarkMode(true);
         } else {
@@ -48,13 +48,13 @@ class AppController {
         this.darkMode = enabled;
         if (enabled) {
             document.documentElement.classList.add('dark');
-            localStorage.setItem('eduexam_theme', 'dark');
+            localStorage.setItem('veritest_theme', 'dark');
             document.querySelectorAll('.theme-toggle-icon').forEach(el => {
                 el.className = 'fas fa-sun theme-toggle-icon text-amber-400';
             });
         } else {
             document.documentElement.classList.remove('dark');
-            localStorage.setItem('eduexam_theme', 'light');
+            localStorage.setItem('veritest_theme', 'light');
             document.querySelectorAll('.theme-toggle-icon').forEach(el => {
                 el.className = 'fas fa-moon theme-toggle-icon text-slate-600';
             });
@@ -63,26 +63,20 @@ class AppController {
 
     // --- NAVIGATION & ROUTING ---
     showView(viewId, subviewId = null) {
-        // Hide all major views
         const views = document.querySelectorAll('.app-view');
         views.forEach(v => v.classList.add('hidden'));
 
-        // Show target view
         const targetView = document.getElementById(viewId);
         if (targetView) {
             targetView.classList.remove('hidden');
             this.currentView = viewId;
         }
 
-        // Handle subviews for portals
         if (subviewId) {
             this.showSubview(subviewId);
         }
 
-        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        // Update active states on nav
         this.updateNavState();
     }
 
@@ -95,7 +89,6 @@ class AppController {
             target.classList.remove('hidden');
         }
 
-        // Update active sidebar link
         document.querySelectorAll('.sidebar-link').forEach(link => {
             if (link.dataset.target === subviewId) {
                 link.classList.add('bg-blue-50', 'text-blue-700', 'dark:bg-slate-800', 'dark:text-blue-400', 'font-semibold');
@@ -115,7 +108,6 @@ class AppController {
             if (portalNav) portalNav.classList.add('hidden');
             if (landingNav) landingNav.classList.remove('hidden');
         } else if (this.currentView === 'view-student-live-exam') {
-            // Live exam is full-screen distraction-free
             if (portalNav) portalNav.classList.add('hidden');
             if (landingNav) landingNav.classList.add('hidden');
         } else {
@@ -128,14 +120,13 @@ class AppController {
     renderPortalHeader() {
         const roleBadge = document.getElementById('currentRoleBadge');
         const userName = document.getElementById('currentUserName');
-        const userAvatar = document.getElementById('currentUserAvatar');
 
         if (!this.currentRole) return;
 
         const roleConfig = {
-            student: { title: 'STUDENT', bg: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-400', user: this.data.demoAccounts.student },
-            teacher: { title: 'TEACHER', bg: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-400', user: this.data.demoAccounts.teacher },
-            admin: { title: 'ADMIN', bg: 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-400', user: this.data.demoAccounts.admin }
+            student: { title: 'STUDENT', bg: 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400', user: this.data.demoAccounts.student },
+            teacher: { title: 'PROFESSOR', bg: 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400', user: this.data.demoAccounts.teacher },
+            admin: { title: 'ADMIN', bg: 'bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950/40 dark:text-purple-400', user: this.data.demoAccounts.admin }
         };
 
         const config = roleConfig[this.currentRole];
@@ -155,7 +146,6 @@ class AppController {
         if (modal) {
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-            // reset error
             const err = document.getElementById('loginErrorBanner');
             if (err) err.classList.add('hidden');
         }
@@ -180,7 +170,6 @@ class AppController {
             }
         });
 
-        // Set form presets
         const user = this.data.demoAccounts[role];
         const idInput = document.getElementById('loginIdentifier');
         const passInput = document.getElementById('loginPassword');
@@ -193,7 +182,7 @@ class AppController {
         this.closeLoginModal();
 
         this.showToast(`Logged in successfully as ${role.toUpperCase()}!`, 'success');
-        this.logAuditEvent(this.data.demoAccounts[role].name, 'LOGIN_SUCCESS', 'Auth', `Successful login session from IP 192.168.1.104 (${role})`);
+        this.logAuditEvent(this.data.demoAccounts[role].name, 'LOGIN_SUCCESS', 'Auth', `Successful login session (${role})`);
 
         if (role === 'student') {
             this.showView('view-student', 'student-dashboard');
@@ -219,23 +208,20 @@ class AppController {
                 this.tabSwitchCount++;
                 const remaining = this.maxTabSwitches - this.tabSwitchCount;
 
-                // Toast security warning
                 this.showToast(
                     `⚠️ Security Warning: Tab switch #${this.tabSwitchCount} detected! (${Math.max(0, remaining)} remaining before lockout)`,
                     'danger'
                 );
 
-                // Add to proctor audit log
                 this.logAuditEvent(
                     this.data.demoAccounts.student.name,
                     'TAB_SWITCH_ALERT',
                     'Proctor',
-                    `Candidate switched active tab/window during CS101 Exam. Count: ${this.tabSwitchCount}/${this.maxTabSwitches}`
+                    `Candidate switched active tab/window during exam. Count: ${this.tabSwitchCount}/${this.maxTabSwitches}`
                 );
 
-                // If reached max switches, simulate lockout
                 if (this.tabSwitchCount >= this.maxTabSwitches) {
-                    alert('🚨 MAXIMUM SECURITY VIOLATIONS REACHED:\nYou have switched tabs 3 times. Your exam is now locked and submitted for administrative integrity review.');
+                    alert('🚨 MAXIMUM SECURITY VIOLATIONS REACHED:\nYou have switched tabs 3 times. Your exam is now locked and submitted for administrative review.');
                     this.submitExam(true);
                 }
             }
@@ -260,13 +246,11 @@ class AppController {
         const exam = this.data.exams.find(e => e.code === examCode) || this.data.exams[1];
         this.currentExam = exam;
 
-        // Render instruction screen
         document.getElementById('preExamTitle').textContent = exam.title;
         document.getElementById('preExamDomain').textContent = exam.domain;
         document.getElementById('preExamDuration').textContent = `${exam.durationMins} minutes`;
         document.getElementById('preExamVolume').textContent = `${exam.totalItems} Multiple-Choice Items`;
 
-        // Reset honor code checkbox
         const honorCheck = document.getElementById('honorCodeCheckbox');
         const beginBtn = document.getElementById('btnBeginExam');
         if (honorCheck) honorCheck.checked = false;
@@ -289,7 +273,6 @@ class AppController {
         this.examAnswers = {};
         this.examFlags = {};
 
-        // 45 minutes and 23 seconds countdown as displayed in draft
         this.examSecondsRemaining = 45 * 60 + 23;
 
         this.startTimer();
@@ -340,7 +323,6 @@ class AppController {
         this.currentQuestionIdx = idx;
         const q = questions[idx];
 
-        // Update question numbering & progress
         const qNumEl = document.getElementById('currentQuestionNumber');
         const qTotalEl = document.getElementById('totalQuestionsCount');
         const progPercentEl = document.getElementById('examProgressPercent');
@@ -353,11 +335,9 @@ class AppController {
         if (progPercentEl) progPercentEl.textContent = `${percent}% Complete`;
         if (progBarEl) progBarEl.style.width = `${percent}%`;
 
-        // Render question text
         const qTextEl = document.getElementById('liveQuestionText');
         if (qTextEl) qTextEl.textContent = q.text;
 
-        // Render options
         const optionsContainer = document.getElementById('liveOptionsContainer');
         if (optionsContainer) {
             optionsContainer.innerHTML = '';
@@ -384,7 +364,6 @@ class AppController {
             });
         }
 
-        // Update Flag button state
         const flagBtn = document.getElementById('btnFlagQuestion');
         if (flagBtn) {
             if (this.examFlags[idx]) {
@@ -396,21 +375,18 @@ class AppController {
             }
         }
 
-        // Previous button disabled state
         const prevBtn = document.getElementById('btnPrevQuestion');
         if (prevBtn) {
             prevBtn.disabled = idx === 0;
             prevBtn.classList.toggle('opacity-50', idx === 0);
         }
 
-        // Update Ledger UI
         this.renderQuestionLedger();
     }
 
     selectAnswer(qIdx, optIdx) {
         this.examAnswers[qIdx] = optIdx;
 
-        // Auto-save pulse feedback
         const autoSaveBadge = document.getElementById('autoSaveBadge');
         if (autoSaveBadge) {
             autoSaveBadge.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Saving...';
@@ -459,7 +435,6 @@ class AppController {
         const unansweredCount = total - answeredCount;
 
         if (unansweredCount > 0) {
-            // Show Unfinished Questions modal dialog matching Page 9 of draft!
             const countEl = document.getElementById('unansweredQuestionsCount');
             if (countEl) countEl.textContent = unansweredCount;
             const modal = document.getElementById('unfinishedModal');
@@ -468,7 +443,6 @@ class AppController {
                 modal.classList.add('flex');
             }
         } else {
-            // Confirm direct submission
             if (confirm('Are you sure you want to finalize and submit your examination?')) {
                 this.submitExam();
             }
@@ -488,7 +462,6 @@ class AppController {
         clearInterval(this.examTimer);
         this.isExamActive = false;
 
-        // Calculate score
         let score = 0;
         const questions = this.data.questionBank;
         questions.forEach((q, idx) => {
@@ -500,14 +473,22 @@ class AppController {
         const percent = Math.round((score / questions.length) * 100);
         const passed = percent >= (this.currentExam?.passingScore || 60);
 
-        // Add to historical submissions
+        let equivGrade = "5.00 (F)";
+        if (percent >= 96) equivGrade = "1.00 (Excellent / A+)";
+        else if (percent >= 90) equivGrade = "1.25 (Superior / A)";
+        else if (percent >= 84) equivGrade = "1.75 (Very Good / B+)";
+        else if (percent >= 75) equivGrade = "2.25 (Good / B)";
+        else if (percent >= 60) equivGrade = "3.00 (Passing / C)";
+
         const newRecord = {
             id: `HIST-${Date.now()}`,
             title: this.currentExam?.title || "CS101 - Midterm Examination",
+            subjectCode: this.currentExam?.code || "CS-101",
             domain: this.currentExam?.domain || "Computer Science Basics",
             date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
             score: `${score} / ${questions.length}`,
             percentage: percent,
+            equivalentGrade: equivGrade,
             status: "GRADED",
             breakdown: [
                 { section: "Section 1 (Multiple Choice Questions)", score: `${score} / ${questions.length} correct` }
@@ -516,14 +497,9 @@ class AppController {
         };
 
         this.data.studentHistory.unshift(newRecord);
-
-        // Show submission toast
         this.showToast(`Exam submitted! Score: ${score}/${questions.length} (${percent}%) - ${passed ? 'PASSED' : 'FAILED'}`, passed ? 'success' : 'danger');
 
-        // Render updated student results
         this.renderStudentHistory();
-
-        // Navigate to student results view
         this.showView('view-student', 'student-results');
     }
 
@@ -554,26 +530,114 @@ class AppController {
         }
     }
 
-    // --- CSV EXPORT (TEACHER RESULTS) ---
+    // --- PROFESSOR: CONVERT & FINALIZE GRADES ---
+    convertStudentGrade(studentId) {
+        const student = this.data.teacherResults.find(r => r.studentId === studentId);
+        if (!student) return;
+
+        let letter = "1.00 (A+)";
+        if (student.percentage < 60) letter = "5.00 (F)";
+        else if (student.percentage < 70) letter = "3.00 (C)";
+        else if (student.percentage < 80) letter = "2.25 (B)";
+        else if (student.percentage < 90) letter = "1.75 (B+)";
+
+        student.grade = letter;
+        student.gradeStatus = "FINALIZED";
+
+        this.renderTeacherResults();
+        this.logAuditEvent(this.data.demoAccounts.teacher.name, 'CONVERT_GRADE', 'Grades', `Converted and finalized grade for ${student.name} (${student.studentId}) to ${letter}`);
+        this.showToast(`Grade for ${student.name} finalized to ${letter}!`, 'success');
+    }
+
+    // --- PROFESSOR: CSV EXPORT ---
     exportResultsCSV() {
         const rows = [
-            ["Student ID", "Student Name", "Score", "Percentage", "Status", "Date Taken"]
+            ["Student ID", "Student Name", "Raw Score", "Percentage", "Official Converted Grade", "Status", "Date Taken"]
         ];
 
         this.data.teacherResults.forEach(r => {
-            rows.push([r.studentId, r.name, r.score, r.percentage, r.status, r.date]);
+            rows.push([r.studentId, r.name, r.rawScore, `${r.percentage}%`, r.grade, r.status, r.date]);
         });
 
         const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `Exam_Results_CS101_${new Date().toISOString().slice(0, 10)}.csv`);
+        link.setAttribute("download", `VeriTest_Grades_CS101_${new Date().toISOString().slice(0, 10)}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
         this.showToast('Grade sheet exported to CSV successfully.', 'success');
+    }
+
+    // --- ADMIN: ASSIGN PROFESSOR TO SUBJECT ---
+    openAssignProfessorModal(subjectCode) {
+        const subject = this.data.subjects.find(s => s.code === subjectCode);
+        if (!subject) return;
+
+        // Populate modal select
+        const select = document.getElementById('assignProfSelect');
+        const codeSpan = document.getElementById('assignSubjectCode');
+        const nameSpan = document.getElementById('assignSubjectName');
+
+        if (codeSpan) codeSpan.textContent = subject.code;
+        if (nameSpan) nameSpan.textContent = subject.name;
+
+        if (select) {
+            select.innerHTML = '<option value="">— Unassign Professor —</option>';
+            this.data.faculty.filter(f => f.status === 'ACTIVE').forEach(f => {
+                const opt = document.createElement('option');
+                opt.value = f.id;
+                opt.textContent = `${f.name} (${f.dept})`;
+                if (subject.facultyId === f.id) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        const modal = document.getElementById('assignProfModal');
+        if (modal) {
+            modal.dataset.subjectCode = subjectCode;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    }
+
+    saveSubjectAssignment() {
+        const modal = document.getElementById('assignProfModal');
+        const subjectCode = modal?.dataset.subjectCode;
+        const select = document.getElementById('assignProfSelect');
+        const facultyId = select?.value;
+
+        const subject = this.data.subjects.find(s => s.code === subjectCode);
+        if (!subject) return;
+
+        if (!facultyId) {
+            subject.facultyId = null;
+            subject.faculty = "— Unassigned —";
+            this.logAuditEvent(this.data.demoAccounts.admin.name, 'UNASSIGN_SUBJECT', 'Curriculum', `Unassigned professor from ${subject.code}`);
+            this.showToast(`Subject ${subject.code} unassigned.`, 'info');
+        } else {
+            const fac = this.data.faculty.find(f => f.id === facultyId);
+            if (fac) {
+                subject.facultyId = fac.id;
+                subject.faculty = fac.name;
+                this.logAuditEvent(this.data.demoAccounts.admin.name, 'ASSIGN_SUBJECT', 'Curriculum', `Assigned ${subject.code} (${subject.name}) to ${fac.name}`);
+                this.showToast(`Assigned ${subject.code} to ${fac.name}!`, 'success');
+            }
+        }
+
+        this.closeAssignProfModal();
+        this.renderAdminSubjects();
+        this.renderTeacherSubjects();
+    }
+
+    closeAssignProfModal() {
+        const modal = document.getElementById('assignProfModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
     }
 
     // --- RENDERING VIEWS & TABLES ---
@@ -604,12 +668,12 @@ class AppController {
                 <td class="py-3 px-4 text-sm text-slate-600 dark:text-slate-400">${f.dept}</td>
                 <td class="py-3 px-4 text-center text-sm font-semibold">${f.subjectsCount}</td>
                 <td class="py-3 px-4">
-                    <span class="px-2.5 py-1 text-xs font-bold rounded-full ${f.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400'}">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-full ${f.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}">
                         ${f.status}
                     </span>
                 </td>
                 <td class="py-3 px-4 text-right space-x-2">
-                    <button class="px-3 py-1 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-100 dark:hover:bg-slate-700" onclick="app.editFaculty('${f.id}')">Edit</button>
+                    <button class="px-3 py-1 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-100 dark:hover:bg-slate-700" onclick="app.showToast('Editing ${f.name}', 'info')">Edit</button>
                     <button class="px-3 py-1 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-red-50 text-red-600 dark:hover:bg-red-950/40" onclick="app.archiveFaculty('${f.id}')">${f.status === 'ACTIVE' ? 'Archive' : 'Restore'}</button>
                 </td>
             `;
@@ -617,7 +681,7 @@ class AppController {
         });
     }
 
-    // 2. Admin Subject Directory Table
+    // 2. Admin Subject Directory Table (With Direct Professor Assignment!)
     renderAdminSubjects() {
         const tbody = document.getElementById('adminSubjectsTableBody');
         if (!tbody) return;
@@ -630,20 +694,34 @@ class AppController {
                 <td class="py-3 px-4 text-xs font-mono font-bold text-blue-600 dark:text-blue-400">${s.code}</td>
                 <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">${s.name}</td>
                 <td class="py-3 px-4 text-sm text-slate-600 dark:text-slate-400">${s.domain}</td>
-                <td class="py-3 px-4 text-sm text-slate-600 dark:text-slate-400">${s.faculty}</td>
+                <td class="py-3 px-4 text-sm">
+                    <span class="font-medium text-slate-900 dark:text-slate-100">${s.faculty}</span>
+                </td>
                 <td class="py-3 px-4 text-center text-sm font-semibold">${s.enrolled}</td>
                 <td class="py-3 px-4">
-                    <span class="px-2.5 py-1 text-xs font-bold rounded-full ${s.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400'}">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-full ${s.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}">
                         ${s.status}
                     </span>
                 </td>
                 <td class="py-3 px-4 text-right space-x-2">
-                    <button class="px-3 py-1 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-100 dark:hover:bg-slate-700">Edit</button>
-                    <button class="px-3 py-1 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-100 dark:hover:bg-slate-700">${s.status === 'ACTIVE' ? 'Archive' : 'Restore'}</button>
+                    <button class="px-3 py-1 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 rounded-lg font-semibold border border-blue-200 dark:border-blue-800" onclick="app.openAssignProfessorModal('${s.code}')">
+                        <i class="fas fa-user-plus mr-1"></i> Assign Prof
+                    </button>
+                    <button class="px-3 py-1 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-100 dark:hover:bg-slate-700" onclick="app.archiveSubject('${s.code}')">${s.status === 'ACTIVE' ? 'Archive' : 'Restore'}</button>
                 </td>
             `;
             tbody.appendChild(tr);
         });
+    }
+
+    archiveSubject(code) {
+        const s = this.data.subjects.find(sub => sub.code === code);
+        if (s) {
+            s.status = s.status === 'ACTIVE' ? 'ARCHIVE' : 'ACTIVE';
+            this.renderAdminSubjects();
+            this.logAuditEvent(this.data.demoAccounts.admin.name, 'ARCHIVE_SUBJECT', 'Curriculum', `${s.status === 'ARCHIVE' ? 'Archived' : 'Restored'} subject ${code}`);
+            this.showToast(`Subject ${code} status updated to ${s.status}.`, 'info');
+        }
     }
 
     // 3. Admin Security Audit Log
@@ -659,7 +737,7 @@ class AppController {
                 <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${log.timestamp}</td>
                 <td class="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100 font-sans">${log.user}</td>
                 <td class="py-3 px-4">
-                    <span class="px-2 py-0.5 rounded font-bold ${log.action.includes('ALERT') ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300'}">
+                    <span class="px-2 py-0.5 rounded font-bold ${log.action.includes('ALERT') ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300'}">
                         ${log.action}
                     </span>
                 </td>
@@ -670,7 +748,7 @@ class AppController {
         });
     }
 
-    // 4. Teacher Subjects
+    // 4. Professor Handled Subjects (Know which subjects to make exams for!)
     renderTeacherSubjects() {
         const tbody = document.getElementById('teacherSubjectsTableBody');
         if (!tbody) return;
@@ -685,15 +763,30 @@ class AppController {
                 <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">${c.name}</td>
                 <td class="py-3 px-4 text-sm text-slate-600 dark:text-slate-400">${c.domain}</td>
                 <td class="py-3 px-4 text-sm font-semibold">${c.enrolled} students</td>
-                <td class="py-3 px-4 text-right">
-                    <button class="px-3 py-1 text-xs bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg font-medium" onclick="app.showToast('Viewing roster for ${c.code}', 'info')">View Roster</button>
+                <td class="py-3 px-4 text-right space-x-2">
+                    <button class="px-3 py-1.5 text-xs bg-slate-900 text-white dark:bg-blue-600 rounded-lg font-semibold hover:bg-blue-600 transition" onclick="app.prepareCreateExamFor('${c.code}', '${c.name}')">
+                        <i class="fas fa-plus mr-1"></i> Make Exam
+                    </button>
+                    <button class="px-3 py-1.5 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-100" onclick="app.showToast('Roster for ${c.code} loaded: ${c.enrolled} examinees', 'info')">
+                        Roster
+                    </button>
                 </td>
             `;
             tbody.appendChild(tr);
         });
     }
 
-    // 5. Teacher Question Bank
+    prepareCreateExamFor(code, name) {
+        this.showSubview('teacher-create-exam');
+        const titleInput = document.getElementById('examTitleInput');
+        const select = document.getElementById('examSubjectSelect');
+        if (titleInput) titleInput.value = `${code} Final Examination 2025`;
+        if (select) {
+            select.value = `${code} - ${name}`;
+        }
+    }
+
+    // 5. Professor Question Bank
     renderTeacherQuestionBank() {
         const tbody = document.getElementById('teacherQuestionsTableBody');
         if (!tbody) return;
@@ -708,7 +801,7 @@ class AppController {
                 <td class="py-3 px-4 text-xs font-semibold text-slate-600 dark:text-slate-400">${q.type}</td>
                 <td class="py-3 px-4 text-xs font-mono font-semibold">${q.subject}</td>
                 <td class="py-3 px-4">
-                    <span class="px-2 py-0.5 text-xs font-bold rounded ${q.difficulty === 'Easy' ? 'bg-emerald-100 text-emerald-800' : q.difficulty === 'Medium' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'}">
+                    <span class="px-2 py-0.5 text-xs font-bold rounded ${q.difficulty === 'Easy' ? 'bg-emerald-50 text-emerald-700' : q.difficulty === 'Medium' ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700'}">
                         ${q.difficulty}
                     </span>
                 </td>
@@ -721,7 +814,7 @@ class AppController {
         });
     }
 
-    // 6. Teacher Results Table
+    // 6. Professor Examination Results & Instant Grade Conversion!
     renderTeacherResults() {
         const tbody = document.getElementById('teacherResultsTableBody');
         if (!tbody) return;
@@ -730,23 +823,38 @@ class AppController {
         this.data.teacherResults.forEach(r => {
             const tr = document.createElement('tr');
             tr.className = 'border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50/60 dark:hover:bg-slate-800/40';
+            const isFinalized = r.gradeStatus === "FINALIZED";
+
             tr.innerHTML = `
                 <td class="py-3 px-4 font-mono text-xs text-slate-600 dark:text-slate-400">${r.studentId}</td>
                 <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">${r.name}</td>
-                <td class="py-3 px-4 text-sm font-semibold">${r.score}</td>
-                <td class="py-3 px-4 text-sm font-bold text-blue-600 dark:text-blue-400">${r.percentage}</td>
+                <td class="py-3 px-4 text-sm font-semibold">${r.rawScore}</td>
+                <td class="py-3 px-4 text-sm font-bold text-blue-600 dark:text-blue-400">${r.percentage}%</td>
                 <td class="py-3 px-4">
-                    <span class="px-2.5 py-0.5 text-xs font-bold rounded-full ${r.status === 'PASSED' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-400'}">
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-xs ${isFinalized ? 'text-slate-900 dark:text-slate-100' : 'text-amber-600'}">${r.grade}</span>
+                        ${isFinalized ? '<i class="fas fa-check-circle text-emerald-500 text-xs" title="Finalized to Transcript"></i>' : ''}
+                    </div>
+                </td>
+                <td class="py-3 px-4">
+                    <span class="px-2.5 py-0.5 text-xs font-bold rounded-full ${r.status === 'PASSED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-950 dark:text-red-400'}">
                         ${r.status}
                     </span>
                 </td>
-                <td class="py-3 px-4 text-xs text-slate-500">${r.date}</td>
+                <td class="py-3 px-4 text-right">
+                    ${isFinalized 
+                        ? `<span class="text-xs text-slate-400 font-medium">Grade Posted</span>`
+                        : `<button onclick="app.convertStudentGrade('${r.studentId}')" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">
+                            <i class="fas fa-graduation-cap mr-1"></i> Convert to Grade
+                           </button>`
+                    }
+                </td>
             `;
             tbody.appendChild(tr);
         });
     }
 
-    // 7. Student Registered Exams
+    // 7. Student Registered Assessments by Subject
     renderStudentExams() {
         const container = document.getElementById('studentExamsContainer');
         if (!container) return;
@@ -754,42 +862,43 @@ class AppController {
         container.innerHTML = '';
         this.data.exams.forEach(exam => {
             const card = document.createElement('div');
-            card.className = 'p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow';
+            card.className = 'p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-all';
 
             let actionHtml = '';
             let badgeHtml = '';
 
             if (exam.status === 'AVAILABLE') {
-                badgeHtml = '<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">Available Now</span>';
+                badgeHtml = '<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300">Available Now</span>';
                 actionHtml = `<button class="px-6 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 font-semibold text-sm transition-colors shadow-sm" onclick="app.startExamInstruction('${exam.code}')">Start Exam</button>`;
             } else if (exam.status === 'UPCOMING') {
-                badgeHtml = '<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">Upcoming</span>';
+                badgeHtml = '<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300">Upcoming</span>';
                 actionHtml = `
                     <div class="flex flex-col items-end gap-1">
-                        <button class="px-6 py-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-600 font-semibold text-sm cursor-not-allowed" disabled>Start Exam</button>
+                        <button class="px-6 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 font-semibold text-sm cursor-not-allowed" disabled>Start Exam</button>
                         <span class="text-xs text-slate-500">Available in 2 hours</span>
                     </div>
                 `;
             } else {
                 badgeHtml = '<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">Completed</span>';
-                actionHtml = `<button class="px-6 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-400 dark:text-slate-600 font-medium text-sm cursor-not-allowed" disabled>Attempt Saved</button>`;
+                actionHtml = `<button class="px-6 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-600 font-medium text-sm cursor-not-allowed" disabled>Attempt Saved</button>`;
             }
 
             card.innerHTML = `
                 <div class="space-y-1.5">
                     <div class="flex items-center gap-3">
+                        <span class="px-2 py-0.5 text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded">${exam.code}</span>
                         <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100">${exam.title}</h4>
                         ${badgeHtml}
                     </div>
                     <div class="text-xs text-slate-500 dark:text-slate-400 space-x-2">
-                        <span>Teacher: <strong>${exam.teacher}</strong></span>
+                        <span>Professor: <strong>${exam.professor}</strong></span>
                         <span>•</span>
                         <span>Duration: <strong>${exam.durationMins} minutes</strong></span>
                         <span>•</span>
                         <span>Total Items: <strong>${exam.totalItems} Questions</strong></span>
                     </div>
                     <div class="text-xs text-slate-400">
-                        ${exam.status === 'AVAILABLE' ? `<span class="text-emerald-600 dark:text-emerald-400 font-medium">Deadline: ${exam.deadline}</span>` : exam.scheduledTime}
+                        ${exam.status === 'AVAILABLE' ? `<span class="text-emerald-600 dark:text-emerald-400 font-medium"><i class="far fa-clock mr-1"></i> Deadline: ${exam.deadline}</span>` : `<span class="text-amber-600 dark:text-amber-400"><i class="far fa-calendar-clock mr-1"></i> ${exam.scheduledTime}</span>`}
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -816,6 +925,7 @@ class AppController {
                 <td class="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100">
                     <div class="flex items-center gap-2">
                         <i class="fas fa-chevron-right text-xs text-slate-400 transition-transform accordion-arrow" id="arrow-${h.id}"></i>
+                        <span class="font-mono text-xs text-blue-600 dark:text-blue-400 mr-1">${h.subjectCode || 'CS-101'}</span>
                         <span>${h.title}</span>
                     </div>
                 </td>
@@ -824,13 +934,12 @@ class AppController {
                 <td class="py-3 px-4 text-sm font-semibold">${h.score}</td>
                 <td class="py-3 px-4 text-sm font-bold ${isPending ? 'text-slate-400' : 'text-blue-600 dark:text-blue-400'}">${h.percentage ? h.percentage + '%' : '—'}</td>
                 <td class="py-3 px-4">
-                    <span class="px-2.5 py-0.5 text-xs font-bold rounded-full ${isPending ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-400' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400'}">
-                        ${isPending ? 'Pending Review' : 'Graded'}
+                    <span class="px-2.5 py-0.5 text-xs font-bold rounded-full ${isPending ? 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950 dark:text-amber-400' : 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400'}">
+                        ${isPending ? 'Pending Review' : (h.equivalentGrade || 'Graded')}
                     </span>
                 </td>
             `;
 
-            // Expandable Accordion Row for Detailed Breakdown (matches draft page 9!)
             const trDetails = document.createElement('tr');
             trDetails.className = `border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/30 ${index === 0 ? '' : 'hidden'}`;
             trDetails.id = `breakdown-${h.id}`;
@@ -838,14 +947,17 @@ class AppController {
             let breakdownHtml = h.breakdown.map(b => `<li class="text-xs text-slate-600 dark:text-slate-300">• <strong>${b.section}:</strong> ${b.score}</li>`).join('');
             let certBtnHtml = h.certificateAvailable ? `
                 <button class="mt-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1" onclick="app.viewCertificate('${h.title}', ${h.percentage})">
-                    <i class="fas fa-certificate"></i> Download Verified Grade Certificate (PDF) →
+                    <i class="fas fa-certificate"></i> Download Official Grade Certificate (PDF) →
                 </button>
             ` : '';
 
             trDetails.innerHTML = `
                 <td colspan="6" class="p-4 pl-10">
                     <div class="space-y-1.5 border-l-2 border-blue-500 pl-4 py-1">
-                        <h5 class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">Detailed Answer Breakdown (${h.title})</h5>
+                        <div class="flex items-center gap-2">
+                            <h5 class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">Detailed Answer Breakdown (${h.title})</h5>
+                            ${h.equivalentGrade ? `<span class="px-2 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 text-[10px] font-bold rounded">Official Grade: ${h.equivalentGrade}</span>` : ''}
+                        </div>
                         <ul class="space-y-1">${breakdownHtml}</ul>
                         ${certBtnHtml}
                     </div>
@@ -885,7 +997,7 @@ class AppController {
             code: subject.split(' ')[0] || "NEW-101",
             title: title,
             subjectName: subject,
-            teacher: this.data.demoAccounts.teacher.name,
+            professor: this.data.demoAccounts.teacher.name,
             durationMins: duration,
             totalItems: items,
             passingScore: passing,
@@ -906,7 +1018,6 @@ class AppController {
         this.logAuditEvent(this.data.demoAccounts.teacher.name, 'PUBLISH_EXAM', 'Exams', `Published examination '${title}' (${items} items)`);
         this.showToast(`Examination '${title}' successfully published!`, 'success');
 
-        // Reset form & go to teacher dashboard
         document.getElementById('createExamForm')?.reset();
         document.getElementById('createExamAlert')?.classList.add('hidden');
         this.showSubview('teacher-dashboard');
@@ -932,23 +1043,23 @@ class AppController {
     }
 
     handleAddFacultyModal() {
-        const name = prompt("Enter Faculty Name (e.g., Dr. Jane Foster):");
+        const name = prompt("Enter Professor Name (e.g., Dr. Jane Foster):");
         if (!name) return;
         const dept = prompt("Enter Department (e.g., Computer Science):", "Computer Science") || "Computer Science";
 
         const newFac = {
             id: `FAC-${Math.floor(100 + Math.random() * 900)}`,
             name: name,
-            email: `${name.toLowerCase().replace(/[^a-z]/g, '.')}@examportal.edu`,
+            email: `${name.toLowerCase().replace(/[^a-z]/g, '.')}@veritest.edu`,
             dept: dept,
-            subjectsCount: 1,
+            subjectsCount: 0,
             status: "ACTIVE"
         };
 
         this.data.faculty.unshift(newFac);
         this.renderAdminFaculty();
-        this.logAuditEvent(this.data.demoAccounts.admin.name, 'ADD_FACULTY', 'Faculty', `Created faculty entry ${newFac.id} for ${name}`);
-        this.showToast(`Faculty member ${name} created.`, 'success');
+        this.logAuditEvent(this.data.demoAccounts.admin.name, 'ADD_FACULTY', 'Faculty', `Created professor entry ${newFac.id} for ${name}`);
+        this.showToast(`Professor ${name} created.`, 'success');
     }
 
     archiveFaculty(facId) {
@@ -956,12 +1067,12 @@ class AppController {
         if (f) {
             f.status = f.status === 'ACTIVE' ? 'ARCHIVE' : 'ACTIVE';
             this.renderAdminFaculty();
-            this.logAuditEvent(this.data.demoAccounts.admin.name, 'ARCHIVE_FACULTY', 'Faculty', `${f.status === 'ARCHIVE' ? 'Archived' : 'Restored'} faculty ${f.name}`);
-            this.showToast(`Faculty ${f.name} status updated to ${f.status}.`, 'info');
+            this.logAuditEvent(this.data.demoAccounts.admin.name, 'ARCHIVE_FACULTY', 'Faculty', `${f.status === 'ARCHIVE' ? 'Archived' : 'Restored'} professor ${f.name}`);
+            this.showToast(`Professor ${f.name} status updated to ${f.status}.`, 'info');
         }
     }
 
-    // --- TOAST NOTIFICATIONS (HCI Feedback) ---
+    // --- TOAST NOTIFICATIONS ---
     showToast(message, type = 'info') {
         const toastContainer = document.getElementById('toastContainer');
         if (!toastContainer) return;
@@ -989,12 +1100,10 @@ class AppController {
 
         toastContainer.appendChild(toast);
 
-        // Animate in
         requestAnimationFrame(() => {
             toast.classList.remove('translate-y-2', 'opacity-0');
         });
 
-        // Remove after 3.5s
         setTimeout(() => {
             toast.classList.add('opacity-0', 'translate-y-2');
             setTimeout(() => toast.remove(), 300);
@@ -1003,7 +1112,6 @@ class AppController {
 
     // --- EVENT LISTENERS ---
     setupEventListeners() {
-        // Honor code checkbox in pre-exam screen
         const honorCheck = document.getElementById('honorCodeCheckbox');
         const beginBtn = document.getElementById('btnBeginExam');
         if (honorCheck && beginBtn) {
@@ -1014,11 +1122,9 @@ class AppController {
             });
         }
 
-        // Live exam keyboard shortcuts (HCI Heuristic: Flexibility & Efficiency of Use)
         window.addEventListener('keydown', (e) => {
             if (!this.isExamActive) return;
 
-            // A, B, C, D to answer
             const key = e.key.toUpperCase();
             if (['A', 'B', 'C', 'D'].includes(key)) {
                 const optIdx = key.charCodeAt(0) - 65;
@@ -1041,7 +1147,6 @@ class AppController {
     }
 }
 
-// Global instance
 let app;
 window.addEventListener('DOMContentLoaded', () => {
     app = new AppController();

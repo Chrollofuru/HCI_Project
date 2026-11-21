@@ -1,36 +1,36 @@
 /**
- * EduExam / NEUVLE Online Examination System - Mock Database & State Management
- * Designed for HCI Project Demonstration
+ * VeriTest - Online Examination & Assessment System
+ * Mock Database & State Management (HCI Project Prototype)
  */
 
 const INITIAL_DATA = {
     // Current active user / session
-    currentUser: null, // null = guest / on landing page. Or { role: 'student'|'teacher'|'admin', name, email, id, avatar }
+    currentUser: null,
 
-    // Faculty Registry (Admin & System View)
+    // Faculty / Professor Registry (Admin View & Governance)
     faculty: [
-        { id: "FAC-012", name: "Dr. Rachel Green", email: "rachel.green@examportal.edu", dept: "Computer Science", subjectsCount: 3, status: "ACTIVE" },
-        { id: "FAC-044", name: "Prof. Arthur Dent", email: "arthur.dent@examportal.edu", dept: "Mathematics", subjectsCount: 2, status: "ACTIVE" },
-        { id: "FAC-081", name: "Dr. Sarah Connor", email: "sarah.connor@examportal.edu", dept: "Mechanical Eng.", subjectsCount: 0, status: "ARCHIVE" },
-        { id: "FAC-095", name: "Prof. Charles Xavier", email: "charles.xavier@examportal.edu", dept: "Neurology & Bio", subjectsCount: 4, status: "ACTIVE" },
-        { id: "FAC-102", name: "Dr. Bruce Banner", email: "bruce.banner@examportal.edu", dept: "Nuclear Physics", subjectsCount: 1, status: "ACTIVE" },
-        { id: "FAC-115", name: "Dr. Alan Turing", email: "alan.turing@examportal.edu", dept: "Artificial Intelligence", subjectsCount: 3, status: "ACTIVE" },
-        { id: "FAC-124", name: "Prof. Maria Santos", email: "maria.santos@examportal.edu", dept: "Computer Science", subjectsCount: 4, status: "ACTIVE" }
+        { id: "FAC-012", name: "Dr. Rachel Green", email: "rachel.green@veritest.edu", dept: "Computer Science", subjects: ["CS-101", "CS-105", "CS-205"], subjectsCount: 3, status: "ACTIVE" },
+        { id: "FAC-044", name: "Prof. Arthur Dent", email: "arthur.dent@veritest.edu", dept: "Mathematics", subjects: ["MATH-302", "MATH-101"], subjectsCount: 2, status: "ACTIVE" },
+        { id: "FAC-081", name: "Dr. Sarah Connor", email: "sarah.connor@veritest.edu", dept: "Mechanical Eng.", subjects: [], subjectsCount: 0, status: "ARCHIVE" },
+        { id: "FAC-095", name: "Prof. Charles Xavier", email: "charles.xavier@veritest.edu", dept: "Biological Sciences", subjects: ["BIO-109", "BIO-201"], subjectsCount: 2, status: "ACTIVE" },
+        { id: "FAC-102", name: "Dr. Bruce Banner", email: "bruce.banner@veritest.edu", dept: "Nuclear Physics", subjects: ["PHY-401"], subjectsCount: 1, status: "ACTIVE" },
+        { id: "FAC-115", name: "Dr. Alan Turing", email: "alan.turing@veritest.edu", dept: "Artificial Intelligence", subjects: ["CS-401", "CS-405"], subjectsCount: 2, status: "ACTIVE" },
+        { id: "FAC-124", name: "Prof. Maria Santos", email: "maria.santos@veritest.edu", dept: "Computer Science", subjects: ["CS-202", "CS-303", "IT-102"], subjectsCount: 3, status: "ACTIVE" }
     ],
 
-    // Subject Directory (Curriculum & Domain registry)
+    // Subject Directory (Curriculum Mapping & Professor Assignment)
     subjects: [
-        { code: "CS-101", name: "Introduction to Programming", domain: "Computer Science", faculty: "Dr. Rachel Green", enrolled: 124, status: "ACTIVE" },
-        { code: "MATH-302", name: "Advanced Linear Algebra", domain: "Mathematics", faculty: "Prof. Arthur Dent", enrolled: 84, status: "ACTIVE" },
-        { code: "BIO-109", name: "Principles of Gen Biology", domain: "Biology", faculty: "Prof. Charles Xavier", enrolled: 192, status: "ACTIVE" },
-        { code: "MECH-205", name: "Fluid Dynamics", domain: "Mechanical Eng.", faculty: "— Unassigned —", enrolled: 0, status: "ARCHIVE" },
-        { code: "PHY-401", name: "Quantum Mechanics II", domain: "Nuclear Physics", faculty: "Dr. Bruce Banner", enrolled: 42, status: "ACTIVE" },
-        { code: "CS-202", name: "Data Structures & Algorithms", domain: "Computer Science", faculty: "Prof. Maria Santos", enrolled: 98, status: "ACTIVE" },
-        { code: "CS-303", name: "Database Management Systems", domain: "Computer Science", faculty: "Prof. Maria Santos", enrolled: 85, status: "ACTIVE" },
-        { code: "IT-102", name: "Web Development Foundations", domain: "Information Technology", faculty: "Prof. Maria Santos", enrolled: 110, status: "ACTIVE" }
+        { code: "CS-101", name: "Introduction to Programming", domain: "Computer Science", facultyId: "FAC-012", faculty: "Dr. Rachel Green", enrolled: 124, status: "ACTIVE" },
+        { code: "MATH-302", name: "Advanced Linear Algebra", domain: "Mathematics", facultyId: "FAC-044", faculty: "Prof. Arthur Dent", enrolled: 84, status: "ACTIVE" },
+        { code: "BIO-109", name: "Principles of Gen Biology", domain: "Biology", facultyId: "FAC-095", faculty: "Prof. Charles Xavier", enrolled: 192, status: "ACTIVE" },
+        { code: "MECH-205", name: "Fluid Dynamics", domain: "Mechanical Eng.", facultyId: null, faculty: "— Unassigned —", enrolled: 0, status: "ARCHIVE" },
+        { code: "PHY-401", name: "Quantum Mechanics II", domain: "Nuclear Physics", facultyId: "FAC-102", faculty: "Dr. Bruce Banner", enrolled: 42, status: "ACTIVE" },
+        { code: "CS-202", name: "Data Structures & Algorithms", domain: "Computer Science", facultyId: "FAC-124", faculty: "Prof. Maria Santos", enrolled: 98, status: "ACTIVE" },
+        { code: "CS-303", name: "Database Management Systems", domain: "Computer Science", facultyId: "FAC-124", faculty: "Prof. Maria Santos", enrolled: 85, status: "ACTIVE" },
+        { code: "IT-102", name: "Web Development Foundations", domain: "Information Technology", facultyId: "FAC-124", faculty: "Prof. Maria Santos", enrolled: 110, status: "ACTIVE" }
     ],
 
-    // Question Bank (Teacher Management & Exam Generator)
+    // Question Bank (Curated by Professors per subject)
     questionBank: [
         {
             id: "Q-101",
@@ -40,7 +40,7 @@ const INITIAL_DATA = {
             difficulty: "Medium",
             options: ["Queue", "Stack", "Singly Linked List", "Binary Search Tree"],
             correctIndex: 1,
-            explanation: "A Stack adds and removes elements from the same top end, making the last inserted element the first one removed (LIFO)."
+            explanation: "A Stack adds and removes elements from the top, following Last-In, First-Out."
         },
         {
             id: "Q-102",
@@ -65,27 +65,27 @@ const INITIAL_DATA = {
             difficulty: "Easy",
             options: ["True", "False"],
             correctIndex: 1,
-            explanation: "JavaScript is dynamically and loosely typed, traditionally interpreted with Just-In-Time (JIT) compilation in modern runtimes."
+            explanation: "JavaScript is dynamically typed and interpreted/JIT compiled."
         },
         {
             id: "Q-104",
-            text: "What is the time complexity to access an element at a known index in a contiguous Array?",
+            text: "What is the time complexity to access an element at a known index in an Array?",
             type: "Multiple Choice",
             subject: "CS-202",
             difficulty: "Easy",
             options: ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
             correctIndex: 0,
-            explanation: "Arrays support constant time O(1) random access via base address arithmetic (base + index * element_size)."
+            explanation: "Arrays support constant time O(1) random access via memory offset calculation."
         },
         {
             id: "Q-105",
-            text: "Which protocol is utilized to transfer encrypted hypertext files securely over the World Wide Web?",
+            text: "Which protocol is utilized to transfer encrypted hypertext files securely over the web?",
             type: "Multiple Choice",
             subject: "IT-102",
             difficulty: "Easy",
             options: ["FTP", "SMTP", "HTTPS", "SSH"],
             correctIndex: 2,
-            explanation: "HTTPS (Hypertext Transfer Protocol Secure) uses TLS/SSL encryption to secure communications over the web."
+            explanation: "HTTPS encrypts HTTP requests and responses using TLS/SSL."
         },
         {
             id: "Q-106",
@@ -95,17 +95,17 @@ const INITIAL_DATA = {
             difficulty: "Medium",
             options: ["WHERE", "HAVING", "GROUP BY", "ORDER BY"],
             correctIndex: 1,
-            explanation: "HAVING filters groups created by GROUP BY after aggregate operations, whereas WHERE filters individual rows before aggregation."
+            explanation: "HAVING filters aggregate results, whereas WHERE filters individual rows prior to grouping."
         },
         {
             id: "Q-107",
-            text: "What is the worst-case time complexity of QuickSort when the pivot chosen is consistently the extreme element without randomization?",
+            text: "What is the worst-case time complexity of QuickSort without randomized pivot selection?",
             type: "Multiple Choice",
             subject: "CS-202",
             difficulty: "Hard",
             options: ["O(n log n)", "O(n)", "O(n^2)", "O(log n)"],
             correctIndex: 2,
-            explanation: "Unbalanced partition splits reduce QuickSort to quadratic time O(n^2)."
+            explanation: "Unbalanced partitions yield quadratic O(n^2) time complexity."
         },
         {
             id: "Q-108",
@@ -120,7 +120,7 @@ const INITIAL_DATA = {
                 "Interfaces must use high contrast neon colors exclusively."
             ],
             correctIndex: 0,
-            explanation: "Keeping users informed via clear feedback (spinners, countdowns, auto-saved labels) reduces anxiety and cognitive load."
+            explanation: "Immediate feedback (e.g., auto-saved status, countdown timer) keeps the user confident and oriented."
         },
         {
             id: "Q-109",
@@ -130,51 +130,51 @@ const INITIAL_DATA = {
             difficulty: "Hard",
             options: [],
             correctIndex: null,
-            explanation: "A relation is in 3NF if it is in 2NF and has no transitive functional dependencies of non-prime attributes on candidate keys."
+            explanation: "A table is in 3NF if it is in 2NF and non-key attributes have no transitive dependencies on the primary key."
         },
         {
             id: "Q-110",
-            text: "Which tree traversal technique yields nodes in ascending sorted order when applied to a Binary Search Tree (BST)?",
+            text: "Which tree traversal technique yields nodes in ascending order in a Binary Search Tree (BST)?",
             type: "Multiple Choice",
             subject: "CS-202",
             difficulty: "Medium",
             options: ["Pre-order (Root, Left, Right)", "In-order (Left, Root, Right)", "Post-order (Left, Right, Root)", "Breadth-First Search"],
             correctIndex: 1,
-            explanation: "In-order traversal visits left subtree, root, then right subtree, visiting keys in monotonic ascending order in a BST."
+            explanation: "In-order traversal visits left subtree, root, then right subtree in ascending order."
         },
         {
             id: "Q-111",
-            text: "Which HTTP status code signifies that a requested resource is Unauthorized / requires valid authentication credentials?",
+            text: "Which HTTP status code signifies that a request lacks valid authentication credentials?",
             type: "Multiple Choice",
             subject: "IT-102",
             difficulty: "Easy",
             options: ["200 OK", "401 Unauthorized", "404 Not Found", "500 Internal Server Error"],
             correctIndex: 1,
-            explanation: "HTTP 401 indicates that the request has not been applied because it lacks valid authentication credentials for the target resource."
+            explanation: "HTTP 401 signifies that authentication is required."
         },
         {
             id: "Q-112",
-            text: "True or False: In a relational database, a Primary Key column allows duplicate and NULL values.",
+            text: "True or False: In a relational database, a Primary Key allows duplicate or NULL values.",
             type: "True/False",
             subject: "CS-303",
             difficulty: "Easy",
             options: ["True", "False"],
             correctIndex: 1,
-            explanation: "A primary key constraint enforces uniqueness and implicitly mandates NOT NULL constraints on all defined columns."
+            explanation: "A Primary Key must be unique and cannot contain NULL values."
         },
         {
             id: "Q-113",
-            text: "Which of the following sorting algorithms is stable and guarantees O(n log n) running time in all best, average, and worst cases?",
+            text: "Which of the following sorting algorithms is stable and guarantees O(n log n) in all cases?",
             type: "Multiple Choice",
             subject: "CS-202",
             difficulty: "Medium",
             options: ["Merge Sort", "QuickSort", "Selection Sort", "Bubble Sort"],
             correctIndex: 0,
-            explanation: "Merge Sort consistently divides the array in half and merges sorted halves in O(n log n) time while maintaining stability."
+            explanation: "Merge sort guarantees O(n log n) worst-case time and maintains relative order of equal elements."
         },
         {
             id: "Q-114",
-            text: "What does the ACID acronym stand for in Database Transaction Management?",
+            text: "What does the ACID acronym stand for in Database Transactions?",
             type: "Multiple Choice",
             subject: "CS-303",
             difficulty: "Medium",
@@ -185,98 +185,98 @@ const INITIAL_DATA = {
                 "Asynchronous, Clustered, Integrated, Distributed"
             ],
             correctIndex: 0,
-            explanation: "ACID represents Atomicity, Consistency, Isolation, and Durability - the standard guarantees for reliable database transactions."
+            explanation: "ACID guarantees transactional reliability in databases."
         },
         {
             id: "Q-115",
-            text: "In web architecture, which CSS layout module is specifically designed for one-dimensional layouts (row OR column)?",
+            text: "Which CSS layout model is specifically engineered for one-dimensional layouts (row or column)?",
             type: "Multiple Choice",
             subject: "IT-102",
             difficulty: "Easy",
             options: ["CSS Grid", "Flexbox (Flexible Box)", "Float layout", "Table layout"],
             correctIndex: 1,
-            explanation: "Flexbox handles 1D layout distribution across a single main axis, while CSS Grid is optimized for 2D row/column systems."
+            explanation: "Flexbox specializes in 1D space distribution."
         },
         {
             id: "Q-116",
-            text: "Explain the time complexity and mechanics of a binary search algorithm on a sorted sequence.",
+            text: "Explain the time complexity and mechanics of a binary search algorithm on a sorted list.",
             type: "Essay",
             subject: "CS-101",
             difficulty: "Hard",
             options: [],
             correctIndex: null,
-            explanation: "Binary search repeatedly divides the search interval in half, achieving logarithmic O(log n) time complexity."
+            explanation: "Binary search cuts the search space in half with each iteration, achieving O(log n)."
         },
         {
             id: "Q-117",
-            text: "True or False: A queue operates on a First-In, First-Out (FIFO) ordering model.",
+            text: "True or False: A Queue operates on a First-In, First-Out (FIFO) access order.",
             type: "True/False",
             subject: "CS-101",
             difficulty: "Easy",
             options: ["True", "False"],
             correctIndex: 0,
-            explanation: "Queues enforce FIFO ordering: elements are enqueued at the back and dequeued from the front."
+            explanation: "Queues add at the rear and remove from the front (FIFO)."
         },
         {
             id: "Q-118",
-            text: "Which software design principle states that software entities should be open for extension, but closed for modification?",
+            text: "Which software design principle states that classes should be open for extension, but closed for modification?",
             type: "Multiple Choice",
             subject: "CS-101",
             difficulty: "Medium",
             options: ["Single Responsibility Principle", "Open/Closed Principle", "Liskov Substitution Principle", "Interface Segregation"],
             correctIndex: 1,
-            explanation: "The Open/Closed Principle (the 'O' in SOLID) requires that software artifacts be open for extension without modifying existing tested code."
+            explanation: "The Open/Closed Principle allows extending behavior without editing tested code."
         },
         {
             id: "Q-119",
-            text: "What is the primary function of the Domain Name System (DNS) on the internet?",
+            text: "What is the primary function of the Domain Name System (DNS)?",
             type: "Multiple Choice",
             subject: "IT-102",
             difficulty: "Easy",
             options: [
-                "Translating human-friendly domain names (e.g., example.com) into numerical IP addresses",
-                "Encrypting email traffic between universities",
-                "Compiling C++ programs into machine instructions",
-                "Managing database backups across cloud storage"
+                "Translating human-friendly domain names to IP addresses",
+                "Encrypting email traffic",
+                "Compiling C++ programs",
+                "Managing database backups"
             ],
             correctIndex: 0,
-            explanation: "DNS acts as the phonebook of the internet, resolving hostnames to IP addresses."
+            explanation: "DNS maps readable domain names to numerical IP addresses."
         },
         {
             id: "Q-120",
-            text: "In cybersecurity and online exam integrity, what is the purpose of automated session heartbeats?",
+            text: "In online examination integrity, what is the primary purpose of dynamic session heartbeats?",
             type: "Multiple Choice",
             subject: "CS-101",
             difficulty: "Medium",
             options: [
-                "To continuously verify active candidate presence and dynamically synchronize unanswered questions to prevent data loss",
-                "To increase student CPU temperature and accelerate tests",
-                "To delete answers if the student pauses thinking for 10 seconds",
-                "To scramble the teacher's gradebook randomly"
+                "To continuously verify active candidate presence and save progress dynamically to avoid data loss",
+                "To increase student CPU usage artificially",
+                "To erase answers if the student pauses thinking",
+                "To change question order every 5 seconds"
             ],
             correctIndex: 0,
-            explanation: "Session heartbeats save progress in real-time and provide proctoring telemetry without interrupting student focus."
+            explanation: "Heartbeats ensure session persistence and seamless recovery in case of connection dropouts."
         }
     ],
 
-    // Assessments / Exams list for Students & Faculty
+    // Assessments / Exams List (For Students to take and Professors to manage)
     exams: [
         {
             id: "EXAM-2024-01",
             code: "CS-202",
             title: "CS202 - Data Structures & Algorithms Quiz",
             subjectName: "Data Structures & Algorithms",
-            teacher: "Prof. Maria Santos",
+            professor: "Prof. Maria Santos",
             durationMins: 45,
             totalItems: 15,
             passingScore: 60,
             status: "AVAILABLE", // AVAILABLE, UPCOMING, COMPLETED
-            scheduledTime: "Today, Available Now",
+            scheduledTime: "Available Now",
             deadline: "Today, 11:59 PM",
             domain: "Computer Science",
             instructions: [
-                "No tab or window switching: Browser activity is continuously logged by security proctor.",
-                "Automated session backup: Answers are saved dynamically as you tick them. In case of network drops, reconnect to resume.",
+                "No tab or window switching: Browser activity is continuously tracked by the proctoring engine.",
+                "Automated session backup: Answers are saved dynamically as you select them.",
                 "System Timeout: Once 45 minutes elapse, your exam sheet submits automatically. Unanswered questions count as zero.",
                 "Sequential Submission: Once you submit the exam, your attempt is final and cannot be reopened."
             ]
@@ -286,61 +286,65 @@ const INITIAL_DATA = {
             code: "CS-101",
             title: "CS101 - Midterm Examination",
             subjectName: "Introduction to Computing",
-            teacher: "Dr. Alex Mercer",
+            professor: "Dr. Rachel Green",
             durationMins: 60,
             totalItems: 20,
             passingScore: 70,
-            status: "UPCOMING", // Can be unlocked via demo trigger
+            status: "UPCOMING",
             scheduledTime: "Today, 2:00 PM (Starts in 2 hours)",
             deadline: "Today, 4:00 PM",
             domain: "Computer Science Basics",
             instructions: [
-                "No tab or window switching: Browser activity is logged. Switching tabs more than 3 times triggers lock-out.",
-                "Automated session backup: Answers are saved dynamically as you tick them. In case of network drops, reconnect to resume.",
-                "System Timeout: Once 60 minutes elapse, your exam sheet submits automatically. Unanswered questions count as zero.",
-                "Sequential Submission: Once you submit the exam, your attempt is final and you cannot go back."
+                "No tab or window switching: Switching tabs more than 3 times triggers an automatic exam lock-out.",
+                "Automated session backup: Answers are saved dynamically. In case of network drops, reconnect to resume.",
+                "System Timeout: Once 60 minutes elapse, your exam sheet submits automatically.",
+                "Final Submission: You cannot return to the exam after submitting."
             ]
         },
         {
             id: "EXAM-2024-03",
             code: "DB-101",
-            title: "DB101 - Database Systems Final Mock",
-            subjectName: "Database Systems",
-            teacher: "Prof. Juan Luna",
+            title: "CS303 - Database Systems Midterm Exam",
+            subjectName: "Database Management Systems",
+            professor: "Prof. Maria Santos",
             durationMins: 60,
             totalItems: 20,
             passingScore: 70,
             status: "COMPLETED",
-            scheduledTime: "Completed on Jan 14, 2025",
+            scheduledTime: "Completed on Jan 14",
             deadline: "Expired",
             domain: "Database Systems",
             instructions: []
         }
     ],
 
-    // Historical Student Submissions & Grades
+    // Student Exam Submission Records & Grade History
     studentHistory: [
         {
             id: "HIST-01",
             title: "CS101 - Final Assessment",
-            domain: "Intro to Computer Science",
+            subjectCode: "CS-101",
+            domain: "Computer Science",
             date: "Jan 12, 2025",
             score: "48 / 50",
             percentage: 96,
+            equivalentGrade: "1.00 (Excellent / A+)",
             status: "GRADED",
             breakdown: [
                 { section: "Section 1 (Multiple Choice)", score: "28 / 30 correct" },
-                { section: "Section 2 (Short Answer Essay)", score: "20 / 20 score (Graded by Dr. Alex Mercer)" }
+                { section: "Section 2 (Short Answer Essay)", score: "20 / 20 score (Graded by Dr. Rachel Green)" }
             ],
             certificateAvailable: true
         },
         {
             id: "HIST-02",
             title: "CS101 - Quiz 3: Algorithms",
-            domain: "Intro to Computer Science",
+            subjectCode: "CS-101",
+            domain: "Computer Science",
             date: "Dec 18, 2024",
             score: "12 / 15",
             percentage: 80,
+            equivalentGrade: "2.00 (Satisfactory / B)",
             status: "GRADED",
             breakdown: [
                 { section: "Section 1 (Algorithmic Logic)", score: "12 / 15 correct" }
@@ -350,23 +354,27 @@ const INITIAL_DATA = {
         {
             id: "HIST-03",
             title: "CS101 - Quiz 2: Hardware",
-            domain: "Intro to Computer Science",
+            subjectCode: "CS-101",
+            domain: "Computer Science",
             date: "Nov 22, 2024",
             score: "Pending",
             percentage: null,
+            equivalentGrade: "Under Professor Review",
             status: "PENDING_GRADING",
             breakdown: [
-                { section: "Manual assessment in progress by instructor", score: "—" }
+                { section: "Manual assessment in progress by professor", score: "—" }
             ],
             certificateAvailable: false
         },
         {
             id: "HIST-04",
-            title: "DB101 - Midterm Exam",
+            title: "CS303 - Midterm Exam",
+            subjectCode: "CS-303",
             domain: "Database Systems",
             date: "Oct 15, 2024",
             score: "42 / 50",
             percentage: 84,
+            equivalentGrade: "1.75 (Very Good / B+)",
             status: "GRADED",
             breakdown: [
                 { section: "Section 1 (SQL Queries & Relational Algebra)", score: "42 / 50 correct" }
@@ -376,10 +384,12 @@ const INITIAL_DATA = {
         {
             id: "HIST-05",
             title: "CS101 - Quiz 1: Software",
-            domain: "Intro to Computer Science",
+            subjectCode: "CS-101",
+            domain: "Computer Science",
             date: "Sep 10, 2024",
             score: "14 / 15",
             percentage: 93,
+            equivalentGrade: "1.25 (Superior / A)",
             status: "GRADED",
             breakdown: [
                 { section: "Section 1 (Foundations)", score: "14 / 15 correct" }
@@ -388,59 +398,57 @@ const INITIAL_DATA = {
         }
     ],
 
-    // Teacher Student Submissions Table (for Examination Results page)
+    // Professor Student Submissions Table & Grade Conversion
     teacherResults: [
-        { studentId: "STU-501", name: "Alice Jenkins", score: "45 / 50", percentage: "90%", status: "PASSED", date: "2025-01-20" },
-        { studentId: "STU-502", name: "David Miller", score: "42 / 50", percentage: "84%", status: "PASSED", date: "2025-01-20" },
-        { studentId: "STU-503", name: "Emily Watson", score: "29 / 50", percentage: "58%", status: "FAILED", date: "2025-01-20" },
-        { studentId: "STU-504", name: "Franklin Roosevelt", score: "48 / 50", percentage: "96%", status: "PASSED", date: "2025-01-19" },
-        { studentId: "STU-505", name: "Gary Oldman", score: "38 / 50", percentage: "76%", status: "PASSED", date: "2025-01-19" },
-        { studentId: "STU-506", name: "Grace Hopper", score: "49 / 50", percentage: "98%", status: "PASSED", date: "2025-01-19" },
-        { studentId: "STU-507", name: "Ken Thompson", score: "34 / 50", percentage: "68%", status: "PASSED", date: "2025-01-18" }
+        { studentId: "STU-501", name: "Alice Jenkins", rawScore: "45 / 50", percentage: 90, grade: "1.25 (A)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-20" },
+        { studentId: "STU-502", name: "David Miller", rawScore: "42 / 50", percentage: 84, grade: "1.75 (B+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-20" },
+        { studentId: "STU-503", name: "Emily Watson", rawScore: "29 / 50", percentage: 58, grade: "5.00 (F)", status: "FAILED", gradeStatus: "PENDING_REVIEW", date: "2025-01-20" },
+        { studentId: "STU-504", name: "Franklin Roosevelt", rawScore: "48 / 50", percentage: 96, grade: "1.00 (A+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-19" },
+        { studentId: "STU-505", name: "Gary Oldman", rawScore: "38 / 50", percentage: 76, grade: "2.25 (C+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-19" },
+        { studentId: "STU-506", name: "Grace Hopper", rawScore: "49 / 50", percentage: 98, grade: "1.00 (A+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-19" },
+        { studentId: "STU-507", name: "Ken Thompson", rawScore: "34 / 50", percentage: 68, grade: "2.75 (C)", status: "PASSED", gradeStatus: "PENDING_REVIEW", date: "2025-01-18" }
     ],
 
-    // Security Audit Logs (Administrator View)
+    // Security Audit Logs (Administrator Oversight)
     auditLogs: [
-        { timestamp: "2024-09-30 14:22:15", user: "Alex Mercer (Admin)", action: "ADD_FACULTY", module: "Faculty", details: "Created entry FAC-102 for Dr. Bruce Banner" },
-        { timestamp: "2024-09-30 13:10:04", user: "Alex Mercer (Admin)", action: "ASSIGN_SUBJECT", module: "Faculty", details: "Assigned PHY-401 to Dr. Bruce Banner" },
-        { timestamp: "2024-09-30 11:45:50", user: "Alex Mercer (Admin)", action: "ARCHIVE_SUBJECT", module: "Subjects", details: "Archived MECH-205 due to curriculum refresh" },
-        { timestamp: "2024-09-30 09:12:12", user: "Rachel Green (Faculty)", action: "LOGIN_SUCCESS", module: "Auth", details: "Successful login session from IP 192.168.1.44" },
-        { timestamp: "2024-09-30 08:58:22", user: "System System", action: "COHORT_SYNC", module: "Cron", details: "Synced CS-101 student roster with main registry (124 users)" },
-        { timestamp: "2024-09-30 08:30:10", user: "System Proctor", action: "TAB_SWITCH_ALERT", module: "Proctor", details: "Student STU-503 triggered 1st background tab switch in CS-101" }
+        { timestamp: "2025-02-14 14:22:15", user: "Admin (Higher Authority)", action: "ASSIGN_SUBJECT", module: "Curriculum", details: "Assigned CS-101 (Intro to Programming) to Dr. Rachel Green" },
+        { timestamp: "2025-02-14 13:10:04", user: "Admin (Higher Authority)", action: "ADD_FACULTY", module: "Faculty", details: "Created professor entry FAC-124 for Prof. Maria Santos" },
+        { timestamp: "2025-02-14 11:45:50", user: "Admin (Higher Authority)", action: "ARCHIVE_SUBJECT", module: "Curriculum", details: "Archived MECH-205 due to curriculum refresh" },
+        { timestamp: "2025-02-14 09:12:12", user: "Prof. Maria Santos", action: "CONVERT_GRADES", module: "Grades", details: "Converted CS202 Quiz results to institutional letter grades (38 students)" },
+        { timestamp: "2025-02-14 08:58:22", user: "System Proctor", action: "COHORT_SYNC", module: "System", details: "Synced CS-101 student examination roster with main registry (124 users)" },
+        { timestamp: "2025-02-14 08:30:10", user: "System Proctor", action: "TAB_SWITCH_ALERT", module: "Security", details: "Candidate STU-503 triggered 1st background tab switch alert in CS-101" }
     ],
 
-    // Pre-configured role accounts for 1-click Demo Switching
+    // Pre-configured accounts for 1-click Demo Switching
     demoAccounts: {
         student: {
             role: "student",
-            name: "Ythanigga (Student)",
-            id: "2024-0892",
-            email: "student.ythan@examportal.edu",
-            avatar: "assets/student-avatar.png",
+            name: "Ythan S. (Student)",
+            id: "STU-2024-0892",
+            email: "student@veritest.edu",
             program: "BS Computer Science",
             year: "3rd Year"
         },
         teacher: {
             role: "teacher",
             name: "Prof. Maria Santos",
-            id: "EMP-204",
-            email: "maria.santos@examportal.edu",
-            avatar: "assets/teacher-avatar.png",
+            id: "FAC-124",
+            email: "maria.santos@veritest.edu",
             dept: "Computer Science",
-            room: "CS Building, Block B - Room 304",
+            room: "Academic Complex - Room 304",
             phone: "+1 (555) 234-5678",
-            consultation: "Mon/Wed 2PM - 4PM"
+            consultation: "Mon/Wed 2:00 PM - 4:00 PM"
         },
         admin: {
             role: "admin",
             name: "System Administrator",
             id: "ADM-001",
-            email: "admin.super@examportal.edu",
-            avatar: "assets/admin-avatar.png",
-            dept: "University IT & Academic Affairs"
+            email: "admin@veritest.edu",
+            dept: "Academic Affairs & Examination Governance"
         }
     }
 };
 
-// Export to window for global access
+window.VERITEST_DATA = INITIAL_DATA;
+// Backward compatibility
 window.EDUDATA = INITIAL_DATA;
