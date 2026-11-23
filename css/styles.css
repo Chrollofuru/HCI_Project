@@ -191,3 +191,27 @@ body {
         display: none !important;
     }
 }
+
+/* Ensure badges, status pills, and grade indicators maintain unbroken, continuous shapes */
+.rounded-full,
+span[class*="rounded-full"],
+div[class*="rounded-full"],
+.badge-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
+
+/* Prevent broken shapes and awkward text wraps in tables */
+table th,
+table td {
+    vertical-align: middle;
+}
+
+.table-badge {
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}

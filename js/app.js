@@ -1008,28 +1008,28 @@ class AppController {
             const isFinalized = r.gradeStatus === "FINALIZED";
 
             tr.innerHTML = `
-                <td class="py-3 px-4 font-mono text-xs text-slate-600 dark:text-slate-400">${r.studentId}</td>
-                <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">
+                <td class="py-3 px-4 font-mono text-xs text-slate-600 dark:text-slate-400 whitespace-nowrap">${r.studentId}</td>
+                <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">
                     <div>${r.name}</div>
                     <div class="text-[10px] text-slate-400 font-mono">${r.section || 'Section A'}</div>
                 </td>
-                <td class="py-3 px-4 text-sm font-semibold">${r.rawScore}</td>
-                <td class="py-3 px-4 text-sm font-bold text-blue-600 dark:text-blue-400">${r.percentage}%</td>
-                <td class="py-3 px-4">
-                    <div class="flex items-center gap-1.5">
+                <td class="py-3 px-4 text-sm font-semibold whitespace-nowrap">${r.rawScore}</td>
+                <td class="py-3 px-4 text-sm font-bold text-blue-600 dark:text-blue-400 whitespace-nowrap">${r.percentage}%</td>
+                <td class="py-3 px-4 whitespace-nowrap">
+                    <div class="flex items-center gap-1.5 whitespace-nowrap">
                         <span class="font-bold text-xs ${isFinalized ? 'text-slate-900 dark:text-slate-100' : 'text-amber-600'}">${r.grade}</span>
                         ${isFinalized ? '<i class="fas fa-check-circle text-emerald-500 text-xs" title="Finalized to Transcript"></i>' : ''}
                     </div>
                 </td>
-                <td class="py-3 px-4">
-                    <span class="px-2.5 py-0.5 text-xs font-bold rounded-full ${r.status === 'PASSED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-950 dark:text-red-400'}">
+                <td class="py-3 px-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full whitespace-nowrap ${r.status === 'PASSED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400' : 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-950 dark:text-red-400'}">
                         ${r.status}
                     </span>
                 </td>
-                <td class="py-3 px-4 text-right">
+                <td class="py-3 px-4 text-right whitespace-nowrap">
                     ${isFinalized 
                         ? `<span class="text-xs text-slate-400 font-medium">Grade Posted</span>`
-                        : `<button onclick="app.convertStudentGrade('${r.studentId}')" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition">
+                        : `<button onclick="app.convertStudentGrade('${r.studentId}')" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition whitespace-nowrap">
                             <i class="fas fa-graduation-cap mr-1"></i> Convert to Grade
                            </button>`
                     }
@@ -1108,19 +1108,19 @@ class AppController {
 
             const isPending = h.status === 'PENDING_GRADING';
             tr.innerHTML = `
-                <td class="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100">
+                <td class="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                     <div class="flex items-center gap-2">
-                        <i class="fas fa-chevron-right text-xs text-slate-400 transition-transform accordion-arrow" id="arrow-${h.id}"></i>
-                        <span class="font-mono text-xs text-blue-600 dark:text-blue-400 mr-1">${h.subjectCode || 'CS-101'}</span>
-                        <span>${h.title}</span>
+                        <i class="fas fa-chevron-right text-xs text-slate-400 transition-transform accordion-arrow flex-shrink-0" id="arrow-${h.id}"></i>
+                        <span class="font-mono text-xs text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap mr-1">${h.subjectCode || 'CS-101'}</span>
+                        <span class="whitespace-nowrap">${h.title}</span>
                     </div>
                 </td>
-                <td class="py-3 px-4 text-sm text-slate-600 dark:text-slate-400">${h.domain}</td>
-                <td class="py-3 px-4 text-xs text-slate-500">${h.date}</td>
-                <td class="py-3 px-4 text-sm font-semibold">${h.score}</td>
-                <td class="py-3 px-4 text-sm font-bold ${isPending ? 'text-slate-400' : 'text-blue-600 dark:text-blue-400'}">${h.percentage ? h.percentage + '%' : '—'}</td>
-                <td class="py-3 px-4">
-                    <span class="px-2.5 py-0.5 text-xs font-bold rounded-full ${isPending ? 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950 dark:text-amber-400' : 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400'}">
+                <td class="py-3 px-4 text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">${h.domain}</td>
+                <td class="py-3 px-4 text-xs text-slate-500 whitespace-nowrap">${h.date}</td>
+                <td class="py-3 px-4 text-sm font-semibold whitespace-nowrap">${h.score}</td>
+                <td class="py-3 px-4 text-sm font-bold whitespace-nowrap ${isPending ? 'text-slate-400' : 'text-blue-600 dark:text-blue-400'}">${h.percentage ? h.percentage + '%' : '—'}</td>
+                <td class="py-3 px-4 whitespace-nowrap">
+                    <span class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full whitespace-nowrap shadow-xs ${isPending ? 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950 dark:text-amber-400' : 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400'}">
                         ${isPending ? 'Pending Review' : (h.equivalentGrade || 'Graded')}
                     </span>
                 </td>
@@ -1140,11 +1140,11 @@ class AppController {
             trDetails.innerHTML = `
                 <td colspan="6" class="p-4 pl-10">
                     <div class="space-y-1.5 border-l-2 border-blue-500 pl-4 py-1">
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 flex-wrap">
                             <h5 class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">Detailed Answer Breakdown (${h.title})</h5>
-                            ${h.equivalentGrade ? `<span class="px-2 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 text-[10px] font-bold rounded">Official Grade: ${h.equivalentGrade}</span>` : ''}
+                            ${h.equivalentGrade ? `<span class="inline-flex items-center px-2.5 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 text-[10px] font-bold rounded-md whitespace-nowrap border border-blue-200 dark:border-blue-800">Official Grade: ${h.equivalentGrade}</span>` : ''}
                         </div>
-                        ${h.masterExamNote ? `<p class="text-[11px] text-amber-700 dark:text-amber-400 font-medium"><i class="fas fa-crown text-[10px] mr-1"></i> ${h.masterExamNote}</p>` : ''}
+                        ${h.masterExamNote ? `<p class="text-[11px] text-amber-700 dark:text-amber-400 font-medium flex items-center gap-1.5"><i class="fas fa-crown text-[10px]"></i> <span>${h.masterExamNote}</span></p>` : ''}
                         <ul class="space-y-1">${breakdownHtml}</ul>
                         ${certBtnHtml}
                     </div>

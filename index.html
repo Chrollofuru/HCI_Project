@@ -524,15 +524,15 @@
 
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
+                        <table class="w-full text-left text-sm min-w-[720px]">
                             <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold tracking-wider border-b border-slate-200 dark:border-slate-800">
                                 <tr>
-                                    <th class="py-3 px-4">Exam Title</th>
-                                    <th class="py-3 px-4">Subject Domain</th>
-                                    <th class="py-3 px-4">Date Attempted</th>
-                                    <th class="py-3 px-4">Points Score</th>
-                                    <th class="py-3 px-4">Percent Score</th>
-                                    <th class="py-3 px-4">Official Grade</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Exam Title</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Subject Domain</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Date Attempted</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Points Score</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Percent Score</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Official Grade</th>
                                 </tr>
                             </thead>
                             <tbody id="studentHistoryTableBody">
@@ -863,20 +863,22 @@
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
-                            <tr>
-                                <th class="py-3 px-4">Subject Code</th>
-                                <th class="py-3 px-4">Subject Name</th>
-                                <th class="py-3 px-4">Domain</th>
-                                <th class="py-3 px-4">Students Enrolled</th>
-                                <th class="py-3 px-4 text-right">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="teacherSubjectsTableBody">
-                            <!-- Populated dynamically via app.renderTeacherSubjects() -->
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm min-w-[700px]">
+                            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
+                                <tr>
+                                    <th class="py-3 px-4 whitespace-nowrap">Subject Code</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Subject Name</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Domain</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Students Enrolled</th>
+                                    <th class="py-3 px-4 text-right whitespace-nowrap">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacherSubjectsTableBody">
+                                <!-- Populated dynamically via app.renderTeacherSubjects() -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -975,21 +977,23 @@
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
-                            <tr>
-                                <th class="py-3 px-4">#</th>
-                                <th class="py-3 px-4">Question Text</th>
-                                <th class="py-3 px-4">Type</th>
-                                <th class="py-3 px-4">Subject</th>
-                                <th class="py-3 px-4">Difficulty</th>
-                                <th class="py-3 px-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="teacherQuestionsTableBody">
-                            <!-- Populated dynamically via app.renderTeacherQuestionBank() -->
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm min-w-[700px]">
+                            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
+                                <tr>
+                                    <th class="py-3 px-4 whitespace-nowrap">#</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Question Text</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Type</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Subject</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Difficulty</th>
+                                    <th class="py-3 px-4 text-right whitespace-nowrap">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacherQuestionsTableBody">
+                                <!-- Populated dynamically via app.renderTeacherQuestionBank() -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -1005,29 +1009,31 @@
                             <option>Active Exam: CS101 Midterm 2025</option>
                             <option>Active Exam: CS202 Quiz 1</option>
                         </select>
-                        <button onclick="app.exportResultsCSV()" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center gap-1.5">
+                        <button onclick="app.exportResultsCSV()" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center gap-1.5 whitespace-nowrap">
                             <i class="fas fa-file-csv"></i> Export Grade Sheet (CSV)
                         </button>
                     </div>
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
-                            <tr>
-                                <th class="py-3 px-4">Student ID</th>
-                                <th class="py-3 px-4">Student Name</th>
-                                <th class="py-3 px-4">Raw Score</th>
-                                <th class="py-3 px-4">Percentage</th>
-                                <th class="py-3 px-4">Official Grade</th>
-                                <th class="py-3 px-4">Pass Status</th>
-                                <th class="py-3 px-4 text-right">Convert to Grade</th>
-                            </tr>
-                        </thead>
-                        <tbody id="teacherResultsTableBody">
-                            <!-- Populated dynamically via app.renderTeacherResults() -->
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm min-w-[750px]">
+                            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
+                                <tr>
+                                    <th class="py-3 px-4 whitespace-nowrap">Student ID</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Student Name</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Raw Score</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Percentage</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Official Grade</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Pass Status</th>
+                                    <th class="py-3 px-4 text-right whitespace-nowrap">Convert to Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacherResultsTableBody">
+                                <!-- Populated dynamically via app.renderTeacherResults() -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -1204,22 +1210,24 @@
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
-                            <tr>
-                                <th class="py-3 px-4">ID</th>
-                                <th class="py-3 px-4">Professor Name</th>
-                                <th class="py-3 px-4">Institutional Email</th>
-                                <th class="py-3 px-4">Department</th>
-                                <th class="py-3 px-4 text-center">Subjects Handled</th>
-                                <th class="py-3 px-4">Status</th>
-                                <th class="py-3 px-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminFacultyTableBody">
-                            <!-- Populated dynamically via app.renderAdminFaculty() -->
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm min-w-[700px]">
+                            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
+                                <tr>
+                                    <th class="py-3 px-4 whitespace-nowrap">ID</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Professor Name</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Institutional Email</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Department</th>
+                                    <th class="py-3 px-4 text-center whitespace-nowrap">Subjects Handled</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Status</th>
+                                    <th class="py-3 px-4 text-right whitespace-nowrap">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminFacultyTableBody">
+                                <!-- Populated dynamically via app.renderAdminFaculty() -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -1239,22 +1247,24 @@
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
-                            <tr>
-                                <th class="py-3 px-4">Code</th>
-                                <th class="py-3 px-4">Subject Name</th>
-                                <th class="py-3 px-4">Domain</th>
-                                <th class="py-3 px-4">Teaching Faculty & Appointed Exam Leader</th>
-                                <th class="py-3 px-4 text-center">Enrolled</th>
-                                <th class="py-3 px-4">Status</th>
-                                <th class="py-3 px-4 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminSubjectsTableBody">
-                            <!-- Populated dynamically via app.renderAdminSubjects() -->
-                        </tbody>
-                    </table>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm min-w-[780px]">
+                            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
+                                <tr>
+                                    <th class="py-3 px-4 whitespace-nowrap">Code</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Subject Name</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Domain</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Teaching Faculty & Appointed Exam Leader</th>
+                                    <th class="py-3 px-4 text-center whitespace-nowrap">Enrolled</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Status</th>
+                                    <th class="py-3 px-4 text-right whitespace-nowrap">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminSubjectsTableBody">
+                                <!-- Populated dynamically via app.renderAdminSubjects() -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -1272,17 +1282,23 @@
                 </div>
 
                 <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
-                            <tr>
-                                <th class="py-3 px-4">Timestamp</th>
-                                <th class="py-3 px-4">User</th>
-                                <th class="py-3 px-4">Action</th>
-                                <th class="py-3 px-4">Module</th>
-                                <th class="py-3 px-4">Details</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminAuditTableBody">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm min-w-[700px]">
+                            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
+                                <tr>
+                                    <th class="py-3 px-4 whitespace-nowrap">Timestamp</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">User</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Action</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Module</th>
+                                    <th class="py-3 px-4 whitespace-nowrap">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminAuditTableBody">
+                                <!-- Populated dynamically via app.renderAdminAuditLogs() -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                             <!-- Populated dynamically via app.renderAdminAuditLogs() -->
                         </tbody>
                     </table>
