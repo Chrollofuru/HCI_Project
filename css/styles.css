@@ -158,26 +158,6 @@ body {
     border-bottom: 1px solid #1f2937;
 }
 
-/* Floating HCI presentation bar */
-.hci-floating-bar {
-    position: fixed;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 9999px;
-    padding: 6px 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    max-width: 95vw;
-    overflow-x: auto;
-}
-
 /* Modal animation */
 .modal-enter {
     animation: modalScaleIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -210,4 +190,28 @@ body {
     .no-print {
         display: none !important;
     }
+}
+
+/* Ensure badges, status pills, and grade indicators maintain unbroken, continuous shapes */
+.rounded-full,
+span[class*="rounded-full"],
+div[class*="rounded-full"],
+.badge-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
+
+/* Prevent broken shapes and awkward text wraps in tables */
+table th,
+table td {
+    vertical-align: middle;
+}
+
+.table-badge {
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
 }
