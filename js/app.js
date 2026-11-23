@@ -161,6 +161,7 @@ class AppController {
     }
 
     selectLoginRoleTab(role) {
+        this.selectedLoginRole = role;
         document.querySelectorAll('.login-role-tab').forEach(tab => {
             if (tab.dataset.role === role) {
                 tab.classList.add('border-blue-600', 'text-blue-600', 'dark:text-blue-400', 'dark:border-blue-400', 'font-semibold');
@@ -176,6 +177,11 @@ class AppController {
         const passInput = document.getElementById('loginPassword');
         if (idInput && user) idInput.value = user.email;
         if (passInput) passInput.value = "••••••••••••";
+    }
+
+    handleLoginSubmit() {
+        const role = this.selectedLoginRole || 'student';
+        this.loginAs(role);
     }
 
     loginAs(role) {
