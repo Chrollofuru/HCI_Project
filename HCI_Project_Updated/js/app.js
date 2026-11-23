@@ -649,7 +649,6 @@ class AppController {
         this.renderAdminSubjects();
         this.renderAdminAuditLogs();
         this.renderAdminCohorts();
-        this.renderAdminMasterGrades();
         this.renderTeacherSubjects();
         this.renderTeacherQuestionBank();
         this.renderTeacherResults();

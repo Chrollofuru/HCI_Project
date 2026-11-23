@@ -1032,10 +1032,6 @@
                     <i class="fas fa-user-graduate w-5 text-center"></i>
                     <span>Manage Students & Cohorts</span>
                 </button>
-                <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="admin-gradebook" onclick="app.showSubview('admin-gradebook')">
-                    <i class="fas fa-table-list w-5 text-center"></i>
-                    <span>Grading & Master Export</span>
-                </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="admin-policies" onclick="app.showSubview('admin-policies')">
                     <i class="fas fa-sliders w-5 text-center"></i>
                     <span>Exam & Proctor Policies</span>
@@ -1258,123 +1254,6 @@
                         </thead>
                         <tbody id="adminCohortsTableBody">
                             <!-- Populated dynamically via app.renderAdminCohorts() -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- SUBVIEW: Institutional Gradebook & Master Export -->
-            <div id="admin-gradebook" class="subview-pane hidden space-y-6">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Grading & Master Export</h2>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Institutional Grade Scale matrix, cross-cohort assessment records, and master report generation</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="app.exportMasterGradesCSV()" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center gap-1.5 whitespace-nowrap">
-                            <i class="fas fa-file-csv"></i> Download Master CSV
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Institutional Grade Conversion Reference Card -->
-                <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center text-sm">
-                                <i class="fas fa-scale-balanced"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Institutional Grade Conversion Scale</h3>
-                                <p class="text-xs text-slate-500">Official academic percentage to numerical equivalent matrix (CHED standard)</p>
-                            </div>
-                        </div>
-                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800">
-                            Standard Matrix Active
-                        </span>
-                    </div>
-
-                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="font-extrabold text-emerald-600 dark:text-emerald-400 text-base">1.00</div>
-                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">96 – 100%</div>
-                            <div class="text-[10px] text-slate-400">Excellent (A+)</div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="font-extrabold text-emerald-600 dark:text-emerald-400 text-base">1.25</div>
-                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">91 – 95%</div>
-                            <div class="text-[10px] text-slate-400">Superior (A)</div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="font-extrabold text-blue-600 dark:text-blue-400 text-base">1.50</div>
-                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">86 – 90%</div>
-                            <div class="text-[10px] text-slate-400">Very Good (A-)</div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="font-extrabold text-blue-600 dark:text-blue-400 text-base">1.75</div>
-                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">81 – 85%</div>
-                            <div class="text-[10px] text-slate-400">Good (B+)</div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="font-extrabold text-indigo-600 dark:text-indigo-400 text-base">2.00</div>
-                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">76 – 80%</div>
-                            <div class="text-[10px] text-slate-400">Satisfactory (B)</div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="font-extrabold text-indigo-600 dark:text-indigo-400 text-base">2.25</div>
-                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">71 – 75%</div>
-                            <div class="text-[10px] text-slate-400">Fair (B-)</div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="font-extrabold text-amber-600 dark:text-amber-400 text-base">2.50</div>
-                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">66 – 70%</div>
-                            <div class="text-[10px] text-slate-400">Passing (C+)</div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="font-extrabold text-amber-600 dark:text-amber-400 text-base">2.75</div>
-                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">62 – 65%</div>
-                            <div class="text-[10px] text-slate-400">Passing (C)</div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="font-extrabold text-amber-600 dark:text-amber-400 text-base">3.00</div>
-                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">60 – 61%</div>
-                            <div class="text-[10px] text-slate-400">Passing (C-)</div>
-                        </div>
-                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
-                            <div class="font-extrabold text-rose-600 dark:text-rose-400 text-base">5.00</div>
-                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">&lt; 60%</div>
-                            <div class="text-[10px] text-slate-400">Failed (F)</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Master Results Overview Table -->
-                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div>
-                            <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Master Results Overview</h3>
-                            <p class="text-xs text-slate-500">Cross-examination consolidated grade book</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="adminMasterGradeSearch" oninput="app.filterAdminMasterGrades(this.value)" placeholder="Search student or ID..." class="px-3 py-1.5 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
-                        </div>
-                    </div>
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
-                            <tr>
-                                <th class="py-3 px-4">Student ID</th>
-                                <th class="py-3 px-4">Student Name</th>
-                                <th class="py-3 px-4">Exam / Code</th>
-                                <th class="py-3 px-4 text-center">Raw Score</th>
-                                <th class="py-3 px-4 text-center">Percentage</th>
-                                <th class="py-3 px-4">Official Grade</th>
-                                <th class="py-3 px-4">Status</th>
-                                <th class="py-3 px-4">Review State</th>
-                                <th class="py-3 px-4">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminMasterGradesTableBody">
-                            <!-- Populated dynamically via app.renderAdminMasterGrades() -->
                         </tbody>
                     </table>
                 </div>
