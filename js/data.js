@@ -409,6 +409,27 @@ const INITIAL_DATA = {
         { studentId: "STU-507", name: "Ken Thompson", rawScore: "34 / 50", percentage: 68, grade: "2.75 (C)", status: "PASSED", gradeStatus: "PENDING_REVIEW", date: "2025-01-18" }
     ],
 
+    // Student & Cohort Registry (Admin Cohort Governance)
+    students: [
+        { id: "STU-2024-0892", name: "Ythan S.", email: "student@veritest.edu", section: "3BSCS-1", enrolledSubjects: ["CS-101", "CS-202", "CS-303"], status: "ACTIVE" },
+        { id: "STU-501", name: "Alice Jenkins", email: "alice.j@veritest.edu", section: "3BSCS-1", enrolledSubjects: ["CS-101", "CS-202"], status: "ACTIVE" },
+        { id: "STU-502", name: "David Miller", email: "david.m@veritest.edu", section: "3BSCS-1", enrolledSubjects: ["CS-202", "CS-303"], status: "ACTIVE" },
+        { id: "STU-503", name: "Emily Watson", email: "emily.w@veritest.edu", section: "3BSCS-2", enrolledSubjects: ["CS-101", "CS-202"], status: "ACTIVE" },
+        { id: "STU-504", name: "Franklin Roosevelt", email: "franklin.r@veritest.edu", section: "3BSCS-1", enrolledSubjects: ["CS-101", "CS-303"], status: "ACTIVE" },
+        { id: "STU-505", name: "Gary Oldman", email: "gary.o@veritest.edu", section: "3BSCS-2", enrolledSubjects: ["CS-202", "IT-102"], status: "ACTIVE" },
+        { id: "STU-506", name: "Grace Hopper", email: "grace.h@veritest.edu", section: "3BSCS-1", enrolledSubjects: ["CS-101", "CS-202", "CS-303"], status: "ACTIVE" },
+        { id: "STU-507", name: "Ken Thompson", email: "ken.t@veritest.edu", section: "3BSCS-2", enrolledSubjects: ["CS-202", "CS-303"], status: "ACTIVE" }
+    ],
+
+    // Institutional Exam & Proctoring Governance Policies
+    systemPolicies: {
+        academicTerm: "AY 2026–2027 • 1st Semester",
+        maxAttemptsDefault: 1,
+        heartbeatSeconds: 15,
+        tabSwitchLimit: 3,
+        autoSubmitOnViolation: true
+    },
+
     // Security Audit Logs (Administrator Oversight)
     auditLogs: [
         { timestamp: "2025-02-14 14:22:15", user: "Admin (Higher Authority)", action: "ASSIGN_SUBJECT", module: "Curriculum", details: "Assigned CS-101 (Intro to Programming) to Dr. Rachel Green" },

@@ -1028,6 +1028,18 @@
                     <i class="fas fa-folder-tree w-5 text-center"></i>
                     <span>Assign Subjects</span>
                 </button>
+                <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="admin-cohorts" onclick="app.showSubview('admin-cohorts')">
+                    <i class="fas fa-user-graduate w-5 text-center"></i>
+                    <span>Manage Students & Cohorts</span>
+                </button>
+                <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="admin-gradebook" onclick="app.showSubview('admin-gradebook')">
+                    <i class="fas fa-table-list w-5 text-center"></i>
+                    <span>Grading & Master Export</span>
+                </button>
+                <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="admin-policies" onclick="app.showSubview('admin-policies')">
+                    <i class="fas fa-sliders w-5 text-center"></i>
+                    <span>Exam & Proctor Policies</span>
+                </button>
                 <button class="sidebar-link w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors text-left" data-target="admin-audit-log" onclick="app.showSubview('admin-audit-log')">
                     <i class="fas fa-shield-virus w-5 text-center"></i>
                     <span>Security Audit Log</span>
@@ -1045,40 +1057,45 @@
         <section class="flex-1 space-y-6">
             <!-- SUBVIEW: Admin Dashboard (Page 2 top) -->
             <div id="admin-dashboard" class="subview-pane space-y-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Welcome back, Administrator</h2>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Live status, faculty assignment registry, and examination governance.</p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Welcome back, Administrator</h2>
+                            <span id="adminAcademicTermBadge" class="px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800">AY 2026–2027 • 1st Semester</span>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Live status, faculty assignment registry, and examination governance.</p>
+                    </div>
                 </div>
 
                 <!-- Admin Metrics (Page 2) -->
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <span class="text-xs font-semibold text-slate-500">Registered Professors</span>
-                        <div class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">7</div>
+                        <div id="adminStatProfs" class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 mt-1">7</div>
                         <p class="text-[11px] text-slate-400 mt-1">Active faculty accounts</p>
                     </div>
 
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <span class="text-xs font-semibold text-slate-500">Academic Subjects</span>
-                        <div class="text-3xl font-extrabold text-purple-600 dark:text-purple-400 mt-1">8</div>
+                        <div id="adminStatSubjects" class="text-3xl font-extrabold text-purple-600 dark:text-purple-400 mt-1">8</div>
                         <p class="text-[11px] text-slate-400 mt-1">Assigned across domains</p>
                     </div>
 
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <span class="text-xs font-semibold text-slate-500">Active Exams</span>
-                        <div class="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mt-1">3</div>
+                        <div id="adminStatExams" class="text-3xl font-extrabold text-blue-600 dark:text-blue-400 mt-1">3</div>
                         <p class="text-[11px] text-slate-400 mt-1">Currently open for testing</p>
                     </div>
 
                     <div class="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <span class="text-xs font-semibold text-slate-500">Security Events</span>
-                        <div class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">12</div>
+                        <div id="adminStatLogs" class="text-3xl font-extrabold text-amber-600 dark:text-amber-400 mt-1">12</div>
                         <p class="text-[11px] text-slate-400 mt-1">Logged in audit registry</p>
                     </div>
                 </div>
 
                 <!-- Quick Admin Action Cards (Page 2 bottom) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
                         <div>
                             <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center mb-3">
@@ -1103,6 +1120,40 @@
                         <button onclick="app.showSubview('admin-subjects')" class="mt-4 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
                             Go to Subject Assignment →
                         </button>
+                    </div>
+
+                    <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center mb-3">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 dark:text-slate-100">Manage Student Cohorts</h4>
+                            <p class="text-xs text-slate-500 mt-1">Enroll student sections into subjects and manage semester rosters.</p>
+                        </div>
+                        <button onclick="app.showSubview('admin-cohorts')" class="mt-4 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1">
+                            Go to Cohort Roster →
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Security & Governance Feed -->
+                <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 flex items-center justify-center">
+                                <i class="fas fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base">Recent Security & Governance Feed</h3>
+                                <p class="text-xs text-slate-500">Live proctor telemetry and administrative audit events</p>
+                            </div>
+                        </div>
+                        <button onclick="app.showSubview('admin-audit-log')" class="text-xs font-bold text-purple-600 dark:text-purple-400 hover:underline flex items-center gap-1">
+                            View Full Audit Log →
+                        </button>
+                    </div>
+                    <div id="adminDashboardRecentFeed" class="divide-y divide-slate-100 dark:divide-slate-800 mt-2">
+                        <!-- Populated dynamically via app.renderAdminDashboardStats() -->
                     </div>
                 </div>
             </div>
@@ -1174,6 +1225,268 @@
                             <!-- Populated dynamically via app.renderAdminSubjects() -->
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- SUBVIEW: Manage Students & Cohorts -->
+            <div id="admin-cohorts" class="subview-pane hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Manage Students & Cohorts</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Student account authorization, section mapping (e.g. 3BSCS-1), and subject enrollment</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="text" id="adminCohortSearchInput" oninput="app.filterAdminCohorts(this.value)" placeholder="Search student by name, ID, or section..." class="px-4 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 w-64">
+                        <button onclick="app.openEnrollCohortModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 dark:bg-purple-600 text-white shadow-sm hover:bg-purple-700 transition flex items-center gap-1.5 whitespace-nowrap">
+                            <i class="fas fa-user-plus"></i> Enroll Student / Section
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">Student ID</th>
+                                <th class="py-3 px-4">Student Name</th>
+                                <th class="py-3 px-4">Institutional Email</th>
+                                <th class="py-3 px-4">Section / Cohort</th>
+                                <th class="py-3 px-4">Enrolled Subjects</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminCohortsTableBody">
+                            <!-- Populated dynamically via app.renderAdminCohorts() -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SUBVIEW: Institutional Gradebook & Master Export -->
+            <div id="admin-gradebook" class="subview-pane hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Grading & Master Export</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Institutional Grade Scale matrix, cross-cohort assessment records, and master report generation</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="app.exportMasterGradesCSV()" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition flex items-center gap-1.5 whitespace-nowrap">
+                            <i class="fas fa-file-csv"></i> Download Master CSV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Institutional Grade Conversion Reference Card -->
+                <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 flex items-center justify-center text-sm">
+                                <i class="fas fa-scale-balanced"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Institutional Grade Conversion Scale</h3>
+                                <p class="text-xs text-slate-500">Official academic percentage to numerical equivalent matrix (CHED standard)</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800">
+                            Standard Matrix Active
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="font-extrabold text-emerald-600 dark:text-emerald-400 text-base">1.00</div>
+                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">96 – 100%</div>
+                            <div class="text-[10px] text-slate-400">Excellent (A+)</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="font-extrabold text-emerald-600 dark:text-emerald-400 text-base">1.25</div>
+                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">91 – 95%</div>
+                            <div class="text-[10px] text-slate-400">Superior (A)</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="font-extrabold text-blue-600 dark:text-blue-400 text-base">1.50</div>
+                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">86 – 90%</div>
+                            <div class="text-[10px] text-slate-400">Very Good (A-)</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="font-extrabold text-blue-600 dark:text-blue-400 text-base">1.75</div>
+                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">81 – 85%</div>
+                            <div class="text-[10px] text-slate-400">Good (B+)</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="font-extrabold text-indigo-600 dark:text-indigo-400 text-base">2.00</div>
+                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">76 – 80%</div>
+                            <div class="text-[10px] text-slate-400">Satisfactory (B)</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="font-extrabold text-indigo-600 dark:text-indigo-400 text-base">2.25</div>
+                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">71 – 75%</div>
+                            <div class="text-[10px] text-slate-400">Fair (B-)</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="font-extrabold text-amber-600 dark:text-amber-400 text-base">2.50</div>
+                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">66 – 70%</div>
+                            <div class="text-[10px] text-slate-400">Passing (C+)</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="font-extrabold text-amber-600 dark:text-amber-400 text-base">2.75</div>
+                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">62 – 65%</div>
+                            <div class="text-[10px] text-slate-400">Passing (C)</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="font-extrabold text-amber-600 dark:text-amber-400 text-base">3.00</div>
+                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">60 – 61%</div>
+                            <div class="text-[10px] text-slate-400">Passing (C-)</div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="font-extrabold text-rose-600 dark:text-rose-400 text-base">5.00</div>
+                            <div class="text-[11px] font-semibold text-slate-700 dark:text-slate-300">&lt; 60%</div>
+                            <div class="text-[10px] text-slate-400">Failed (F)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Master Results Overview Table -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Master Results Overview</h3>
+                            <p class="text-xs text-slate-500">Cross-examination consolidated grade book</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="adminMasterGradeSearch" oninput="app.filterAdminMasterGrades(this.value)" placeholder="Search student or ID..." class="px-3 py-1.5 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
+                        </div>
+                    </div>
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase text-[11px] font-bold border-b border-slate-200 dark:border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">Student ID</th>
+                                <th class="py-3 px-4">Student Name</th>
+                                <th class="py-3 px-4">Exam / Code</th>
+                                <th class="py-3 px-4 text-center">Raw Score</th>
+                                <th class="py-3 px-4 text-center">Percentage</th>
+                                <th class="py-3 px-4">Official Grade</th>
+                                <th class="py-3 px-4">Status</th>
+                                <th class="py-3 px-4">Review State</th>
+                                <th class="py-3 px-4">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminMasterGradesTableBody">
+                            <!-- Populated dynamically via app.renderAdminMasterGrades() -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SUBVIEW: Exam & Proctor Policies -->
+            <div id="admin-policies" class="subview-pane hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Exam & Proctor Policies</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Configure global proctoring sensitivity, auto-save heartbeat frequency, and institutional exam rules</p>
+                    </div>
+                    <button onclick="app.saveSystemPolicies()" class="px-5 py-2 rounded-xl text-xs font-bold bg-slate-900 dark:bg-purple-600 text-white shadow-sm hover:bg-purple-700 transition flex items-center gap-1.5">
+                        <i class="fas fa-check"></i> Save Governance Policies
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Academic Term Card -->
+                    <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-lg">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Academic Term & Semester</h3>
+                                <p class="text-xs text-slate-500">Displayed system-wide across all examinee and faculty headers</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Active Academic Term</label>
+                            <input type="text" id="policyAcademicTerm" value="AY 2026–2027 • 1st Semester" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <p class="text-xs text-slate-400">Updates live portal header badge and administrative reports.</p>
+                    </div>
+
+                    <!-- Single-Attempt Enforcement -->
+                    <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 text-blue-600 flex items-center justify-center text-lg">
+                                <i class="fas fa-arrows-rotate"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Attempt Limit Enforcement</h3>
+                                <p class="text-xs text-slate-500">Maximum allowed submission attempts per student per exam</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Default Attempts Allowed</label>
+                            <select id="policyMaxAttempts" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-blue-500">
+                                <option value="1" selected>1 Attempt (Strict Single-Submission)</option>
+                                <option value="2">2 Attempts (Take Highest Score)</option>
+                                <option value="3">3 Attempts (Formative Review Mode)</option>
+                            </select>
+                        </div>
+                        <p class="text-xs text-slate-400">Prevents repeated attempts once final submission is confirmed.</p>
+                    </div>
+
+                    <!-- Heartbeat Interval -->
+                    <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center text-lg">
+                                <i class="fas fa-heart-pulse"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Session Heartbeat & Auto-Save</h3>
+                                <p class="text-xs text-slate-500">Background cadence for syncing candidate answers to cache</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Heartbeat Frequency (Seconds)</label>
+                            <select id="policyHeartbeat" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-emerald-500">
+                                <option value="10">Every 10 Seconds (High Redundancy)</option>
+                                <option value="15" selected>Every 15 Seconds (Recommended Standard)</option>
+                                <option value="30">Every 30 Seconds (Low Network Bandwidth)</option>
+                                <option value="60">Every 60 Seconds</option>
+                            </select>
+                        </div>
+                        <p class="text-xs text-slate-400">Guarantees zero data loss if candidate disconnects or reloads browser.</p>
+                    </div>
+
+                    <!-- Tab-Switch Strike Limit -->
+                    <div class="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center text-lg">
+                                <i class="fas fa-shield-virus"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">Anti-Cheat Tab-Switch Strike Limit</h3>
+                                <p class="text-xs text-slate-500">Threshold of window blurs before automatic examination lockout</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Strike Limit Before Lockout</label>
+                            <select id="policyTabLimit" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-amber-500">
+                                <option value="1">1 Strike (Strict Anti-Cheat / Immediate Lockout)</option>
+                                <option value="2">2 Strikes</option>
+                                <option value="3" selected>3 Strikes (Institutional Default)</option>
+                                <option value="5">5 Strikes (Lenient / Lab Mode)</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between pt-2">
+                            <div>
+                                <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Auto-Submit on Violation Limit</span>
+                                <p class="text-[11px] text-slate-400">Instantly submit answers and flag for administrative review</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="policyAutoSubmit" checked class="sr-only peer">
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-purple-600"></div>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1328,10 +1641,65 @@
                 </p>
 
                 <div class="pt-3 flex justify-end gap-2">
-                    <button onclick="app.closeAssignProfModal()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100">Cancel</button>
+                    <button onclick="app.closeAssignProfModal()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
                     <button onclick="app.saveSubjectAssignment()" class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm">Save Assignment</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL 2B: ENROLL STUDENT / COHORT SECTION (ADMIN FEATURE)  -->
+    <!-- ========================================================== -->
+    <div id="enrollCohortModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/50 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full p-6 modal-enter relative">
+            <button onclick="app.closeEnrollCohortModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <div class="mb-5">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center text-lg mb-2">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Enroll Student / Section</h3>
+                <p class="text-xs text-slate-500 mt-1">Register student account or link section cohort to academic subject</p>
+            </div>
+
+            <form onsubmit="event.preventDefault(); app.saveEnrollCohort();" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Student Full Name</label>
+                    <input type="text" id="enrollStudentName" placeholder="e.g. Samantha Cruz" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-purple-500" required>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Student ID</label>
+                        <input type="text" id="enrollStudentID" placeholder="STU-2024-1042" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-purple-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Section / Cohort</label>
+                        <input type="text" id="enrollStudentSection" placeholder="e.g. 3BSCS-1" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-purple-500" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Institutional Email</label>
+                    <input type="email" id="enrollStudentEmail" placeholder="e.g. samantha.c@veritest.edu" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-purple-500" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Subject to Enroll</label>
+                    <select id="enrollSubjectSelect" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:ring-2 focus:ring-purple-500">
+                        <!-- Populated dynamically via app.openEnrollCohortModal() -->
+                    </select>
+                </div>
+
+                <p class="text-[11px] text-slate-400">
+                    Registration will update the subject's active examinee count and append an entry to the institutional security audit log.
+                </p>
+
+                <div class="pt-3 flex justify-end gap-2">
+                    <button type="button" onclick="app.closeEnrollCohortModal()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-sm">Save & Enroll</button>
+                </div>
+            </form>
         </div>
     </div>
 
