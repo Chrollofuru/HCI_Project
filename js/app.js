@@ -1,6 +1,7 @@
 /**
  * VeriTest - Online Examination & Assessment System
  * Application Controller & Heuristics Engine
+ * Includes "Exam Leader / Exam Maker" Academic Distribution Architecture
  */
 
 class AppController {
@@ -530,6 +531,23 @@ class AppController {
         }
     }
 
+    // --- EDUCATIONAL GUIDE: HOW THE EXAM LEADER SYSTEM WORKS ---
+    openExamLeaderGuideModal() {
+        const modal = document.getElementById('examLeaderGuideModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    }
+
+    closeExamLeaderGuideModal() {
+        const modal = document.getElementById('examLeaderGuideModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    }
+
     // --- PROFESSOR: CONVERT & FINALIZE GRADES ---
     convertStudentGrade(studentId) {
         const student = this.data.teacherResults.find(r => r.studentId === studentId);
@@ -552,11 +570,11 @@ class AppController {
     // --- PROFESSOR: CSV EXPORT ---
     exportResultsCSV() {
         const rows = [
-            ["Student ID", "Student Name", "Raw Score", "Percentage", "Official Converted Grade", "Status", "Date Taken"]
+            ["Student ID", "Student Name", "Section", "Raw Score", "Percentage", "Official Converted Grade", "Status", "Date Taken"]
         ];
 
         this.data.teacherResults.forEach(r => {
-            rows.push([r.studentId, r.name, r.rawScore, `${r.percentage}%`, r.grade, r.status, r.date]);
+            rows.push([r.studentId, r.name, r.section || "Section A", r.rawScore, `${r.percentage}%`, r.grade, r.status, r.date]);
         });
 
         const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
@@ -571,29 +589,45 @@ class AppController {
         this.showToast('Grade sheet exported to CSV successfully.', 'success');
     }
 
-    // --- ADMIN: ASSIGN PROFESSOR TO SUBJECT ---
+    // --- ADMIN: MANAGE FACULTY & APPOINT EXAM LEADER ---
     openAssignProfessorModal(subjectCode) {
         const subject = this.data.subjects.find(s => s.code === subjectCode);
         if (!subject) return;
 
-        // Populate modal select
-        const select = document.getElementById('assignProfSelect');
         const codeSpan = document.getElementById('assignSubjectCode');
         const nameSpan = document.getElementById('assignSubjectName');
+        const checkboxesContainer = document.getElementById('facultyCheckboxesContainer');
+        const leaderSelect = document.getElementById('assignProfLeaderSelect');
 
         if (codeSpan) codeSpan.textContent = subject.code;
         if (nameSpan) nameSpan.textContent = subject.name;
 
-        if (select) {
-            select.innerHTML = '<option value="">— Unassign Professor —</option>';
-            this.data.faculty.filter(f => f.status === 'ACTIVE').forEach(f => {
-                const opt = document.createElement('option');
-                opt.value = f.id;
-                opt.textContent = `${f.name} (${f.dept})`;
-                if (subject.facultyId === f.id) opt.selected = true;
-                select.appendChild(opt);
+        // Render faculty checkboxes
+        if (checkboxesContainer) {
+            checkboxesContainer.innerHTML = '';
+            const assignedIds = (subject.professors || []).map(p => p.id);
+
+            this.data.faculty.filter(f => f.status === 'ACTIVE').forEach(fac => {
+                const isChecked = assignedIds.includes(fac.id);
+                const item = document.createElement('label');
+                item.className = 'flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition';
+                item.innerHTML = `
+                    <input type="checkbox" value="${fac.id}" class="fac-assign-checkbox w-4 h-4 rounded text-blue-600 focus:ring-blue-500" ${isChecked ? 'checked' : ''}>
+                    <div class="flex-1 text-xs">
+                        <span class="font-bold text-slate-800 dark:text-slate-200">${fac.name}</span>
+                        <span class="text-slate-400"> (${fac.dept})</span>
+                    </div>
+                `;
+
+                item.querySelector('input').addEventListener('change', () => {
+                    this.updateExamLeaderDropdown(subjectCode);
+                });
+
+                checkboxesContainer.appendChild(item);
             });
         }
+
+        this.updateExamLeaderDropdown(subjectCode);
 
         const modal = document.getElementById('assignProfModal');
         if (modal) {
@@ -603,28 +637,82 @@ class AppController {
         }
     }
 
+    updateExamLeaderDropdown(subjectCode) {
+        const leaderSelect = document.getElementById('assignProfLeaderSelect');
+        if (!leaderSelect) return;
+
+        const subject = this.data.subjects.find(s => s.code === subjectCode);
+        const currentLeaderId = subject?.examLeaderId;
+
+        // Get currently checked faculty checkboxes
+        const checkedBoxes = document.querySelectorAll('.fac-assign-checkbox:checked');
+        leaderSelect.innerHTML = '';
+
+        if (checkedBoxes.length === 0) {
+            leaderSelect.innerHTML = '<option value="">— No Professors Selected —</option>';
+            leaderSelect.disabled = true;
+            return;
+        }
+
+        leaderSelect.disabled = false;
+        checkedBoxes.forEach(cb => {
+            const fac = this.data.faculty.find(f => f.id === cb.value);
+            if (fac) {
+                const opt = document.createElement('option');
+                opt.value = fac.id;
+                opt.textContent = `⭐ ${fac.name} (${fac.dept})`;
+                if (fac.id === currentLeaderId) opt.selected = true;
+                leaderSelect.appendChild(opt);
+            }
+        });
+    }
+
     saveSubjectAssignment() {
         const modal = document.getElementById('assignProfModal');
         const subjectCode = modal?.dataset.subjectCode;
-        const select = document.getElementById('assignProfSelect');
-        const facultyId = select?.value;
+        const leaderSelect = document.getElementById('assignProfLeaderSelect');
+        const chosenLeaderId = leaderSelect?.value;
 
         const subject = this.data.subjects.find(s => s.code === subjectCode);
         if (!subject) return;
 
-        if (!facultyId) {
-            subject.facultyId = null;
-            subject.faculty = "— Unassigned —";
-            this.logAuditEvent(this.data.demoAccounts.admin.name, 'UNASSIGN_SUBJECT', 'Curriculum', `Unassigned professor from ${subject.code}`);
+        const checkedBoxes = document.querySelectorAll('.fac-assign-checkbox:checked');
+        const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+
+        if (selectedIds.length === 0) {
+            subject.professors = [];
+            subject.examLeaderId = null;
+            subject.examLeaderName = "— Unassigned —";
+            subject.distributionStatus = "UNASSIGNED";
+            this.logAuditEvent(this.data.demoAccounts.admin.name, 'UNASSIGN_SUBJECT', 'Curriculum', `Unassigned all professors from ${subject.code}`);
             this.showToast(`Subject ${subject.code} unassigned.`, 'info');
         } else {
-            const fac = this.data.faculty.find(f => f.id === facultyId);
-            if (fac) {
-                subject.facultyId = fac.id;
-                subject.faculty = fac.name;
-                this.logAuditEvent(this.data.demoAccounts.admin.name, 'ASSIGN_SUBJECT', 'Curriculum', `Assigned ${subject.code} (${subject.name}) to ${fac.name}`);
-                this.showToast(`Assigned ${subject.code} to ${fac.name}!`, 'success');
-            }
+            const finalLeaderId = chosenLeaderId || selectedIds[0];
+            const leaderFac = this.data.faculty.find(f => f.id === finalLeaderId);
+
+            const letters = ['A', 'B', 'C', 'D', 'E'];
+            subject.professors = selectedIds.map((id, idx) => {
+                const f = this.data.faculty.find(fac => fac.id === id);
+                return {
+                    id: f.id,
+                    name: f.name,
+                    role: f.id === finalLeaderId ? "EXAM_LEADER" : "CO_PROFESSOR",
+                    section: `Section ${letters[idx] || (idx + 1)}`
+                };
+            });
+
+            subject.examLeaderId = finalLeaderId;
+            subject.examLeaderName = leaderFac ? leaderFac.name : "Assigned Leader";
+            subject.distributionStatus = subject.professors.length > 1 ? "DISTRIBUTED_TO_ALL" : "SOLO_COURSE";
+
+            const facultyNames = subject.professors.map(p => p.name).join(', ');
+            this.logAuditEvent(
+                this.data.demoAccounts.admin.name,
+                'APPOINT_EXAM_LEADER',
+                'Curriculum',
+                `Appointed ${subject.examLeaderName} as EXAM LEADER for ${subject.code}. Assigned faculty: ${facultyNames}`
+            );
+            this.showToast(`Appointed ${subject.examLeaderName} as Exam Leader for ${subject.code}!`, 'success');
         }
 
         this.closeAssignProfModal();
@@ -638,6 +726,22 @@ class AppController {
             modal.classList.add('hidden');
             modal.classList.remove('flex');
         }
+    }
+
+    // --- PROFESSOR: CO-PROFESSOR DEPLOYMENT ACTION ---
+    deployDistributedExam(subjectCode, section) {
+        const subject = this.data.subjects.find(s => s.code === subjectCode);
+        if (!subject) return;
+
+        this.logAuditEvent(
+            this.data.demoAccounts.teacher.name,
+            'DEPLOY_MASTER_EXAM',
+            'Exams',
+            `Prof. Maria Santos adopted and synchronized Master Exam for ${subject.code} into ${section}`
+        );
+
+        this.showToast(`✅ Standardized Master Exam for ${subject.code} deployed to ${section}!`, 'success');
+        this.renderTeacherSubjects();
     }
 
     // --- RENDERING VIEWS & TABLES ---
@@ -666,7 +770,7 @@ class AppController {
                 <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">${f.name}</td>
                 <td class="py-3 px-4 text-sm text-slate-600 dark:text-slate-400">${f.email}</td>
                 <td class="py-3 px-4 text-sm text-slate-600 dark:text-slate-400">${f.dept}</td>
-                <td class="py-3 px-4 text-center text-sm font-semibold">${f.subjectsCount}</td>
+                <td class="py-3 px-4 text-center text-sm font-semibold">${(f.subjects || []).length}</td>
                 <td class="py-3 px-4">
                     <span class="px-2.5 py-1 text-xs font-bold rounded-full ${f.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}">
                         ${f.status}
@@ -681,7 +785,7 @@ class AppController {
         });
     }
 
-    // 2. Admin Subject Directory Table (With Direct Professor Assignment!)
+    // 2. Admin Subject Directory Table (With Exam Leader Badging!)
     renderAdminSubjects() {
         const tbody = document.getElementById('adminSubjectsTableBody');
         if (!tbody) return;
@@ -690,12 +794,33 @@ class AppController {
         this.data.subjects.forEach(s => {
             const tr = document.createElement('tr');
             tr.className = 'border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors';
+
+            const profList = s.professors || [];
+            let facultyHtml = '';
+
+            if (profList.length === 0) {
+                facultyHtml = '<span class="text-slate-400 text-xs italic">— Unassigned —</span>';
+            } else {
+                const tags = profList.map(p => {
+                    if (p.role === 'EXAM_LEADER') {
+                        return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-300" title="Designated Exam Leader (Master Maker)">
+                            <i class="fas fa-crown text-[10px] text-amber-500"></i> ${p.name} <span class="text-[9px] uppercase tracking-wider font-extrabold opacity-75">(Leader)</span>
+                        </span>`;
+                    } else {
+                        return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300" title="Teaching Faculty / Co-Professor">
+                            <i class="fas fa-user-group text-[9px] text-slate-400"></i> ${p.name}
+                        </span>`;
+                    }
+                });
+                facultyHtml = `<div class="flex flex-wrap items-center gap-1.5">${tags.join('')}</div>`;
+            }
+
             tr.innerHTML = `
                 <td class="py-3 px-4 text-xs font-mono font-bold text-blue-600 dark:text-blue-400">${s.code}</td>
                 <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">${s.name}</td>
                 <td class="py-3 px-4 text-sm text-slate-600 dark:text-slate-400">${s.domain}</td>
-                <td class="py-3 px-4 text-sm">
-                    <span class="font-medium text-slate-900 dark:text-slate-100">${s.faculty}</span>
+                <td class="py-3 px-4 max-w-xs">
+                    ${facultyHtml}
                 </td>
                 <td class="py-3 px-4 text-center text-sm font-semibold">${s.enrolled}</td>
                 <td class="py-3 px-4">
@@ -705,7 +830,7 @@ class AppController {
                 </td>
                 <td class="py-3 px-4 text-right space-x-2">
                     <button class="px-3 py-1 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 rounded-lg font-semibold border border-blue-200 dark:border-blue-800" onclick="app.openAssignProfessorModal('${s.code}')">
-                        <i class="fas fa-user-plus mr-1"></i> Assign Prof
+                        <i class="fas fa-crown text-amber-500 mr-1"></i> Manage Faculty & Leader
                     </button>
                     <button class="px-3 py-1 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-100 dark:hover:bg-slate-700" onclick="app.archiveSubject('${s.code}')">${s.status === 'ACTIVE' ? 'Archive' : 'Restore'}</button>
                 </td>
@@ -737,7 +862,7 @@ class AppController {
                 <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${log.timestamp}</td>
                 <td class="py-3 px-4 font-semibold text-slate-900 dark:text-slate-100 font-sans">${log.user}</td>
                 <td class="py-3 px-4">
-                    <span class="px-2 py-0.5 rounded font-bold ${log.action.includes('ALERT') ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300'}">
+                    <span class="px-2 py-0.5 rounded font-bold ${log.action.includes('LEADER') ? 'bg-amber-50 text-amber-800 border border-amber-300' : log.action.includes('ALERT') ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300'}">
                         ${log.action}
                     </span>
                 </td>
@@ -748,41 +873,92 @@ class AppController {
         });
     }
 
-    // 4. Professor Handled Subjects (Know which subjects to make exams for!)
+    // 4. Professor Handled Subjects (Distinguishing Exam Leader vs Co-Professor roles!)
     renderTeacherSubjects() {
         const tbody = document.getElementById('teacherSubjectsTableBody');
         if (!tbody) return;
 
         tbody.innerHTML = '';
-        const teacherCourses = this.data.subjects.filter(s => s.faculty === "Prof. Maria Santos" || s.faculty === "Dr. Rachel Green");
+        const currentProfId = this.data.demoAccounts.teacher.id; // FAC-124 (Prof. Maria Santos)
+
+        // Find all subjects where Prof. Maria Santos is assigned
+        const teacherCourses = this.data.subjects.filter(s => {
+            return (s.professors || []).some(p => p.id === currentProfId);
+        });
+
         teacherCourses.forEach(c => {
+            const myRoleObj = c.professors.find(p => p.id === currentProfId);
+            const isLeader = myRoleObj?.role === 'EXAM_LEADER';
+            const totalProfs = c.professors.length;
+
+            let roleBadgeHtml = '';
+            let actionHtml = '';
+
+            if (isLeader) {
+                roleBadgeHtml = `
+                    <div class="space-y-1">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-800 border border-amber-300 dark:bg-amber-950 dark:text-amber-300">
+                            <i class="fas fa-crown text-amber-500"></i> Appointed Exam Leader (Maker)
+                        </span>
+                        <p class="text-[11px] text-slate-500">Responsible for authoring the standardized exam for all ${totalProfs} section(s)</p>
+                    </div>
+                `;
+                actionHtml = `
+                    <button class="px-3.5 py-1.5 text-xs bg-slate-900 text-white dark:bg-blue-600 rounded-lg font-bold hover:bg-blue-600 shadow-sm transition flex items-center gap-1.5" onclick="app.prepareCreateExamFor('${c.code}', '${c.name}', true)">
+                        <i class="fas fa-plus"></i> Author Master Exam
+                    </button>
+                    <button class="px-3 py-1.5 text-xs bg-amber-50 text-amber-800 border border-amber-300 rounded-lg font-semibold hover:bg-amber-100" onclick="app.showToast('Master Exam distributed to ${totalProfs} faculty members across cohorts.', 'info')">
+                        <i class="fas fa-share-nodes mr-1"></i> Distribution Info
+                    </button>
+                `;
+            } else {
+                roleBadgeHtml = `
+                    <div class="space-y-1">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300">
+                            <i class="fas fa-user-group text-slate-400"></i> Teaching Faculty (${myRoleObj?.section || 'My Section'})
+                        </span>
+                        <p class="text-[11px] text-slate-500">Exam Leader: <strong class="text-slate-700 dark:text-slate-300">${c.examLeaderName}</strong></p>
+                    </div>
+                `;
+                actionHtml = `
+                    <button class="px-3.5 py-1.5 text-xs bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 shadow-sm transition flex items-center gap-1.5" onclick="app.deployDistributedExam('${c.code}', '${myRoleObj?.section || 'Section B'}')">
+                        <i class="fas fa-cloud-arrow-down"></i> Sync / Deploy Master Exam
+                    </button>
+                    <button class="px-3 py-1.5 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-100" onclick="app.showToast('Inspecting standardized exam authored by ${c.examLeaderName}', 'info')">
+                        <i class="far fa-eye mr-1"></i> Review Master Exam
+                    </button>
+                `;
+            }
+
             const tr = document.createElement('tr');
             tr.className = 'border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50/60 dark:hover:bg-slate-800/40';
             tr.innerHTML = `
                 <td class="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400 text-xs">${c.code}</td>
                 <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">${c.name}</td>
-                <td class="py-3 px-4 text-sm text-slate-600 dark:text-slate-400">${c.domain}</td>
+                <td class="py-3 px-4">
+                    ${roleBadgeHtml}
+                </td>
                 <td class="py-3 px-4 text-sm font-semibold">${c.enrolled} students</td>
                 <td class="py-3 px-4 text-right space-x-2">
-                    <button class="px-3 py-1.5 text-xs bg-slate-900 text-white dark:bg-blue-600 rounded-lg font-semibold hover:bg-blue-600 transition" onclick="app.prepareCreateExamFor('${c.code}', '${c.name}')">
-                        <i class="fas fa-plus mr-1"></i> Make Exam
-                    </button>
-                    <button class="px-3 py-1.5 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-100" onclick="app.showToast('Roster for ${c.code} loaded: ${c.enrolled} examinees', 'info')">
-                        Roster
-                    </button>
+                    ${actionHtml}
                 </td>
             `;
             tbody.appendChild(tr);
         });
     }
 
-    prepareCreateExamFor(code, name) {
+    prepareCreateExamFor(code, name, isMaster = false) {
         this.showSubview('teacher-create-exam');
         const titleInput = document.getElementById('examTitleInput');
         const select = document.getElementById('examSubjectSelect');
-        if (titleInput) titleInput.value = `${code} Final Examination 2025`;
+        const masterNotice = document.getElementById('masterExamNotice');
+
+        if (titleInput) titleInput.value = `${code} - Standardized Final Examination 2025`;
         if (select) {
             select.value = `${code} - ${name}`;
+        }
+        if (masterNotice) {
+            masterNotice.classList.toggle('hidden', !isMaster);
         }
     }
 
@@ -827,7 +1003,10 @@ class AppController {
 
             tr.innerHTML = `
                 <td class="py-3 px-4 font-mono text-xs text-slate-600 dark:text-slate-400">${r.studentId}</td>
-                <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">${r.name}</td>
+                <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">
+                    <div>${r.name}</div>
+                    <div class="text-[10px] text-slate-400 font-mono">${r.section || 'Section A'}</div>
+                </td>
                 <td class="py-3 px-4 text-sm font-semibold">${r.rawScore}</td>
                 <td class="py-3 px-4 text-sm font-bold text-blue-600 dark:text-blue-400">${r.percentage}%</td>
                 <td class="py-3 px-4">
@@ -889,9 +1068,10 @@ class AppController {
                         <span class="px-2 py-0.5 text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded">${exam.code}</span>
                         <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100">${exam.title}</h4>
                         ${badgeHtml}
+                        ${exam.isMasterExam ? `<span class="px-2 py-0.5 text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 rounded" title="Standardized by Exam Leader"><i class="fas fa-crown text-[9px] text-amber-500"></i> Standardized</span>` : ''}
                     </div>
                     <div class="text-xs text-slate-500 dark:text-slate-400 space-x-2">
-                        <span>Professor: <strong>${exam.professor}</strong></span>
+                        <span>Exam Leader: <strong>${exam.examLeaderName || exam.professor}</strong></span>
                         <span>•</span>
                         <span>Duration: <strong>${exam.durationMins} minutes</strong></span>
                         <span>•</span>
@@ -958,6 +1138,7 @@ class AppController {
                             <h5 class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">Detailed Answer Breakdown (${h.title})</h5>
                             ${h.equivalentGrade ? `<span class="px-2 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 text-[10px] font-bold rounded">Official Grade: ${h.equivalentGrade}</span>` : ''}
                         </div>
+                        ${h.masterExamNote ? `<p class="text-[11px] text-amber-700 dark:text-amber-400 font-medium"><i class="fas fa-crown text-[10px] mr-1"></i> ${h.masterExamNote}</p>` : ''}
                         <ul class="space-y-1">${breakdownHtml}</ul>
                         ${certBtnHtml}
                     </div>
@@ -985,6 +1166,7 @@ class AppController {
         const duration = parseInt(document.getElementById('examDurationInput')?.value) || 60;
         const items = parseInt(document.getElementById('examItemsInput')?.value) || 20;
         const passing = parseInt(document.getElementById('examPassingInput')?.value) || 70;
+        const isMaster = document.getElementById('checkMasterExamDistribute')?.checked ?? true;
 
         if (!title || !subject) {
             const alertBox = document.getElementById('createExamAlert');
@@ -992,12 +1174,18 @@ class AppController {
             return;
         }
 
+        const subjectCode = subject.split(' ')[0] || "NEW-101";
+        const subjectObj = this.data.subjects.find(s => s.code === subjectCode);
+
         const newExam = {
             id: `EXAM-${Date.now()}`,
-            code: subject.split(' ')[0] || "NEW-101",
+            code: subjectCode,
             title: title,
             subjectName: subject,
-            professor: this.data.demoAccounts.teacher.name,
+            isMasterExam: isMaster,
+            examLeaderId: this.data.demoAccounts.teacher.id,
+            examLeaderName: this.data.demoAccounts.teacher.name,
+            professor: `${this.data.demoAccounts.teacher.name} (Exam Leader)`,
             durationMins: duration,
             totalItems: items,
             passingScore: passing,
@@ -1007,7 +1195,7 @@ class AppController {
             domain: "Computer Science",
             instructions: [
                 "Automated proctoring session is recorded.",
-                "Ensure reliable network connectivity.",
+                "Standardized Master Exam: Authored by Exam Leader and distributed across course sections.",
                 "Session will submit when timer finishes."
             ]
         };
@@ -1015,8 +1203,12 @@ class AppController {
         this.data.exams.unshift(newExam);
         this.renderStudentExams();
 
-        this.logAuditEvent(this.data.demoAccounts.teacher.name, 'PUBLISH_EXAM', 'Exams', `Published examination '${title}' (${items} items)`);
-        this.showToast(`Examination '${title}' successfully published!`, 'success');
+        const message = isMaster 
+            ? `Master Exam '${title}' published by Exam Leader & distributed to course faculty!`
+            : `Examination '${title}' successfully published!`;
+
+        this.logAuditEvent(this.data.demoAccounts.teacher.name, 'PUBLISH_MASTER_EXAM', 'Exams', message);
+        this.showToast(message, 'success');
 
         document.getElementById('createExamForm')?.reset();
         document.getElementById('createExamAlert')?.classList.add('hidden');
@@ -1052,6 +1244,7 @@ class AppController {
             name: name,
             email: `${name.toLowerCase().replace(/[^a-z]/g, '.')}@veritest.edu`,
             dept: dept,
+            subjects: [],
             subjectsCount: 0,
             status: "ACTIVE"
         };
@@ -1088,7 +1281,7 @@ class AppController {
             success: 'fa-check-circle',
             danger: 'fa-exclamation-triangle',
             info: 'fa-info-circle',
-            warning: 'fa-bell'
+            warning: 'fa-crown'
         };
 
         const toast = document.createElement('div');

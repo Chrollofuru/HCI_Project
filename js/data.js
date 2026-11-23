@@ -1,6 +1,7 @@
 /**
  * VeriTest - Online Examination & Assessment System
  * Mock Database & State Management (HCI Project Prototype)
+ * Includes "Exam Leader / Exam Maker" Academic Distribution Architecture
  */
 
 const INITIAL_DATA = {
@@ -9,25 +10,140 @@ const INITIAL_DATA = {
 
     // Faculty / Professor Registry (Admin View & Governance)
     faculty: [
-        { id: "FAC-012", name: "Dr. Rachel Green", email: "rachel.green@veritest.edu", dept: "Computer Science", subjects: ["CS-101", "CS-105", "CS-205"], subjectsCount: 3, status: "ACTIVE" },
-        { id: "FAC-044", name: "Prof. Arthur Dent", email: "arthur.dent@veritest.edu", dept: "Mathematics", subjects: ["MATH-302", "MATH-101"], subjectsCount: 2, status: "ACTIVE" },
+        { id: "FAC-012", name: "Dr. Rachel Green", email: "rachel.green@veritest.edu", dept: "Computer Science", subjects: ["CS-101"], subjectsCount: 1, status: "ACTIVE" },
+        { id: "FAC-044", name: "Prof. Arthur Dent", email: "arthur.dent@veritest.edu", dept: "Mathematics", subjects: ["CS-101", "MATH-302"], subjectsCount: 2, status: "ACTIVE" },
         { id: "FAC-081", name: "Dr. Sarah Connor", email: "sarah.connor@veritest.edu", dept: "Mechanical Eng.", subjects: [], subjectsCount: 0, status: "ARCHIVE" },
-        { id: "FAC-095", name: "Prof. Charles Xavier", email: "charles.xavier@veritest.edu", dept: "Biological Sciences", subjects: ["BIO-109", "BIO-201"], subjectsCount: 2, status: "ACTIVE" },
+        { id: "FAC-095", name: "Prof. Charles Xavier", email: "charles.xavier@veritest.edu", dept: "Biological Sciences", subjects: ["BIO-109"], subjectsCount: 1, status: "ACTIVE" },
         { id: "FAC-102", name: "Dr. Bruce Banner", email: "bruce.banner@veritest.edu", dept: "Nuclear Physics", subjects: ["PHY-401"], subjectsCount: 1, status: "ACTIVE" },
-        { id: "FAC-115", name: "Dr. Alan Turing", email: "alan.turing@veritest.edu", dept: "Artificial Intelligence", subjects: ["CS-401", "CS-405"], subjectsCount: 2, status: "ACTIVE" },
-        { id: "FAC-124", name: "Prof. Maria Santos", email: "maria.santos@veritest.edu", dept: "Computer Science", subjects: ["CS-202", "CS-303", "IT-102"], subjectsCount: 3, status: "ACTIVE" }
+        { id: "FAC-115", name: "Dr. Alan Turing", email: "alan.turing@veritest.edu", dept: "Artificial Intelligence", subjects: ["CS-202"], subjectsCount: 1, status: "ACTIVE" },
+        { id: "FAC-124", name: "Prof. Maria Santos", email: "maria.santos@veritest.edu", dept: "Computer Science", subjects: ["CS-101", "CS-202", "CS-303", "IT-102"], subjectsCount: 4, status: "ACTIVE" }
     ],
 
-    // Subject Directory (Curriculum Mapping & Professor Assignment)
+    // Subject Directory (With Multi-Professor Teaching Teams & Appointed Exam Leaders)
     subjects: [
-        { code: "CS-101", name: "Introduction to Programming", domain: "Computer Science", facultyId: "FAC-012", faculty: "Dr. Rachel Green", enrolled: 124, status: "ACTIVE" },
-        { code: "MATH-302", name: "Advanced Linear Algebra", domain: "Mathematics", facultyId: "FAC-044", faculty: "Prof. Arthur Dent", enrolled: 84, status: "ACTIVE" },
-        { code: "BIO-109", name: "Principles of Gen Biology", domain: "Biology", facultyId: "FAC-095", faculty: "Prof. Charles Xavier", enrolled: 192, status: "ACTIVE" },
-        { code: "MECH-205", name: "Fluid Dynamics", domain: "Mechanical Eng.", facultyId: null, faculty: "— Unassigned —", enrolled: 0, status: "ARCHIVE" },
-        { code: "PHY-401", name: "Quantum Mechanics II", domain: "Nuclear Physics", facultyId: "FAC-102", faculty: "Dr. Bruce Banner", enrolled: 42, status: "ACTIVE" },
-        { code: "CS-202", name: "Data Structures & Algorithms", domain: "Computer Science", facultyId: "FAC-124", faculty: "Prof. Maria Santos", enrolled: 98, status: "ACTIVE" },
-        { code: "CS-303", name: "Database Management Systems", domain: "Computer Science", facultyId: "FAC-124", faculty: "Prof. Maria Santos", enrolled: 85, status: "ACTIVE" },
-        { code: "IT-102", name: "Web Development Foundations", domain: "Information Technology", facultyId: "FAC-124", faculty: "Prof. Maria Santos", enrolled: 110, status: "ACTIVE" }
+        {
+            code: "CS-101",
+            name: "Introduction to Programming",
+            domain: "Computer Science",
+            // Multi-professor assignment: 3 professors teach sections of CS-101!
+            professors: [
+                { id: "FAC-012", name: "Dr. Rachel Green", role: "EXAM_LEADER", section: "Section A" },
+                { id: "FAC-124", name: "Prof. Maria Santos", role: "CO_PROFESSOR", section: "Section B" },
+                { id: "FAC-044", name: "Prof. Arthur Dent", role: "CO_PROFESSOR", section: "Section C" }
+            ],
+            examLeaderId: "FAC-012",
+            examLeaderName: "Dr. Rachel Green",
+            enrolled: 124,
+            masterExamId: "EXAM-2024-02",
+            masterExamTitle: "CS101 - Midterm Examination",
+            distributionStatus: "DISTRIBUTED_TO_ALL",
+            status: "ACTIVE"
+        },
+        {
+            code: "CS-202",
+            name: "Data Structures & Algorithms",
+            domain: "Computer Science",
+            // Multi-professor assignment: Prof. Maria Santos is the appointed Exam Leader!
+            professors: [
+                { id: "FAC-124", name: "Prof. Maria Santos", role: "EXAM_LEADER", section: "Section A" },
+                { id: "FAC-115", name: "Dr. Alan Turing", role: "CO_PROFESSOR", section: "Section B" }
+            ],
+            examLeaderId: "FAC-124",
+            examLeaderName: "Prof. Maria Santos",
+            enrolled: 98,
+            masterExamId: "EXAM-2024-01",
+            masterExamTitle: "CS202 - Data Structures & Algorithms Quiz",
+            distributionStatus: "DISTRIBUTED_TO_ALL",
+            status: "ACTIVE"
+        },
+        {
+            code: "CS-303",
+            name: "Database Management Systems",
+            domain: "Computer Science",
+            professors: [
+                { id: "FAC-124", name: "Prof. Maria Santos", role: "EXAM_LEADER", section: "Section A" }
+            ],
+            examLeaderId: "FAC-124",
+            examLeaderName: "Prof. Maria Santos",
+            enrolled: 85,
+            masterExamId: "EXAM-2024-03",
+            masterExamTitle: "CS303 - Database Systems Midterm Exam",
+            distributionStatus: "SOLO_COURSE",
+            status: "ACTIVE"
+        },
+        {
+            code: "IT-102",
+            name: "Web Development Foundations",
+            domain: "Information Technology",
+            professors: [
+                { id: "FAC-124", name: "Prof. Maria Santos", role: "EXAM_LEADER", section: "Section A" }
+            ],
+            examLeaderId: "FAC-124",
+            examLeaderName: "Prof. Maria Santos",
+            enrolled: 110,
+            masterExamId: null,
+            masterExamTitle: null,
+            distributionStatus: "PENDING_CREATION",
+            status: "ACTIVE"
+        },
+        {
+            code: "MATH-302",
+            name: "Advanced Linear Algebra",
+            domain: "Mathematics",
+            professors: [
+                { id: "FAC-044", name: "Prof. Arthur Dent", role: "EXAM_LEADER", section: "Section A" }
+            ],
+            examLeaderId: "FAC-044",
+            examLeaderName: "Prof. Arthur Dent",
+            enrolled: 84,
+            masterExamId: null,
+            masterExamTitle: null,
+            distributionStatus: "SOLO_COURSE",
+            status: "ACTIVE"
+        },
+        {
+            code: "BIO-109",
+            name: "Principles of Gen Biology",
+            domain: "Biology",
+            professors: [
+                { id: "FAC-095", name: "Prof. Charles Xavier", role: "EXAM_LEADER", section: "Section A" }
+            ],
+            examLeaderId: "FAC-095",
+            examLeaderName: "Prof. Charles Xavier",
+            enrolled: 192,
+            masterExamId: null,
+            masterExamTitle: null,
+            distributionStatus: "SOLO_COURSE",
+            status: "ACTIVE"
+        },
+        {
+            code: "PHY-401",
+            name: "Quantum Mechanics II",
+            domain: "Nuclear Physics",
+            professors: [
+                { id: "FAC-102", name: "Dr. Bruce Banner", role: "EXAM_LEADER", section: "Section A" }
+            ],
+            examLeaderId: "FAC-102",
+            examLeaderName: "Dr. Bruce Banner",
+            enrolled: 42,
+            masterExamId: null,
+            masterExamTitle: null,
+            distributionStatus: "SOLO_COURSE",
+            status: "ACTIVE"
+        },
+        {
+            code: "MECH-205",
+            name: "Fluid Dynamics",
+            domain: "Mechanical Eng.",
+            professors: [],
+            examLeaderId: null,
+            examLeaderName: "— Unassigned —",
+            enrolled: 0,
+            masterExamId: null,
+            masterExamTitle: null,
+            distributionStatus: "ARCHIVED",
+            status: "ARCHIVE"
+        }
     ],
 
     // Question Bank (Curated by Professors per subject)
@@ -259,25 +375,32 @@ const INITIAL_DATA = {
         }
     ],
 
-    // Assessments / Exams List (For Students to take and Professors to manage)
+    // Assessments / Exams List (Master Exams created by Exam Leaders & Distributed)
     exams: [
         {
             id: "EXAM-2024-01",
             code: "CS-202",
             title: "CS202 - Data Structures & Algorithms Quiz",
             subjectName: "Data Structures & Algorithms",
-            professor: "Prof. Maria Santos",
+            isMasterExam: true,
+            examLeaderId: "FAC-124",
+            examLeaderName: "Prof. Maria Santos",
+            professor: "Prof. Maria Santos (Exam Leader)",
+            distributedTo: [
+                { name: "Prof. Maria Santos", section: "Section A", status: "SYNCED" },
+                { name: "Dr. Alan Turing", section: "Section B", status: "DEPLOYED" }
+            ],
             durationMins: 45,
             totalItems: 15,
             passingScore: 60,
-            status: "AVAILABLE", // AVAILABLE, UPCOMING, COMPLETED
+            status: "AVAILABLE",
             scheduledTime: "Available Now",
             deadline: "Today, 11:59 PM",
             domain: "Computer Science",
             instructions: [
                 "No tab or window switching: Browser activity is continuously tracked by the proctoring engine.",
                 "Automated session backup: Answers are saved dynamically as you select them.",
-                "System Timeout: Once 45 minutes elapse, your exam sheet submits automatically. Unanswered questions count as zero.",
+                "Standardized Master Exam: This exam was authored by Exam Leader Prof. Maria Santos and distributed across all CS202 sections.",
                 "Sequential Submission: Once you submit the exam, your attempt is final and cannot be reopened."
             ]
         },
@@ -286,7 +409,15 @@ const INITIAL_DATA = {
             code: "CS-101",
             title: "CS101 - Midterm Examination",
             subjectName: "Introduction to Computing",
-            professor: "Dr. Rachel Green",
+            isMasterExam: true,
+            examLeaderId: "FAC-012",
+            examLeaderName: "Dr. Rachel Green",
+            professor: "Dr. Rachel Green (Exam Leader)",
+            distributedTo: [
+                { name: "Dr. Rachel Green", section: "Section A", status: "DEPLOYED" },
+                { name: "Prof. Maria Santos", section: "Section B", status: "RECEIVED_PENDING_DEPLOY" },
+                { name: "Prof. Arthur Dent", section: "Section C", status: "DEPLOYED" }
+            ],
             durationMins: 60,
             totalItems: 20,
             passingScore: 70,
@@ -295,18 +426,24 @@ const INITIAL_DATA = {
             deadline: "Today, 4:00 PM",
             domain: "Computer Science Basics",
             instructions: [
+                "Standardized Master Exam: Authored by Exam Leader Dr. Rachel Green and distributed to all CS-101 sections.",
                 "No tab or window switching: Switching tabs more than 3 times triggers an automatic exam lock-out.",
                 "Automated session backup: Answers are saved dynamically. In case of network drops, reconnect to resume.",
-                "System Timeout: Once 60 minutes elapse, your exam sheet submits automatically.",
                 "Final Submission: You cannot return to the exam after submitting."
             ]
         },
         {
             id: "EXAM-2024-03",
-            code: "DB-101",
+            code: "CS-303",
             title: "CS303 - Database Systems Midterm Exam",
             subjectName: "Database Management Systems",
-            professor: "Prof. Maria Santos",
+            isMasterExam: true,
+            examLeaderId: "FAC-124",
+            examLeaderName: "Prof. Maria Santos",
+            professor: "Prof. Maria Santos (Solo Instructor & Leader)",
+            distributedTo: [
+                { name: "Prof. Maria Santos", section: "Section A", status: "COMPLETED" }
+            ],
             durationMins: 60,
             totalItems: 20,
             passingScore: 70,
@@ -329,6 +466,7 @@ const INITIAL_DATA = {
             score: "48 / 50",
             percentage: 96,
             equivalentGrade: "1.00 (Excellent / A+)",
+            masterExamNote: "Standardized Master Exam authored by Exam Leader Dr. Rachel Green",
             status: "GRADED",
             breakdown: [
                 { section: "Section 1 (Multiple Choice)", score: "28 / 30 correct" },
@@ -345,6 +483,7 @@ const INITIAL_DATA = {
             score: "12 / 15",
             percentage: 80,
             equivalentGrade: "2.00 (Satisfactory / B)",
+            masterExamNote: "Standardized Master Exam",
             status: "GRADED",
             breakdown: [
                 { section: "Section 1 (Algorithmic Logic)", score: "12 / 15 correct" }
@@ -360,6 +499,7 @@ const INITIAL_DATA = {
             score: "Pending",
             percentage: null,
             equivalentGrade: "Under Professor Review",
+            masterExamNote: "Standardized Master Exam",
             status: "PENDING_GRADING",
             breakdown: [
                 { section: "Manual assessment in progress by professor", score: "—" }
@@ -375,6 +515,7 @@ const INITIAL_DATA = {
             score: "42 / 50",
             percentage: 84,
             equivalentGrade: "1.75 (Very Good / B+)",
+            masterExamNote: "Authored by Exam Leader Prof. Maria Santos",
             status: "GRADED",
             breakdown: [
                 { section: "Section 1 (SQL Queries & Relational Algebra)", score: "42 / 50 correct" }
@@ -390,6 +531,7 @@ const INITIAL_DATA = {
             score: "14 / 15",
             percentage: 93,
             equivalentGrade: "1.25 (Superior / A)",
+            masterExamNote: "Standardized Master Exam",
             status: "GRADED",
             breakdown: [
                 { section: "Section 1 (Foundations)", score: "14 / 15 correct" }
@@ -400,22 +542,22 @@ const INITIAL_DATA = {
 
     // Professor Student Submissions Table & Grade Conversion
     teacherResults: [
-        { studentId: "STU-501", name: "Alice Jenkins", rawScore: "45 / 50", percentage: 90, grade: "1.25 (A)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-20" },
-        { studentId: "STU-502", name: "David Miller", rawScore: "42 / 50", percentage: 84, grade: "1.75 (B+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-20" },
-        { studentId: "STU-503", name: "Emily Watson", rawScore: "29 / 50", percentage: 58, grade: "5.00 (F)", status: "FAILED", gradeStatus: "PENDING_REVIEW", date: "2025-01-20" },
-        { studentId: "STU-504", name: "Franklin Roosevelt", rawScore: "48 / 50", percentage: 96, grade: "1.00 (A+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-19" },
-        { studentId: "STU-505", name: "Gary Oldman", rawScore: "38 / 50", percentage: 76, grade: "2.25 (C+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-19" },
-        { studentId: "STU-506", name: "Grace Hopper", rawScore: "49 / 50", percentage: 98, grade: "1.00 (A+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-19" },
-        { studentId: "STU-507", name: "Ken Thompson", rawScore: "34 / 50", percentage: 68, grade: "2.75 (C)", status: "PASSED", gradeStatus: "PENDING_REVIEW", date: "2025-01-18" }
+        { studentId: "STU-501", name: "Alice Jenkins", section: "CS101 - Section B", rawScore: "45 / 50", percentage: 90, grade: "1.25 (A)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-20" },
+        { studentId: "STU-502", name: "David Miller", section: "CS101 - Section B", rawScore: "42 / 50", percentage: 84, grade: "1.75 (B+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-20" },
+        { studentId: "STU-503", name: "Emily Watson", section: "CS101 - Section B", rawScore: "29 / 50", percentage: 58, grade: "5.00 (F)", status: "FAILED", gradeStatus: "PENDING_REVIEW", date: "2025-01-20" },
+        { studentId: "STU-504", name: "Franklin Roosevelt", section: "CS101 - Section B", rawScore: "48 / 50", percentage: 96, grade: "1.00 (A+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-19" },
+        { studentId: "STU-505", name: "Gary Oldman", section: "CS202 - Section A", rawScore: "38 / 50", percentage: 76, grade: "2.25 (C+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-19" },
+        { studentId: "STU-506", name: "Grace Hopper", section: "CS202 - Section A", rawScore: "49 / 50", percentage: 98, grade: "1.00 (A+)", status: "PASSED", gradeStatus: "FINALIZED", date: "2025-01-19" },
+        { studentId: "STU-507", name: "Ken Thompson", section: "CS202 - Section A", rawScore: "34 / 50", percentage: 68, grade: "2.75 (C)", status: "PASSED", gradeStatus: "PENDING_REVIEW", date: "2025-01-18" }
     ],
 
-    // Security Audit Logs (Administrator Oversight)
+    // Security Audit Logs (Administrator Oversight & Exam Leader Traceability)
     auditLogs: [
-        { timestamp: "2025-02-14 14:22:15", user: "Admin (Higher Authority)", action: "ASSIGN_SUBJECT", module: "Curriculum", details: "Assigned CS-101 (Intro to Programming) to Dr. Rachel Green" },
+        { timestamp: "2025-02-14 15:30:00", user: "Admin (Higher Authority)", action: "APPOINT_EXAM_LEADER", module: "Curriculum", details: "Appointed Dr. Rachel Green as EXAM LEADER for multi-section course CS-101" },
+        { timestamp: "2025-02-14 15:15:22", user: "Dr. Rachel Green (Leader)", action: "DISTRIBUTE_MASTER_EXAM", module: "Exams", details: "Distributed Master Midterm Exam 'CS101' to co-professors Prof. Maria Santos and Prof. Arthur Dent" },
+        { timestamp: "2025-02-14 14:45:10", user: "Admin (Higher Authority)", action: "APPOINT_EXAM_LEADER", module: "Curriculum", details: "Appointed Prof. Maria Santos as EXAM LEADER for multi-section course CS-202" },
         { timestamp: "2025-02-14 13:10:04", user: "Admin (Higher Authority)", action: "ADD_FACULTY", module: "Faculty", details: "Created professor entry FAC-124 for Prof. Maria Santos" },
-        { timestamp: "2025-02-14 11:45:50", user: "Admin (Higher Authority)", action: "ARCHIVE_SUBJECT", module: "Curriculum", details: "Archived MECH-205 due to curriculum refresh" },
-        { timestamp: "2025-02-14 09:12:12", user: "Prof. Maria Santos", action: "CONVERT_GRADES", module: "Grades", details: "Converted CS202 Quiz results to institutional letter grades (38 students)" },
-        { timestamp: "2025-02-14 08:58:22", user: "System Proctor", action: "COHORT_SYNC", module: "System", details: "Synced CS-101 student examination roster with main registry (124 users)" },
+        { timestamp: "2025-02-14 09:12:12", user: "Prof. Maria Santos", action: "CONVERT_GRADES", module: "Grades", details: "Converted CS202 Section A quiz results to institutional letter grades (38 students)" },
         { timestamp: "2025-02-14 08:30:10", user: "System Proctor", action: "TAB_SWITCH_ALERT", module: "Security", details: "Candidate STU-503 triggered 1st background tab switch alert in CS-101" }
     ],
 
@@ -437,7 +579,9 @@ const INITIAL_DATA = {
             dept: "Computer Science",
             room: "Academic Complex - Room 304",
             phone: "+1 (555) 234-5678",
-            consultation: "Mon/Wed 2:00 PM - 4:00 PM"
+            consultation: "Mon/Wed 2:00 PM - 4:00 PM",
+            // Notice: Maria Santos is Exam Leader for CS-202 & CS-303, and Co-Professor for CS-101!
+            leadershipSummary: "Exam Leader for CS-202 & CS-303 • Teaching Faculty for CS-101"
         },
         admin: {
             role: "admin",
