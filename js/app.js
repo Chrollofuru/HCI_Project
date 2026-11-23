@@ -16,7 +16,7 @@ class AppController {
         this.examTimer = null;
         this.examSecondsRemaining = 45 * 60 + 23; // 45:23 like in draft
         this.tabSwitchCount = 0;
-        this.maxTabSwitches = 3;
+        this.maxTabSwitches = (this.data && this.data.systemPolicies && this.data.systemPolicies.tabSwitchLimit) || 3;
         this.isExamActive = false;
         this.darkMode = false;
 
@@ -246,6 +246,7 @@ class AppController {
             details
         });
         this.renderAdminAuditLogs();
+        this.renderAdminDashboardStats();
     }
 
     // --- STUDENT EXAM WORKFLOW ---
@@ -918,15 +919,393 @@ class AppController {
 
     // --- RENDERING VIEWS & TABLES ---
     renderAllViews() {
+        this.initPolicies();
+        this.renderAdminDashboardStats();
         this.renderAdminFaculty();
         this.renderAdminSubjects();
         this.renderAdminAuditLogs();
+        this.renderAdminCohorts();
+        this.renderAdminMasterGrades();
         this.renderTeacherSubjects();
         this.renderTeacherQuestionBank();
         this.renderTeacherResults();
         this.renderTeacherTopicAnalytics('CS-101');
         this.renderStudentExams();
         this.renderStudentHistory();
+    }
+
+    // --- ADMIN PORTAL: STATS, COHORTS, GRADES & GOVERNANCE ---
+    initPolicies() {
+        if (!this.data.systemPolicies) return;
+        const p = this.data.systemPolicies;
+        this.maxTabSwitches = p.tabSwitchLimit || 3;
+
+        const termInput = document.getElementById('policyAcademicTerm');
+        const attemptsInput = document.getElementById('policyMaxAttempts');
+        const heartbeatInput = document.getElementById('policyHeartbeat');
+        const tabLimitInput = document.getElementById('policyTabLimit');
+        const autoSubmitInput = document.getElementById('policyAutoSubmit');
+
+        if (termInput) termInput.value = p.academicTerm || 'AY 2026–2027 • 1st Semester';
+        if (attemptsInput) attemptsInput.value = p.maxAttemptsDefault || 1;
+        if (heartbeatInput) heartbeatInput.value = p.heartbeatSeconds || 15;
+        if (tabLimitInput) tabLimitInput.value = p.tabSwitchLimit || 3;
+        if (autoSubmitInput) autoSubmitInput.checked = p.autoSubmitOnViolation !== false;
+    }
+
+    renderAdminDashboardStats() {
+        const profsEl = document.getElementById('adminStatProfs');
+        const subjectsEl = document.getElementById('adminStatSubjects');
+        const examsEl = document.getElementById('adminStatExams');
+        const logsEl = document.getElementById('adminStatLogs');
+        const termBadgeEl = document.getElementById('adminAcademicTermBadge');
+
+        const activeProfs = this.data.faculty ? this.data.faculty.filter(f => f.status === 'ACTIVE').length : 0;
+        const activeSubjects = this.data.subjects ? this.data.subjects.filter(s => s.status === 'ACTIVE').length : 0;
+        const activeExams = this.data.exams ? this.data.exams.filter(e => e.status === 'AVAILABLE' || e.status === 'UPCOMING').length : 0;
+        const totalLogs = this.data.auditLogs ? this.data.auditLogs.length : 0;
+
+        if (profsEl) profsEl.textContent = activeProfs;
+        if (subjectsEl) subjectsEl.textContent = activeSubjects;
+        if (examsEl) examsEl.textContent = activeExams;
+        if (logsEl) logsEl.textContent = totalLogs;
+
+        if (termBadgeEl && this.data.systemPolicies?.academicTerm) {
+            termBadgeEl.textContent = this.data.systemPolicies.academicTerm;
+        }
+
+        // Live Activity & Proctor Feed on #admin-dashboard (Top 4 recent audit events)
+        const feedContainer = document.getElementById('adminDashboardRecentFeed');
+        if (feedContainer && this.data.auditLogs) {
+            feedContainer.innerHTML = '';
+            const recent = this.data.auditLogs.slice(0, 4);
+            recent.forEach(log => {
+                const item = document.createElement('div');
+                item.className = 'py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 transition hover:bg-slate-50/60 dark:hover:bg-slate-800/30 px-2 rounded-xl';
+
+                let badgeColor = 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+                if (log.action.includes('ALERT') || log.action.includes('VIOLATION')) {
+                    badgeColor = 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800';
+                } else if (log.action.includes('ASSIGN') || log.action.includes('ENROLL')) {
+                    badgeColor = 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800';
+                } else if (log.action.includes('POLICY')) {
+                    badgeColor = 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800';
+                } else if (log.action.includes('GRADE') || log.action.includes('CONVERT')) {
+                    badgeColor = 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-800';
+                }
+
+                item.innerHTML = `
+                    <div class="flex items-start sm:items-center gap-3">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider border ${badgeColor}">
+                            ${log.action}
+                        </span>
+                        <div>
+                            <div class="text-xs font-semibold text-slate-900 dark:text-slate-100">${log.details}</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">By <span class="font-medium text-slate-600 dark:text-slate-300">${log.user}</span> • Module: ${log.module}</div>
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-mono text-slate-400 whitespace-nowrap self-end sm:self-center">${log.timestamp}</span>
+                `;
+                feedContainer.appendChild(item);
+            });
+        }
+    }
+
+    renderAdminCohorts(searchQuery = '') {
+        const tbody = document.getElementById('adminCohortsTableBody');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+        const q = (searchQuery || '').toLowerCase().trim();
+        const students = (this.data.students || []).filter(s => {
+            if (!q) return true;
+            return (
+                s.name.toLowerCase().includes(q) ||
+                s.id.toLowerCase().includes(q) ||
+                s.section.toLowerCase().includes(q) ||
+                s.email.toLowerCase().includes(q) ||
+                (s.enrolledSubjects && s.enrolledSubjects.some(sub => sub.toLowerCase().includes(q)))
+            );
+        });
+
+        if (students.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="py-8 text-center text-xs text-slate-400">
+                        No students found matching "${searchQuery}".
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        students.forEach(s => {
+            const tr = document.createElement('tr');
+            tr.className = 'border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors';
+
+            const subjectTags = (s.enrolledSubjects || []).map(code => 
+                `<span class="inline-block px-2 py-0.5 mr-1 mb-1 rounded text-[11px] font-mono font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800">${code}</span>`
+            ).join('') || '<span class="text-slate-400 text-xs">— None —</span>';
+
+            tr.innerHTML = `
+                <td class="py-3 px-4 text-xs font-mono font-semibold text-slate-500">${s.id}</td>
+                <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">${s.name}</td>
+                <td class="py-3 px-4 text-xs text-slate-600 dark:text-slate-400">${s.email}</td>
+                <td class="py-3 px-4">
+                    <span class="px-2.5 py-0.5 rounded-md text-xs font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800">${s.section}</span>
+                </td>
+                <td class="py-3 px-4 max-w-xs">${subjectTags}</td>
+                <td class="py-3 px-4">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-full ${s.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}">
+                        ${s.status}
+                    </span>
+                </td>
+                <td class="py-3 px-4 text-right space-x-2">
+                    <button class="px-3 py-1 text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300 rounded-lg font-semibold border border-purple-200 dark:border-purple-800" onclick="app.openEnrollCohortModal('${s.id}')">
+                        <i class="fas fa-plus mr-1"></i> Enroll Subject
+                    </button>
+                    <button class="px-3 py-1 text-xs border border-slate-300 dark:border-slate-700 rounded-lg font-medium hover:bg-slate-100 dark:hover:bg-slate-700" onclick="app.toggleStudentStatus('${s.id}')">
+                        ${s.status === 'ACTIVE' ? 'Archive' : 'Restore'}
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    filterAdminCohorts(query) {
+        this.renderAdminCohorts(query);
+    }
+
+    toggleStudentStatus(id) {
+        const s = (this.data.students || []).find(stu => stu.id === id);
+        if (s) {
+            s.status = s.status === 'ACTIVE' ? 'ARCHIVE' : 'ACTIVE';
+            this.renderAdminCohorts();
+            this.logAuditEvent(this.data.demoAccounts.admin.name, 'UPDATE_STUDENT', 'Cohorts', `Updated ${s.name} (${s.id}) status to ${s.status}`);
+            this.showToast(`Student ${s.name} status updated to ${s.status}.`, 'info');
+        }
+    }
+
+    openEnrollCohortModal(studentId = null) {
+        const modal = document.getElementById('enrollCohortModal');
+        const select = document.getElementById('enrollSubjectSelect');
+        const nameInput = document.getElementById('enrollStudentName');
+        const idInput = document.getElementById('enrollStudentID');
+        const emailInput = document.getElementById('enrollStudentEmail');
+        const sectionInput = document.getElementById('enrollStudentSection');
+
+        if (select) {
+            select.innerHTML = '';
+            (this.data.subjects || []).forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub.code;
+                opt.textContent = `${sub.code} - ${sub.name} (${sub.enrolled} enrolled)`;
+                select.appendChild(opt);
+            });
+        }
+
+        if (studentId) {
+            const student = (this.data.students || []).find(s => s.id === studentId);
+            if (student) {
+                if (nameInput) nameInput.value = student.name;
+                if (idInput) {
+                    idInput.value = student.id;
+                    idInput.readOnly = true;
+                }
+                if (emailInput) emailInput.value = student.email;
+                if (sectionInput) sectionInput.value = student.section;
+            }
+        } else {
+            if (nameInput) nameInput.value = '';
+            if (idInput) {
+                idInput.value = `STU-2024-${Math.floor(1000 + Math.random() * 9000)}`;
+                idInput.readOnly = false;
+            }
+            if (emailInput) emailInput.value = '';
+            if (sectionInput) sectionInput.value = '3BSCS-1';
+        }
+
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    }
+
+    closeEnrollCohortModal() {
+        const modal = document.getElementById('enrollCohortModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    }
+
+    saveEnrollCohort() {
+        const name = document.getElementById('enrollStudentName')?.value.trim();
+        const id = document.getElementById('enrollStudentID')?.value.trim();
+        const section = document.getElementById('enrollStudentSection')?.value.trim();
+        const email = document.getElementById('enrollStudentEmail')?.value.trim();
+        const subjectCode = document.getElementById('enrollSubjectSelect')?.value;
+
+        if (!name || !id || !section || !email || !subjectCode) {
+            this.showToast('Please fill out all enrollment fields.', 'danger');
+            return;
+        }
+
+        if (!this.data.students) this.data.students = [];
+
+        let student = this.data.students.find(s => s.id === id);
+        if (student) {
+            if (!student.enrolledSubjects) student.enrolledSubjects = [];
+            if (!student.enrolledSubjects.includes(subjectCode)) {
+                student.enrolledSubjects.push(subjectCode);
+            }
+            student.name = name;
+            student.section = section;
+            student.email = email;
+        } else {
+            student = {
+                id: id,
+                name: name,
+                email: email,
+                section: section,
+                enrolledSubjects: [subjectCode],
+                status: "ACTIVE"
+            };
+            this.data.students.unshift(student);
+        }
+
+        // Connects to this.data.subjects[i].enrolled
+        const subject = (this.data.subjects || []).find(s => s.code === subjectCode);
+        if (subject) {
+            subject.enrolled = (subject.enrolled || 0) + 1;
+        }
+
+        this.logAuditEvent(
+            this.data.demoAccounts.admin.name,
+            'ENROLL_COHORT',
+            'Cohorts',
+            `Enrolled ${name} (${id}) from section ${section} into ${subjectCode}`
+        );
+
+        this.closeEnrollCohortModal();
+        this.renderAdminCohorts();
+        this.renderAdminSubjects();
+        this.renderAdminDashboardStats();
+        this.showToast(`Enrolled ${name} into ${subjectCode}! Roster updated.`, 'success');
+    }
+
+    renderAdminMasterGrades(searchQuery = '') {
+        const tbody = document.getElementById('adminMasterGradesTableBody');
+        if (!tbody) return;
+
+        tbody.innerHTML = '';
+        const q = (searchQuery || '').toLowerCase().trim();
+        const results = (this.data.teacherResults || []).filter(r => {
+            if (!q) return true;
+            return r.name.toLowerCase().includes(q) || r.studentId.toLowerCase().includes(q);
+        });
+
+        if (results.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="9" class="py-8 text-center text-xs text-slate-400">
+                        No examination records found matching "${searchQuery}".
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        results.forEach(r => {
+            const tr = document.createElement('tr');
+            tr.className = 'border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors text-xs';
+            tr.innerHTML = `
+                <td class="py-3 px-4 font-mono font-semibold text-slate-500">${r.studentId}</td>
+                <td class="py-3 px-4 font-medium text-slate-900 dark:text-slate-100">${r.name}</td>
+                <td class="py-3 px-4 font-mono font-semibold text-blue-600 dark:text-blue-400">CS-101 Midterm</td>
+                <td class="py-3 px-4 text-center font-medium">${r.rawScore}</td>
+                <td class="py-3 px-4 text-center font-bold">${r.percentage}%</td>
+                <td class="py-3 px-4 font-bold text-indigo-600 dark:text-indigo-400">${r.grade}</td>
+                <td class="py-3 px-4">
+                    <span class="px-2 py-0.5 rounded font-bold ${r.status === 'PASSED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300'}">
+                        ${r.status}
+                    </span>
+                </td>
+                <td class="py-3 px-4">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-semibold ${r.gradeStatus === 'FINALIZED' ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' : 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300'}">
+                        ${r.gradeStatus}
+                    </span>
+                </td>
+                <td class="py-3 px-4 text-slate-500">${r.date}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    filterAdminMasterGrades(query) {
+        this.renderAdminMasterGrades(query);
+    }
+
+    exportMasterGradesCSV() {
+        const rows = [
+            ["Student ID", "Student Name", "Exam / Subject", "Raw Score", "Percentage", "Institutional Grade", "Exam Status", "Review State", "Date Recorded"]
+        ];
+
+        (this.data.teacherResults || []).forEach(r => {
+            rows.push([r.studentId, `"${r.name}"`, "CS-101 Midterm", r.rawScore, `${r.percentage}%`, `"${r.grade}"`, r.status, r.gradeStatus, r.date]);
+        });
+
+        const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `VeriTest_Master_Institutional_Gradebook_${new Date().toISOString().slice(0, 10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        this.logAuditEvent(this.data.demoAccounts.admin.name, 'EXPORT_MASTER_GRADES', 'Gradebook', `Exported master institutional gradebook CSV (${(this.data.teacherResults || []).length} records)`);
+        this.showToast('Master gradebook exported to CSV successfully.', 'success');
+    }
+
+    exportTeacherResultsCSV() {
+        return this.exportMasterGradesCSV();
+    }
+
+    saveSystemPolicies() {
+        const termInput = document.getElementById('policyAcademicTerm');
+        const attemptsInput = document.getElementById('policyMaxAttempts');
+        const heartbeatInput = document.getElementById('policyHeartbeat');
+        const tabLimitInput = document.getElementById('policyTabLimit');
+        const autoSubmitInput = document.getElementById('policyAutoSubmit');
+
+        const academicTerm = termInput ? termInput.value.trim() : (this.data.systemPolicies?.academicTerm || 'AY 2026–2027 • 1st Semester');
+        const maxAttemptsDefault = attemptsInput ? parseInt(attemptsInput.value) || 1 : 1;
+        const heartbeatSeconds = heartbeatInput ? parseInt(heartbeatInput.value) || 15 : 15;
+        const tabSwitchLimit = tabLimitInput ? parseInt(tabLimitInput.value) || 3 : 3;
+        const autoSubmitOnViolation = autoSubmitInput ? autoSubmitInput.checked : true;
+
+        this.data.systemPolicies = {
+            academicTerm,
+            maxAttemptsDefault,
+            heartbeatSeconds,
+            tabSwitchLimit,
+            autoSubmitOnViolation
+        };
+
+        // Ties into this.tabSwitchCount and this.maxTabSwitches in app.js
+        this.maxTabSwitches = tabSwitchLimit;
+
+        this.logAuditEvent(
+            this.data.demoAccounts.admin.name,
+            'UPDATE_POLICY',
+            'Governance',
+            `Saved institutional governance: Term '${academicTerm}', Tab Strike Limit ${tabSwitchLimit}, Heartbeat ${heartbeatSeconds}s, Auto-Submit ${autoSubmitOnViolation}`
+        );
+
+        this.renderAdminDashboardStats();
+        this.showToast('Institutional governance policies saved successfully.', 'success');
     }
 
     // 1. Admin Faculty Table
@@ -1613,6 +1992,9 @@ class AppController {
         });
     }
 }
+
+const VeriTestApp = AppController;
+window.VeriTestApp = VeriTestApp;
 
 let app;
 window.addEventListener('DOMContentLoaded', () => {
