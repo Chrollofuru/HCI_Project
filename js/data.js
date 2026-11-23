@@ -153,6 +153,7 @@ const INITIAL_DATA = {
             text: "Which of the following data structures operates on a Last-In, First-Out (LIFO) access pattern?",
             type: "Multiple Choice",
             subject: "CS-101",
+            topic: "Data Structures (Stacks & Queues)",
             difficulty: "Medium",
             options: ["Queue", "Stack", "Singly Linked List", "Binary Search Tree"],
             correctIndex: 1,
@@ -163,6 +164,7 @@ const INITIAL_DATA = {
             text: "What is the primary difference between a Compiler and an Interpreter?",
             type: "Multiple Choice",
             subject: "CS-101",
+            topic: "Compilers vs Interpreters",
             difficulty: "Medium",
             options: [
                 "A compiler translates entire source code to machine code before execution; an interpreter translates and executes line-by-line.",
@@ -178,6 +180,7 @@ const INITIAL_DATA = {
             text: "True or False: JavaScript is a strongly typed, purely compiled language.",
             type: "True/False",
             subject: "CS-101",
+            topic: "Programming Language Types",
             difficulty: "Easy",
             options: ["True", "False"],
             correctIndex: 1,
@@ -188,6 +191,7 @@ const INITIAL_DATA = {
             text: "What is the time complexity to access an element at a known index in an Array?",
             type: "Multiple Choice",
             subject: "CS-202",
+            topic: "Arrays & Memory Addressing",
             difficulty: "Easy",
             options: ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
             correctIndex: 0,
@@ -198,6 +202,7 @@ const INITIAL_DATA = {
             text: "Which protocol is utilized to transfer encrypted hypertext files securely over the web?",
             type: "Multiple Choice",
             subject: "IT-102",
+            topic: "Web Security & Protocols",
             difficulty: "Easy",
             options: ["FTP", "SMTP", "HTTPS", "SSH"],
             correctIndex: 2,
@@ -208,6 +213,7 @@ const INITIAL_DATA = {
             text: "Which SQL clause is used to filter records resulting from an aggregate function like COUNT() or AVG()?",
             type: "Multiple Choice",
             subject: "CS-303",
+            topic: "SQL Aggregation & Filtering (HAVING)",
             difficulty: "Medium",
             options: ["WHERE", "HAVING", "GROUP BY", "ORDER BY"],
             correctIndex: 1,
@@ -218,6 +224,7 @@ const INITIAL_DATA = {
             text: "What is the worst-case time complexity of QuickSort without randomized pivot selection?",
             type: "Multiple Choice",
             subject: "CS-202",
+            topic: "Algorithmic Time Complexity (QuickSort)",
             difficulty: "Hard",
             options: ["O(n log n)", "O(n)", "O(n^2)", "O(log n)"],
             correctIndex: 2,
@@ -228,6 +235,7 @@ const INITIAL_DATA = {
             text: "In Human-Computer Interaction (HCI), what does Nielsen's heuristic 'Visibility of System Status' dictate?",
             type: "Multiple Choice",
             subject: "CS-101",
+            topic: "HCI Usability & Nielsen Heuristics",
             difficulty: "Medium",
             options: [
                 "The system should always keep users informed about what is going on, through appropriate feedback within a reasonable time.",
@@ -243,6 +251,7 @@ const INITIAL_DATA = {
             text: "Explain normalized third normal form (3NF) relational constraints.",
             type: "Essay",
             subject: "CS-303",
+            topic: "Database Normalization (3NF)",
             difficulty: "Hard",
             options: [],
             correctIndex: null,
@@ -253,6 +262,7 @@ const INITIAL_DATA = {
             text: "Which tree traversal technique yields nodes in ascending order in a Binary Search Tree (BST)?",
             type: "Multiple Choice",
             subject: "CS-202",
+            topic: "Binary Trees & BST Traversals",
             difficulty: "Medium",
             options: ["Pre-order (Root, Left, Right)", "In-order (Left, Root, Right)", "Post-order (Left, Right, Root)", "Breadth-First Search"],
             correctIndex: 1,
@@ -263,6 +273,7 @@ const INITIAL_DATA = {
             text: "Which HTTP status code signifies that a request lacks valid authentication credentials?",
             type: "Multiple Choice",
             subject: "IT-102",
+            topic: "Network & HTTP Authentication",
             difficulty: "Easy",
             options: ["200 OK", "401 Unauthorized", "404 Not Found", "500 Internal Server Error"],
             correctIndex: 1,
@@ -273,6 +284,7 @@ const INITIAL_DATA = {
             text: "True or False: In a relational database, a Primary Key allows duplicate or NULL values.",
             type: "True/False",
             subject: "CS-303",
+            topic: "Database Integrity (Primary Keys)",
             difficulty: "Easy",
             options: ["True", "False"],
             correctIndex: 1,
@@ -283,6 +295,7 @@ const INITIAL_DATA = {
             text: "Which of the following sorting algorithms is stable and guarantees O(n log n) in all cases?",
             type: "Multiple Choice",
             subject: "CS-202",
+            topic: "Sorting Stability (Merge Sort)",
             difficulty: "Medium",
             options: ["Merge Sort", "QuickSort", "Selection Sort", "Bubble Sort"],
             correctIndex: 0,
@@ -293,6 +306,7 @@ const INITIAL_DATA = {
             text: "What does the ACID acronym stand for in Database Transactions?",
             type: "Multiple Choice",
             subject: "CS-303",
+            topic: "Database Transaction ACID Principles",
             difficulty: "Medium",
             options: [
                 "Atomicity, Consistency, Isolation, Durability",
@@ -308,6 +322,7 @@ const INITIAL_DATA = {
             text: "Which CSS layout model is specifically engineered for one-dimensional layouts (row or column)?",
             type: "Multiple Choice",
             subject: "IT-102",
+            topic: "CSS Layouts (Flexbox)",
             difficulty: "Easy",
             options: ["CSS Grid", "Flexbox (Flexible Box)", "Float layout", "Table layout"],
             correctIndex: 1,
@@ -318,6 +333,7 @@ const INITIAL_DATA = {
             text: "Explain the time complexity and mechanics of a binary search algorithm on a sorted list.",
             type: "Essay",
             subject: "CS-101",
+            topic: "Search Algorithms (Binary Search)",
             difficulty: "Hard",
             options: [],
             correctIndex: null,
@@ -328,6 +344,7 @@ const INITIAL_DATA = {
             text: "True or False: A Queue operates on a First-In, First-Out (FIFO) access order.",
             type: "True/False",
             subject: "CS-101",
+            topic: "Data Structures (Queues & FIFO)",
             difficulty: "Easy",
             options: ["True", "False"],
             correctIndex: 0,
@@ -338,6 +355,7 @@ const INITIAL_DATA = {
             text: "Which software design principle states that classes should be open for extension, but closed for modification?",
             type: "Multiple Choice",
             subject: "CS-101",
+            topic: "Object-Oriented Design (SOLID Principles)",
             difficulty: "Medium",
             options: ["Single Responsibility Principle", "Open/Closed Principle", "Liskov Substitution Principle", "Interface Segregation"],
             correctIndex: 1,
@@ -348,6 +366,7 @@ const INITIAL_DATA = {
             text: "What is the primary function of the Domain Name System (DNS)?",
             type: "Multiple Choice",
             subject: "IT-102",
+            topic: "Internet Infrastructure (DNS)",
             difficulty: "Easy",
             options: [
                 "Translating human-friendly domain names to IP addresses",
@@ -363,6 +382,7 @@ const INITIAL_DATA = {
             text: "In online examination integrity, what is the primary purpose of dynamic session heartbeats?",
             type: "Multiple Choice",
             subject: "CS-101",
+            topic: "Exam Integrity & Proctored Telemetry",
             difficulty: "Medium",
             options: [
                 "To continuously verify active candidate presence and save progress dynamically to avoid data loss",
@@ -472,7 +492,112 @@ const INITIAL_DATA = {
                 { section: "Section 1 (Multiple Choice)", score: "28 / 30 correct" },
                 { section: "Section 2 (Short Answer Essay)", score: "20 / 20 score (Graded by Dr. Rachel Green)" }
             ],
-            certificateAvailable: true
+            certificateAvailable: true,
+            reviewQuestions: [
+                {
+                    id: "Q-101",
+                    text: "Which of the following data structures operates on a Last-In, First-Out (LIFO) access pattern?",
+                    topic: "Data Structures (Stacks & Queues)",
+                    difficulty: "Medium",
+                    options: ["Queue", "Stack", "Singly Linked List", "Binary Search Tree"],
+                    studentAnswer: 1,
+                    correctIndex: 1,
+                    isCorrect: true,
+                    explanation: "A Stack adds and removes elements from the top, following Last-In, First-Out (LIFO)."
+                },
+                {
+                    id: "Q-102",
+                    text: "What is the primary difference between a Compiler and an Interpreter?",
+                    topic: "Compilers vs Interpreters",
+                    difficulty: "Medium",
+                    options: [
+                        "A compiler translates entire source code to machine code before execution; an interpreter translates and executes line-by-line.",
+                        "A compiler only executes in cloud environments, while an interpreter requires bare metal hardware.",
+                        "An interpreter creates a permanent standalone executable binary file.",
+                        "Compilers cannot catch syntax errors during translation."
+                    ],
+                    studentAnswer: 0,
+                    correctIndex: 0,
+                    isCorrect: true,
+                    explanation: "Compilers convert the complete high-level program into target machine code, whereas interpreters parse and run code line by line."
+                },
+                {
+                    id: "Q-103",
+                    text: "True or False: JavaScript is a strongly typed, purely compiled language.",
+                    topic: "Programming Language Types",
+                    difficulty: "Easy",
+                    options: ["True", "False"],
+                    studentAnswer: 1,
+                    correctIndex: 1,
+                    isCorrect: true,
+                    explanation: "JavaScript is dynamically typed and interpreted/JIT compiled, not purely compiled."
+                },
+                {
+                    id: "Q-107",
+                    text: "What is the worst-case time complexity of QuickSort without randomized pivot selection?",
+                    topic: "Algorithmic Time Complexity (QuickSort)",
+                    difficulty: "Hard",
+                    options: ["O(n log n)", "O(n)", "O(n^2)", "O(log n)"],
+                    studentAnswer: 0,
+                    correctIndex: 2,
+                    isCorrect: false,
+                    explanation: "Unbalanced partitions yield quadratic O(n^2) time complexity. Many students confuse average-case O(n log n) with worst-case behavior, which occurs when pivots are consistently extremal (e.g. on already-sorted arrays)."
+                },
+                {
+                    id: "Q-108",
+                    text: "In Human-Computer Interaction (HCI), what does Nielsen's heuristic 'Visibility of System Status' dictate?",
+                    topic: "HCI Usability & Nielsen Heuristics",
+                    difficulty: "Medium",
+                    options: [
+                        "The system should always keep users informed about what is going on, through appropriate feedback within a reasonable time.",
+                        "The system must hide backend computation details completely and never show timers or progress bars.",
+                        "Users should have full sudo administrator privileges at all times.",
+                        "Interfaces must use high contrast neon colors exclusively."
+                    ],
+                    studentAnswer: 0,
+                    correctIndex: 0,
+                    isCorrect: true,
+                    explanation: "Immediate feedback (e.g., auto-saved status, countdown timer) keeps the user confident and oriented."
+                },
+                {
+                    id: "Q-117",
+                    text: "True or False: A Queue operates on a First-In, First-Out (FIFO) access order.",
+                    topic: "Data Structures (Queues & FIFO)",
+                    difficulty: "Easy",
+                    options: ["True", "False"],
+                    studentAnswer: 0,
+                    correctIndex: 0,
+                    isCorrect: true,
+                    explanation: "Queues add elements at the rear and remove from the front, observing First-In, First-Out (FIFO)."
+                },
+                {
+                    id: "Q-118",
+                    text: "Which software design principle states that classes should be open for extension, but closed for modification?",
+                    topic: "Object-Oriented Design (SOLID Principles)",
+                    difficulty: "Medium",
+                    options: ["Single Responsibility Principle", "Open/Closed Principle", "Liskov Substitution Principle", "Interface Segregation"],
+                    studentAnswer: 1,
+                    correctIndex: 1,
+                    isCorrect: true,
+                    explanation: "The Open/Closed Principle allows extending system behavior via inheritance or polymorphism without editing tested classes."
+                },
+                {
+                    id: "Q-120",
+                    text: "In online examination integrity, what is the primary purpose of dynamic session heartbeats?",
+                    topic: "Exam Integrity & Proctored Telemetry",
+                    difficulty: "Medium",
+                    options: [
+                        "To continuously verify active candidate presence and save progress dynamically to avoid data loss",
+                        "To increase student CPU usage artificially",
+                        "To erase answers if the student pauses thinking",
+                        "To change question order every 5 seconds"
+                    ],
+                    studentAnswer: 0,
+                    correctIndex: 0,
+                    isCorrect: true,
+                    explanation: "Heartbeats ensure session persistence and seamless recovery in case of connection dropouts."
+                }
+            ]
         },
         {
             id: "HIST-02",
@@ -488,7 +613,64 @@ const INITIAL_DATA = {
             breakdown: [
                 { section: "Section 1 (Algorithmic Logic)", score: "12 / 15 correct" }
             ],
-            certificateAvailable: false
+            certificateAvailable: false,
+            reviewQuestions: [
+                {
+                    id: "Q-104",
+                    text: "What is the time complexity to access an element at a known index in an Array?",
+                    topic: "Arrays & Memory Addressing",
+                    difficulty: "Easy",
+                    options: ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
+                    studentAnswer: 0,
+                    correctIndex: 0,
+                    isCorrect: true,
+                    explanation: "Arrays support constant time O(1) random access via memory offset calculation."
+                },
+                {
+                    id: "Q-107",
+                    text: "What is the worst-case time complexity of QuickSort without randomized pivot selection?",
+                    topic: "Algorithmic Time Complexity (QuickSort)",
+                    difficulty: "Hard",
+                    options: ["O(n log n)", "O(n)", "O(n^2)", "O(log n)"],
+                    studentAnswer: 0,
+                    correctIndex: 2,
+                    isCorrect: false,
+                    explanation: "Unbalanced partitions yield quadratic O(n^2) worst-case time complexity."
+                },
+                {
+                    id: "Q-110",
+                    text: "Which tree traversal technique yields nodes in ascending order in a Binary Search Tree (BST)?",
+                    topic: "Binary Trees & BST Traversals",
+                    difficulty: "Medium",
+                    options: ["Pre-order (Root, Left, Right)", "In-order (Left, Root, Right)", "Post-order (Left, Right, Root)", "Breadth-First Search"],
+                    studentAnswer: 1,
+                    correctIndex: 1,
+                    isCorrect: true,
+                    explanation: "In-order traversal visits left subtree, root, then right subtree in ascending order."
+                },
+                {
+                    id: "Q-113",
+                    text: "Which of the following sorting algorithms is stable and guarantees O(n log n) in all cases?",
+                    topic: "Sorting Stability (Merge Sort)",
+                    difficulty: "Medium",
+                    options: ["Merge Sort", "QuickSort", "Selection Sort", "Bubble Sort"],
+                    studentAnswer: 1,
+                    correctIndex: 0,
+                    isCorrect: false,
+                    explanation: "Merge sort guarantees O(n log n) worst-case time and is stable. QuickSort is not stable and has O(n^2) worst-case."
+                },
+                {
+                    id: "Q-116",
+                    text: "Explain the time complexity and mechanics of a binary search algorithm on a sorted list.",
+                    topic: "Search Algorithms (Binary Search)",
+                    difficulty: "Hard",
+                    options: ["O(log n)", "O(n)", "O(1)", "O(n log n)"],
+                    studentAnswer: 0,
+                    correctIndex: 0,
+                    isCorrect: true,
+                    explanation: "Binary search cuts the search space in half with each comparison, achieving O(log n) efficiency."
+                }
+            ]
         },
         {
             id: "HIST-03",
@@ -504,7 +686,8 @@ const INITIAL_DATA = {
             breakdown: [
                 { section: "Manual assessment in progress by professor", score: "—" }
             ],
-            certificateAvailable: false
+            certificateAvailable: false,
+            reviewQuestions: []
         },
         {
             id: "HIST-04",
@@ -520,7 +703,47 @@ const INITIAL_DATA = {
             breakdown: [
                 { section: "Section 1 (SQL Queries & Relational Algebra)", score: "42 / 50 correct" }
             ],
-            certificateAvailable: true
+            certificateAvailable: true,
+            reviewQuestions: [
+                {
+                    id: "Q-106",
+                    text: "Which SQL clause is used to filter records resulting from an aggregate function like COUNT() or AVG()?",
+                    topic: "SQL Aggregation & Filtering (HAVING)",
+                    difficulty: "Medium",
+                    options: ["WHERE", "HAVING", "GROUP BY", "ORDER BY"],
+                    studentAnswer: 0,
+                    correctIndex: 1,
+                    isCorrect: false,
+                    explanation: "HAVING filters aggregate results, whereas WHERE filters individual rows prior to grouping."
+                },
+                {
+                    id: "Q-112",
+                    text: "True or False: In a relational database, a Primary Key allows duplicate or NULL values.",
+                    topic: "Database Integrity (Primary Keys)",
+                    difficulty: "Easy",
+                    options: ["True", "False"],
+                    studentAnswer: 1,
+                    correctIndex: 1,
+                    isCorrect: true,
+                    explanation: "A Primary Key must be unique and cannot contain NULL values."
+                },
+                {
+                    id: "Q-114",
+                    text: "What does the ACID acronym stand for in Database Transactions?",
+                    topic: "Database Transaction ACID Principles",
+                    difficulty: "Medium",
+                    options: [
+                        "Atomicity, Consistency, Isolation, Durability",
+                        "Authentication, Ciphering, Integrity, Delivery",
+                        "Allocation, Compilation, Indexing, Deletion",
+                        "Asynchronous, Clustered, Integrated, Distributed"
+                    ],
+                    studentAnswer: 0,
+                    correctIndex: 0,
+                    isCorrect: true,
+                    explanation: "ACID guarantees transactional reliability in databases."
+                }
+            ]
         },
         {
             id: "HIST-05",
@@ -536,9 +759,168 @@ const INITIAL_DATA = {
             breakdown: [
                 { section: "Section 1 (Foundations)", score: "14 / 15 correct" }
             ],
-            certificateAvailable: false
+            certificateAvailable: false,
+            reviewQuestions: [
+                {
+                    id: "Q-101",
+                    text: "Which of the following data structures operates on a Last-In, First-Out (LIFO) access pattern?",
+                    topic: "Data Structures (Stacks & Queues)",
+                    difficulty: "Medium",
+                    options: ["Queue", "Stack", "Singly Linked List", "Binary Search Tree"],
+                    studentAnswer: 1,
+                    correctIndex: 1,
+                    isCorrect: true,
+                    explanation: "A Stack adds and removes elements from the top, following Last-In, First-Out."
+                },
+                {
+                    id: "Q-102",
+                    text: "What is the primary difference between a Compiler and an Interpreter?",
+                    topic: "Compilers vs Interpreters",
+                    difficulty: "Medium",
+                    options: [
+                        "A compiler translates entire source code to machine code before execution; an interpreter translates and executes line-by-line.",
+                        "A compiler only executes in cloud environments, while an interpreter requires bare metal hardware.",
+                        "An interpreter creates a permanent standalone executable binary file.",
+                        "Compilers cannot catch syntax errors during translation."
+                    ],
+                    studentAnswer: 0,
+                    correctIndex: 0,
+                    isCorrect: true,
+                    explanation: "Compilers convert the complete high-level program into target machine code."
+                }
+            ]
         }
     ],
+
+    // Professor Question Item Difficulty & Cohort Topic Mastery Analytics
+    examAnalytics: {
+        "CS-101": {
+            examTitle: "CS101 - Midterm & Final Evaluations",
+            cohortSize: 64,
+            averageScore: "78.4%",
+            passingRate: "86%",
+            highRiskTopicsCount: 2,
+            topicMastery: [
+                { topic: "Data Structures (Stacks & Queues)", masteryPercent: 91, status: "MASTERED", badge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400" },
+                { topic: "HCI Usability & Nielsen Heuristics", masteryPercent: 88, status: "MASTERED", badge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400" },
+                { topic: "Compilers vs Interpreters", masteryPercent: 74, status: "MODERATE", badge: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-400" },
+                { topic: "Object-Oriented Design (SOLID)", masteryPercent: 68, status: "MODERATE", badge: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400" },
+                { topic: "Algorithmic Time Complexity (QuickSort)", masteryPercent: 38, status: "CRITICAL_REVIEW", badge: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950 dark:text-rose-400" }
+            ],
+            questionItemStats: [
+                {
+                    id: "Q-107",
+                    questionText: "What is the worst-case time complexity of QuickSort without randomized pivot selection?",
+                    topic: "Algorithmic Time Complexity (QuickSort)",
+                    failureRate: 62,
+                    difficultyRating: "Hard",
+                    mostCommonWrongOption: "O(n log n) [chosen by 44% of cohort]",
+                    diagnosticInsight: "High student confusion: Students routinely confuse average-case O(n log n) with unpartitioned worst-case O(n^2).",
+                    pedagogicalAction: "Recommend 15-minute lecture refresher on unbalanced recurrence trees."
+                },
+                {
+                    id: "Q-118",
+                    questionText: "Which software design principle states that classes should be open for extension, but closed for modification?",
+                    topic: "Object-Oriented Design (SOLID)",
+                    failureRate: 32,
+                    difficultyRating: "Medium",
+                    mostCommonWrongOption: "Single Responsibility Principle [chosen by 21%]",
+                    diagnosticInsight: "Students mix up Single Responsibility with Open/Closed Principle.",
+                    pedagogicalAction: "Assign practical polymorphism code exercises in lab."
+                },
+                {
+                    id: "Q-102",
+                    questionText: "What is the primary difference between a Compiler and an Interpreter?",
+                    topic: "Compilers vs Interpreters",
+                    failureRate: 26,
+                    difficultyRating: "Medium",
+                    mostCommonWrongOption: "An interpreter creates a permanent binary [chosen by 16%]",
+                    diagnosticInsight: "Minor confusion regarding translation artifacts and execution timing.",
+                    pedagogicalAction: "Demonstrate live JIT compilation in class."
+                },
+                {
+                    id: "Q-101",
+                    questionText: "Which of the following data structures operates on a Last-In, First-Out (LIFO) access pattern?",
+                    topic: "Data Structures (Stacks & Queues)",
+                    failureRate: 9,
+                    difficultyRating: "Easy",
+                    mostCommonWrongOption: "Queue [chosen by 7%]",
+                    diagnosticInsight: "Concept is well-mastered across all student sections.",
+                    pedagogicalAction: "Topic verified solid; cohort is ready to advance to Trees and Graphs."
+                }
+            ]
+        },
+        "CS-202": {
+            examTitle: "CS202 - Data Structures & Algorithms Quiz",
+            cohortSize: 42,
+            averageScore: "81.2%",
+            passingRate: "90%",
+            highRiskTopicsCount: 1,
+            topicMastery: [
+                { topic: "Array Addressing & Memory Offset", masteryPercent: 93, status: "MASTERED", badge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400" },
+                { topic: "Binary Search Trees (In-Order)", masteryPercent: 81, status: "MASTERED", badge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400" },
+                { topic: "Sorting Stability (Merge Sort)", masteryPercent: 72, status: "MODERATE", badge: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-400" },
+                { topic: "Worst-Case Partitioning", masteryPercent: 44, status: "CRITICAL_REVIEW", badge: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950 dark:text-rose-400" }
+            ],
+            questionItemStats: [
+                {
+                    id: "Q-107",
+                    questionText: "What is the worst-case time complexity of QuickSort without randomized pivot selection?",
+                    topic: "Worst-Case Partitioning",
+                    failureRate: 56,
+                    difficultyRating: "Hard",
+                    mostCommonWrongOption: "O(n log n) [chosen by 38%]",
+                    diagnosticInsight: "Students struggle with already-sorted arrays causing O(n^2) worst-case inputs.",
+                    pedagogicalAction: "Review median-of-three pivot strategies."
+                },
+                {
+                    id: "Q-113",
+                    questionText: "Which of the following sorting algorithms is stable and guarantees O(n log n) in all cases?",
+                    topic: "Sorting Stability (Merge Sort)",
+                    failureRate: 28,
+                    difficultyRating: "Medium",
+                    mostCommonWrongOption: "QuickSort [chosen by 19%]",
+                    diagnosticInsight: "Students forget that QuickSort is unstable by default.",
+                    pedagogicalAction: "Demonstrate stability preservation with duplicate keys."
+                }
+            ]
+        },
+        "CS-303": {
+            examTitle: "CS303 - Database Systems Midterm",
+            cohortSize: 35,
+            averageScore: "74.8%",
+            passingRate: "80%",
+            highRiskTopicsCount: 2,
+            topicMastery: [
+                { topic: "Database Integrity (Primary Keys)", masteryPercent: 94, status: "MASTERED", badge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400" },
+                { topic: "ACID Transaction Principles", masteryPercent: 86, status: "MASTERED", badge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400" },
+                { topic: "Database Normalization (3NF)", masteryPercent: 58, status: "MODERATE", badge: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-400" },
+                { topic: "SQL Aggregation & Filtering (HAVING)", masteryPercent: 46, status: "CRITICAL_REVIEW", badge: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950 dark:text-rose-400" }
+            ],
+            questionItemStats: [
+                {
+                    id: "Q-106",
+                    questionText: "Which SQL clause is used to filter records resulting from an aggregate function like COUNT() or AVG()?",
+                    topic: "SQL Aggregation & Filtering (HAVING)",
+                    failureRate: 54,
+                    difficultyRating: "Medium",
+                    mostCommonWrongOption: "WHERE clause [chosen by 41% of cohort]",
+                    diagnosticInsight: "High error rate: Students frequently attempt to write 'WHERE COUNT(*) > 5' instead of using HAVING.",
+                    pedagogicalAction: "Conduct SQL query walkthrough contrasting WHERE (row filter) vs HAVING (group filter)."
+                },
+                {
+                    id: "Q-109",
+                    questionText: "Explain normalized third normal form (3NF) relational constraints.",
+                    topic: "Database Normalization (3NF)",
+                    failureRate: 42,
+                    difficultyRating: "Hard",
+                    mostCommonWrongOption: "Transitive dependency confusion",
+                    diagnosticInsight: "Students struggle with identifying transitive dependencies versus partial dependencies.",
+                    pedagogicalAction: "Provide 3 step-by-step schema decomposition drills in recitation."
+                }
+            ]
+        }
+    },
 
     // Professor Student Submissions Table & Grade Conversion
     teacherResults: [
@@ -593,6 +975,11 @@ const INITIAL_DATA = {
     }
 };
 
-window.VERITEST_DATA = INITIAL_DATA;
-// Backward compatibility
-window.EDUDATA = INITIAL_DATA;
+if (typeof window !== 'undefined') {
+    window.VERITEST_DATA = INITIAL_DATA;
+    // Backward compatibility
+    window.EDUDATA = INITIAL_DATA;
+}
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = INITIAL_DATA;
+}

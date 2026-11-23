@@ -487,6 +487,23 @@ class AppController {
         else if (percent >= 75) equivGrade = "2.25 (Good / B)";
         else if (percent >= 60) equivGrade = "3.00 (Passing / C)";
 
+        // Generate student review items for newly taken exam
+        const reviewQuestions = questions.map((q, idx) => {
+            const studentAns = this.examAnswers[idx] !== undefined ? this.examAnswers[idx] : null;
+            const isCorrect = studentAns === q.correctIndex;
+            return {
+                id: q.id,
+                text: q.text,
+                topic: q.topic || "Core Concept",
+                difficulty: q.difficulty || "Medium",
+                options: q.options || [],
+                studentAnswer: studentAns,
+                correctIndex: q.correctIndex,
+                isCorrect: isCorrect,
+                explanation: q.explanation || "Review curriculum reference for this question."
+            };
+        });
+
         const newRecord = {
             id: `HIST-${Date.now()}`,
             title: this.currentExam?.title || "CS101 - Midterm Examination",
@@ -500,7 +517,8 @@ class AppController {
             breakdown: [
                 { section: "Section 1 (Multiple Choice Questions)", score: `${score} / ${questions.length} correct` }
             ],
-            certificateAvailable: passed
+            certificateAvailable: passed,
+            reviewQuestions: reviewQuestions
         };
 
         this.data.studentHistory.unshift(newRecord);
@@ -508,6 +526,154 @@ class AppController {
 
         this.renderStudentHistory();
         this.showView('view-student', 'student-results');
+    }
+
+    // --- STUDENT EXAM QUESTION REVIEW MODAL (WHAT WENT WRONG) ---
+    openStudentExamReview(historyId) {
+        const history = this.data.studentHistory.find(h => h.id === historyId);
+        if (!history || !history.reviewQuestions || history.reviewQuestions.length === 0) {
+            this.showToast('No question review available for this submission.', 'info');
+            return;
+        }
+
+        this.currentReviewHistory = history;
+        this.currentReviewFilter = 'all';
+
+        const titleEl = document.getElementById('reviewExamTitle');
+        const scoreEl = document.getElementById('reviewExamScore');
+        const dateEl = document.getElementById('reviewExamDate');
+        const wrongBadge = document.getElementById('reviewWrongBadge');
+        const correctBadge = document.getElementById('reviewCorrectBadge');
+
+        const wrongCount = history.reviewQuestions.filter(q => !q.isCorrect).length;
+        const correctCount = history.reviewQuestions.filter(q => q.isCorrect).length;
+
+        if (titleEl) titleEl.textContent = `${history.subjectCode} — ${history.title}`;
+        if (scoreEl) scoreEl.textContent = `${history.score} (${history.percentage}%)`;
+        if (dateEl) dateEl.textContent = history.date;
+        if (wrongBadge) wrongBadge.textContent = `${wrongCount} Incorrect`;
+        if (correctBadge) correctBadge.textContent = `${correctCount} Correct`;
+
+        this.renderStudentReviewQuestions('all');
+
+        const modal = document.getElementById('studentExamReviewModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    }
+
+    closeStudentExamReview() {
+        const modal = document.getElementById('studentExamReviewModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    }
+
+    setReviewFilter(filter) {
+        this.currentReviewFilter = filter;
+        document.querySelectorAll('.review-filter-btn').forEach(btn => {
+            if (btn.dataset.filter === filter) {
+                btn.className = 'review-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-xs transition';
+            } else {
+                btn.className = 'review-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition';
+            }
+        });
+        this.renderStudentReviewQuestions(filter);
+    }
+
+    renderStudentReviewQuestions(filter = 'all') {
+        const container = document.getElementById('studentReviewQuestionsContainer');
+        if (!container || !this.currentReviewHistory) return;
+
+        container.innerHTML = '';
+        let list = this.currentReviewHistory.reviewQuestions || [];
+
+        if (filter === 'wrong') {
+            list = list.filter(q => !q.isCorrect);
+        } else if (filter === 'correct') {
+            list = list.filter(q => q.isCorrect);
+        }
+
+        if (list.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-12 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+                    <i class="fas fa-circle-check text-emerald-500 text-3xl mb-2"></i>
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200">No Questions Match This Filter</h4>
+                    <p class="text-xs text-slate-500 mt-1">You got 0 questions wrong in this category! Outstanding performance.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const optionLetters = ['A', 'B', 'C', 'D'];
+        list.forEach((q, idx) => {
+            const card = document.createElement('div');
+            card.className = `p-5 rounded-2xl border ${q.isCorrect ? 'border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/20 dark:bg-emerald-950/10' : 'border-rose-200 dark:border-rose-900/60 bg-rose-50/20 dark:bg-rose-950/10'} space-y-3 transition`;
+
+            let optionsHtml = '';
+            if (q.options && q.options.length > 0) {
+                optionsHtml = q.options.map((opt, optIdx) => {
+                    const isStudentPick = q.studentAnswer === optIdx;
+                    const isCorrectAnswer = q.correctIndex === optIdx;
+
+                    let optStyle = 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 text-slate-700 dark:text-slate-300';
+                    let badgeHtml = '';
+
+                    if (isCorrectAnswer) {
+                        optStyle = 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/80 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 font-semibold';
+                        badgeHtml = `<span class="ml-auto text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-600 text-white flex items-center gap-1 whitespace-nowrap"><i class="fas fa-check"></i> Correct Answer</span>`;
+                    }
+                    if (isStudentPick && !isCorrectAnswer) {
+                        optStyle = 'border-rose-300 dark:border-rose-800 bg-rose-50/80 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 font-semibold';
+                        badgeHtml = `<span class="ml-auto text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-rose-600 text-white flex items-center gap-1 whitespace-nowrap"><i class="fas fa-xmark"></i> Your Answer</span>`;
+                    } else if (isStudentPick && isCorrectAnswer) {
+                        badgeHtml = `<span class="ml-auto text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-600 text-white flex items-center gap-1 whitespace-nowrap"><i class="fas fa-check-double"></i> Your Answer (Correct)</span>`;
+                    }
+
+                    return `
+                        <div class="p-3 rounded-xl border ${optStyle} flex items-center gap-3 text-xs">
+                            <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-[11px] text-slate-600 dark:text-slate-300 flex-shrink-0">${optionLetters[optIdx]}</span>
+                            <span class="flex-1">${opt}</span>
+                            ${badgeHtml}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            card.innerHTML = `
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="px-2.5 py-0.5 rounded-md text-[11px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${q.id}</span>
+                        <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900">${q.topic}</span>
+                        <span class="text-[11px] text-slate-400 font-medium">Difficulty: ${q.difficulty}</span>
+                    </div>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${q.isCorrect ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'}">
+                        <i class="fas ${q.isCorrect ? 'fa-circle-check text-emerald-600' : 'fa-circle-xmark text-rose-600'}"></i>
+                        <span>${q.isCorrect ? 'Correct (+1.0)' : 'Incorrect (0.0)'}</span>
+                    </span>
+                </div>
+
+                <p class="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 leading-relaxed pt-1">
+                    ${q.text}
+                </p>
+
+                <div class="space-y-2 pt-1">
+                    ${optionsHtml}
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-900/40 text-xs text-blue-950 dark:text-blue-200">
+                    <div class="font-bold flex items-center gap-1.5 mb-1 text-blue-800 dark:text-blue-300">
+                        <i class="fas fa-lightbulb text-amber-500"></i>
+                        <span>Pedagogical Explanation & Concept Solution:</span>
+                    </div>
+                    <p class="text-[11px] leading-relaxed text-slate-700 dark:text-slate-300">${q.explanation}</p>
+                </div>
+            `;
+
+            container.appendChild(card);
+        });
     }
 
     // --- CERTIFICATE MODAL ---
@@ -758,6 +924,7 @@ class AppController {
         this.renderTeacherSubjects();
         this.renderTeacherQuestionBank();
         this.renderTeacherResults();
+        this.renderTeacherTopicAnalytics('CS-101');
         this.renderStudentExams();
         this.renderStudentHistory();
     }
@@ -1132,21 +1299,30 @@ class AppController {
 
             let breakdownHtml = h.breakdown.map(b => `<li class="text-xs text-slate-600 dark:text-slate-300">• <strong>${b.section}:</strong> ${b.score}</li>`).join('');
             let certBtnHtml = h.certificateAvailable ? `
-                <button class="mt-2 text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1" onclick="app.viewCertificate('${h.title}', ${h.percentage})">
+                <button class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1" onclick="event.stopPropagation(); app.viewCertificate('${h.title}', ${h.percentage})">
                     <i class="fas fa-certificate"></i> Download Official Grade Certificate (PDF) →
+                </button>
+            ` : '';
+
+            let reviewBtnHtml = (h.reviewQuestions && h.reviewQuestions.length > 0) ? `
+                <button class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition flex items-center gap-1.5" onclick="event.stopPropagation(); app.openStudentExamReview('${h.id}')">
+                    <i class="fas fa-clipboard-check"></i> Review Questions & Mistakes (${h.reviewQuestions.length} Questions) →
                 </button>
             ` : '';
 
             trDetails.innerHTML = `
                 <td colspan="6" class="p-4 pl-10">
-                    <div class="space-y-1.5 border-l-2 border-blue-500 pl-4 py-1">
+                    <div class="space-y-2 border-l-2 border-blue-500 pl-4 py-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <h5 class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">Detailed Answer Breakdown (${h.title})</h5>
                             ${h.equivalentGrade ? `<span class="inline-flex items-center px-2.5 py-0.5 bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 text-[10px] font-bold rounded-md whitespace-nowrap border border-blue-200 dark:border-blue-800">Official Grade: ${h.equivalentGrade}</span>` : ''}
                         </div>
                         ${h.masterExamNote ? `<p class="text-[11px] text-amber-700 dark:text-amber-400 font-medium flex items-center gap-1.5"><i class="fas fa-crown text-[10px]"></i> <span>${h.masterExamNote}</span></p>` : ''}
                         <ul class="space-y-1">${breakdownHtml}</ul>
-                        ${certBtnHtml}
+                        <div class="flex items-center gap-4 flex-wrap pt-1.5">
+                            ${reviewBtnHtml}
+                            ${certBtnHtml}
+                        </div>
                     </div>
                 </td>
             `;
@@ -1161,6 +1337,98 @@ class AppController {
             tbody.appendChild(tr);
             tbody.appendChild(trDetails);
         });
+    }
+
+    // --- PROFESSOR: QUESTION DIFFICULTY & TOPIC MASTERY ANALYTICS ---
+    renderTeacherTopicAnalytics(subjectCode = 'CS-101') {
+        const analytics = this.data.examAnalytics ? this.data.examAnalytics[subjectCode] : null;
+        if (!analytics) return;
+
+        this.currentAnalyticsSubject = subjectCode;
+
+        const cohortEl = document.getElementById('analyticsCohortSize');
+        const avgEl = document.getElementById('analyticsAverageScore');
+        const passEl = document.getElementById('analyticsPassRate');
+        const highRiskEl = document.getElementById('analyticsHighRiskCount');
+        const titleEl = document.getElementById('analyticsExamTitle');
+
+        if (titleEl) titleEl.textContent = analytics.examTitle;
+        if (cohortEl) cohortEl.textContent = `${analytics.cohortSize} Students Enrolled`;
+        if (avgEl) avgEl.textContent = analytics.averageScore;
+        if (passEl) passEl.textContent = analytics.passingRate;
+        if (highRiskEl) highRiskEl.textContent = `${analytics.highRiskTopicsCount} Topics Need Review`;
+
+        // Render Topic Mastery Progress Bars
+        const topicContainer = document.getElementById('analyticsTopicMasteryContainer');
+        if (topicContainer) {
+            topicContainer.innerHTML = '';
+            analytics.topicMastery.forEach(tm => {
+                const item = document.createElement('div');
+                item.className = 'p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-2 shadow-xs';
+                
+                let progressColor = 'bg-emerald-500';
+                let statusLabel = 'Mastered';
+                if (tm.status === 'CRITICAL_REVIEW') {
+                    progressColor = 'bg-rose-500';
+                    statusLabel = '⚠️ Hard Topic';
+                } else if (tm.status === 'MODERATE') {
+                    progressColor = 'bg-amber-500';
+                    statusLabel = 'Moderate';
+                }
+
+                item.innerHTML = `
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-800 dark:text-slate-200">${tm.topic}</span>
+                        <span class="font-mono font-bold ${tm.masteryPercent < 50 ? 'text-rose-600' : 'text-blue-600 dark:text-blue-400'}">${tm.masteryPercent}% Mastery</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                        <div class="${progressColor} h-2 rounded-full transition-all duration-500" style="width: ${tm.masteryPercent}%"></div>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px] text-slate-400">
+                        <span>Cohort Benchmark</span>
+                        <span class="font-semibold ${tm.masteryPercent < 50 ? 'text-rose-500' : 'text-slate-500'}">${statusLabel}</span>
+                    </div>
+                `;
+                topicContainer.appendChild(item);
+            });
+        }
+
+        // Render Item Difficulty Table
+        const tableBody = document.getElementById('analyticsQuestionTableBody');
+        if (tableBody) {
+            tableBody.innerHTML = '';
+            analytics.questionItemStats.forEach(q => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-slate-200 dark:border-slate-800 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 text-xs';
+                
+                const isHighFailure = q.failureRate >= 50;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-mono font-bold text-slate-500 whitespace-nowrap">${q.id}</td>
+                    <td class="py-3 px-4 max-w-xs font-medium text-slate-900 dark:text-slate-100">
+                        <div class="line-clamp-2">${q.questionText}</div>
+                        <div class="text-[10px] text-blue-600 dark:text-blue-400 font-bold mt-0.5">${q.topic}</div>
+                    </td>
+                    <td class="py-3 px-4 whitespace-nowrap">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap ${isHighFailure ? 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950 dark:text-rose-300' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'}">
+                            <i class="fas ${isHighFailure ? 'fa-triangle-exclamation text-rose-500' : 'fa-chart-simple text-slate-400'}"></i>
+                            <span>${q.failureRate}% Failure Rate</span>
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-xs text-slate-600 dark:text-slate-400 max-w-xs">
+                        <div class="font-semibold text-rose-700 dark:text-rose-300">${q.mostCommonWrongOption}</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">${q.diagnosticInsight}</div>
+                    </td>
+                    <td class="py-3 px-4 text-xs font-medium text-slate-700 dark:text-slate-300 max-w-xs">
+                        <div class="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50 text-[11px] text-amber-900 dark:text-amber-200 flex items-start gap-1.5">
+                            <i class="fas fa-chalkboard-user text-amber-600 mt-0.5 flex-shrink-0"></i>
+                            <span>${q.pedagogicalAction}</span>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
     }
 
     // --- FORM ACTIONS & MUTATIONS ---
