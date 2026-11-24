@@ -493,6 +493,24 @@
                         </ol>
                     </div>
 
+                    <!-- Active Exam Restrictions Box (Specific Rules & Safeguards) -->
+                    <div id="preExamRestrictionsContainer" class="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 mb-6 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-amber-500 text-white flex items-center justify-center text-xs">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <h4 class="text-xs font-bold text-amber-950 dark:text-amber-200 uppercase tracking-wider">Active Academic Restrictions For This Exam</h4>
+                            </div>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-200/60 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200">
+                                Enforced
+                            </span>
+                        </div>
+                        <div id="preExamRestrictionsList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-amber-900 dark:text-amber-200 pt-1">
+                            <!-- Populated dynamically via app.startExamInstruction() -->
+                        </div>
+                    </div>
+
                     <!-- Honor Code Agreement Box (Page 8) -->
                     <div class="p-4 rounded-2xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60 mb-8">
                         <label class="flex items-start gap-3 cursor-pointer">
@@ -588,6 +606,12 @@
             </div>
 
             <div class="flex items-center gap-4">
+                <!-- Live Restrictions Badge -->
+                <div id="liveRestrictionsBadge" class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <i class="fas fa-shield-halved text-[10px]"></i>
+                    <span id="liveRestrictionsLabel">Restrictions Active</span>
+                </div>
+
                 <!-- Countdown Timer (Page 8: 45:23) -->
                 <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 font-mono text-sm sm:text-base font-bold text-slate-100 shadow-inner">
                     <i class="far fa-clock text-blue-400"></i>
@@ -931,6 +955,85 @@
                             <div>
                                 <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Start Date-Time</label>
                                 <input type="text" placeholder="YYYY-MM-DD HH:MM" value="2025-02-15 14:00" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm font-mono">
+                            </div>
+                        </div>
+
+                        <!-- EXAM RESTRICTIONS & ACADEMIC INTEGRITY POLICIES (Required Feature) -->
+                        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-4">
+                            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700/60 pb-3">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs">
+                                        <i class="fas fa-shield-halved"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-xs font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">Exam Access & Integrity Restrictions</h4>
+                                        <p class="text-[11px] text-slate-500">Configure access controls, test-taking constraints, and anti-cheating restrictions</p>
+                                    </div>
+                                </div>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                                    Policy Controls
+                                </span>
+                            </div>
+
+                            <div class="space-y-3">
+                                <!-- Restriction 1: Access Passcode / Proctor PIN -->
+                                <div>
+                                    <label class="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                        <span class="flex items-center gap-1.5">
+                                            <i class="fas fa-key text-indigo-500"></i> Proctor Access Code / Password Restriction
+                                        </span>
+                                        <span class="text-[10px] text-slate-400">Leave blank for open access</span>
+                                    </label>
+                                    <div class="relative">
+                                        <input type="text" id="examRestrictionAccessCode" placeholder="e.g., CS202-QUIZ (Proctor provides to students)" class="w-full px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-mono">
+                                    </div>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Students are restricted from starting until they enter this proctor-issued code.</p>
+                                </div>
+
+                                <!-- Restriction 2: Sequential Navigation vs Free Navigation -->
+                                <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60">
+                                    <label class="flex items-start gap-2.5 cursor-pointer">
+                                        <input type="checkbox" id="examRestrictionSequential" class="mt-0.5 w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500">
+                                        <div>
+                                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                                                <i class="fas fa-arrow-right text-indigo-500 text-[10px]"></i> Restrict Backtracking (Sequential Navigation Mode)
+                                            </span>
+                                            <p class="text-[11px] text-slate-500 mt-0.5">When checked, students are restricted from returning to previous questions once answered (anti-collaboration rule).</p>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- Restriction 3: Attempt Limit & Prerequisite Restriction -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200/60 dark:border-slate-700/60">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Attempt Limit Restriction</label>
+                                        <select id="examRestrictionAttempts" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+                                            <option value="1" selected>1 Attempt Allowed (Strict Examination)</option>
+                                            <option value="2">2 Attempts (Take Highest Score)</option>
+                                            <option value="3">3 Attempts Allowed</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Prerequisite Restriction</label>
+                                        <select id="examRestrictionPrereq" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs">
+                                            <option value="NONE" selected>No Prerequisites Required</option>
+                                            <option value="CS101-PASS">Must have Passed CS101 Fundamentals</option>
+                                            <option value="MIDTERM-70">Requires Midterm Score >= 70%</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Restriction 4: Anti-Cheat & Clipboard Locks -->
+                                <div class="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center gap-4 flex-wrap">
+                                    <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-700 dark:text-slate-300">
+                                        <input type="checkbox" id="examRestrictionAntiCopy" checked class="w-3.5 h-3.5 rounded text-indigo-600 border-slate-300">
+                                        <span>Restrict Copy / Paste / Context Menu</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-700 dark:text-slate-300">
+                                        <input type="checkbox" id="examRestrictionTabLock" checked class="w-3.5 h-3.5 rounded text-indigo-600 border-slate-300">
+                                        <span>Tab-Switch Lockout (3 Strikes)</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
@@ -1955,6 +2058,60 @@
                 <div class="pt-3 flex justify-end gap-2">
                     <button type="button" onclick="app.closeEnrollCohortModal()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
                     <button type="submit" class="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-sm">Save & Enroll</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- MODAL 2C: EXAM ACCESS CODE & PROCTOR RESTRICTION UNLOCK    -->
+    <!-- ========================================================== -->
+    <div id="examAccessCodeModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-md w-full p-6 modal-enter relative">
+            <button onclick="app.closeAccessCodeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl mx-auto mb-3 border border-amber-200 dark:border-amber-900">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                    Access Code Restricted
+                </span>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mt-2" id="unlockExamTitle">CS202 - Data Structures & Algorithms Quiz</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">This examination has security restrictions. Enter the authorization code provided by your proctor to proceed.</p>
+            </div>
+
+            <form onsubmit="event.preventDefault(); app.validateExamAccessCode();" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Proctor Access Code / PIN</label>
+                    <div class="relative">
+                        <input type="text" id="inputExamAccessCode" placeholder="Enter code (e.g., CS202-QUIZ)" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-mono tracking-wider text-center uppercase font-bold focus:ring-2 focus:ring-amber-500" required>
+                    </div>
+                    <div id="accessCodeError" class="hidden text-xs text-rose-600 font-medium mt-1.5 text-center flex items-center justify-center gap-1">
+                        <i class="fas fa-circle-exclamation"></i>
+                        <span>Incorrect access code. Please check with your proctor.</span>
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/40 text-[11px] text-blue-900 dark:text-blue-300 flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-key text-blue-500"></i>
+                        <span>Demo Proctor PIN: <strong id="demoPasscodeHint" class="font-mono">CS202-QUIZ</strong></span>
+                    </div>
+                    <button type="button" onclick="document.getElementById('inputExamAccessCode').value = document.getElementById('demoPasscodeHint').textContent;" class="px-2.5 py-1 rounded-lg bg-blue-600 text-white font-bold text-[10px] hover:bg-blue-700 transition">
+                        Autofill
+                    </button>
+                </div>
+
+                <div class="pt-2 flex items-center justify-end gap-2">
+                    <button type="button" onclick="app.closeAccessCodeModal()" class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm flex items-center gap-1.5">
+                        <i class="fas fa-unlock"></i> Unlock & Proceed
+                    </button>
                 </div>
             </form>
         </div>

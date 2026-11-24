@@ -27,6 +27,7 @@ class AppController {
         this.initTheme();
         this.setupEventListeners();
         this.setupProctoringListener();
+        this.setupClipboardRestrictions();
         this.renderAllViews();
         this.showView('view-landing');
     }
@@ -249,6 +250,77 @@ class AppController {
         this.renderAdminDashboardStats();
     }
 
+    // --- EXAM INTEGRITY & CLIPBOARD RESTRICTIONS ---
+    setupClipboardRestrictions() {
+        if (this._clipboardListenerAttached) return;
+        this._clipboardListenerAttached = true;
+
+        const blockHandler = (e) => {
+            if (this.isExamActive) {
+                e.preventDefault();
+                this.showToast("Restriction Enforced: Copy, paste, and context menus are disabled during proctored examinations.", "danger");
+            }
+        };
+
+        document.addEventListener('copy', blockHandler);
+        document.addEventListener('cut', blockHandler);
+        document.addEventListener('paste', blockHandler);
+        document.addEventListener('contextmenu', blockHandler);
+    }
+
+    // --- EXAM ACCESS CODE & PROCTOR RESTRICTION MODAL ---
+    promptExamAccessCode(examCode) {
+        const exam = this.data.exams.find(e => e.code === examCode);
+        if (!exam) return;
+
+        this.pendingUnlockExam = exam;
+        const modal = document.getElementById('examAccessCodeModal');
+        const titleEl = document.getElementById('unlockExamTitle');
+        const hintEl = document.getElementById('demoPasscodeHint');
+        const inputEl = document.getElementById('inputExamAccessCode');
+        const errorEl = document.getElementById('accessCodeError');
+
+        if (titleEl) titleEl.textContent = exam.title;
+        if (hintEl) hintEl.textContent = exam.restrictions?.accessCode || 'CS202-QUIZ';
+        if (inputEl) {
+            inputEl.value = '';
+            if (typeof inputEl.focus === 'function') inputEl.focus();
+        }
+        if (errorEl) errorEl.classList.add('hidden');
+
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+    }
+
+    closeAccessCodeModal() {
+        const modal = document.getElementById('examAccessCodeModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+        this.pendingUnlockExam = null;
+    }
+
+    validateExamAccessCode() {
+        const inputEl = document.getElementById('inputExamAccessCode');
+        const errorEl = document.getElementById('accessCodeError');
+        const entered = (inputEl?.value || '').trim().toUpperCase();
+
+        const targetCode = (this.pendingUnlockExam?.restrictions?.accessCode || 'CS202-QUIZ').toUpperCase();
+
+        if (entered === targetCode) {
+            const examCode = this.pendingUnlockExam.code;
+            this.closeAccessCodeModal();
+            this.showToast('Proctor Access Code verified! Examination unlocked.', 'success');
+            this.startExamInstruction(examCode);
+        } else {
+            if (errorEl) errorEl.classList.remove('hidden');
+            this.showToast('Invalid access code. Please check with your proctor.', 'danger');
+        }
+    }
+
     // --- STUDENT EXAM WORKFLOW ---
     startExamInstruction(examCode = 'CS-101') {
         const exam = this.data.exams.find(e => e.code === examCode) || this.data.exams[1];
@@ -258,6 +330,49 @@ class AppController {
         document.getElementById('preExamDomain').textContent = exam.domain;
         document.getElementById('preExamDuration').textContent = `${exam.durationMins} minutes`;
         document.getElementById('preExamVolume').textContent = `${exam.totalItems} Multiple-Choice Items`;
+
+        // Render dynamically active academic restrictions
+        const restrictionsContainer = document.getElementById('preExamRestrictionsList');
+        if (restrictionsContainer) {
+            restrictionsContainer.innerHTML = '';
+            const res = exam.restrictions || {};
+
+            const items = [
+                {
+                    icon: res.navigationMode === 'SEQUENTIAL' ? 'fa-arrow-right' : 'fa-arrows-rotate',
+                    label: res.navigationMode === 'SEQUENTIAL' ? 'Sequential Navigation (No Backtracking)' : 'Free Question Navigation Allowed',
+                    desc: res.navigationMode === 'SEQUENTIAL' ? 'Restricted: Cannot return to past questions once answered' : 'Jump freely between all questions'
+                },
+                {
+                    icon: 'fa-lock',
+                    label: `Attempt Restriction: ${res.maxAttempts || 1} Attempt Maximum`,
+                    desc: 'Your first completed submission is final'
+                },
+                {
+                    icon: 'fa-ban',
+                    label: 'Clipboard & Context Restrictions Active',
+                    desc: 'Text copy, paste, cut and right-click inspection are blocked'
+                },
+                {
+                    icon: 'fa-window-restore',
+                    label: 'Browser Tab Lockout Guard',
+                    desc: `Maximum ${this.maxTabSwitches || 3} window switches before auto-lockout`
+                }
+            ];
+
+            items.forEach(it => {
+                const li = document.createElement('div');
+                li.className = 'p-2.5 rounded-xl bg-white/70 dark:bg-slate-900/60 border border-amber-200/60 dark:border-amber-900/40 flex items-start gap-2.5';
+                li.innerHTML = `
+                    <i class="fas ${it.icon} text-amber-600 dark:text-amber-400 mt-0.5 text-xs"></i>
+                    <div>
+                        <div class="font-bold text-[11px] text-slate-800 dark:text-slate-200">${it.label}</div>
+                        <div class="text-[10px] text-slate-500">${it.desc}</div>
+                    </div>
+                `;
+                restrictionsContainer.appendChild(li);
+            });
+        }
 
         const honorCheck = document.getElementById('honorCodeCheckbox');
         const beginBtn = document.getElementById('btnBeginExam');
@@ -282,6 +397,13 @@ class AppController {
         this.examFlags = {};
 
         this.examSecondsRemaining = 45 * 60 + 23;
+
+        // Update live restrictions badge
+        const restLabel = document.getElementById('liveRestrictionsLabel');
+        const isSequential = this.currentExam?.restrictions?.navigationMode === 'SEQUENTIAL';
+        if (restLabel) {
+            restLabel.textContent = isSequential ? 'Restrictions Active: Sequential Mode • No Copy' : 'Restrictions Active: Proctored Guard';
+        }
 
         this.startTimer();
         this.renderQuestionLedger();
@@ -327,6 +449,13 @@ class AppController {
     loadQuestion(idx) {
         const questions = this.data.questionBank;
         if (idx < 0 || idx >= questions.length) return;
+
+        // Restriction check: Sequential navigation prevents returning to past questions
+        const isSequential = this.currentExam?.restrictions?.navigationMode === 'SEQUENTIAL';
+        if (isSequential && idx < this.currentQuestionIdx) {
+            this.showToast('Sequential Navigation Restriction: You cannot revisit past questions.', 'warning');
+            return;
+        }
 
         this.currentQuestionIdx = idx;
         const q = questions[idx];
@@ -385,8 +514,16 @@ class AppController {
 
         const prevBtn = document.getElementById('btnPrevQuestion');
         if (prevBtn) {
-            prevBtn.disabled = idx === 0;
-            prevBtn.classList.toggle('opacity-50', idx === 0);
+            if (isSequential) {
+                prevBtn.disabled = true;
+                prevBtn.classList.add('opacity-40', 'cursor-not-allowed');
+                prevBtn.title = "Sequential Restriction: Cannot go back to previous questions.";
+            } else {
+                prevBtn.disabled = idx === 0;
+                prevBtn.classList.toggle('opacity-50', idx === 0);
+                prevBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+                prevBtn.title = "";
+            }
         }
 
         this.renderQuestionLedger();
@@ -418,18 +555,26 @@ class AppController {
 
         ledgerGrid.innerHTML = '';
         const total = this.data.questionBank.length;
+        const isSequential = this.currentExam?.restrictions?.navigationMode === 'SEQUENTIAL';
 
         for (let i = 0; i < total; i++) {
             const isAnswered = this.examAnswers[i] !== undefined;
             const isFlagged = !!this.examFlags[i];
             const isActive = i === this.currentQuestionIdx;
+            const isLockedPast = isSequential && i < this.currentQuestionIdx;
 
             const bubble = document.createElement('button');
-            bubble.className = `ledger-bubble ${isAnswered ? 'answered' : 'unanswered'} ${isFlagged ? 'flagged' : ''} ${isActive ? 'active-q' : ''}`;
+            bubble.className = `ledger-bubble ${isAnswered ? 'answered' : 'unanswered'} ${isFlagged ? 'flagged' : ''} ${isActive ? 'active-q' : ''} ${isLockedPast ? 'opacity-40 cursor-not-allowed' : ''}`;
             bubble.textContent = i + 1;
-            bubble.title = `Question ${i + 1} (${isAnswered ? 'Answered' : 'Unanswered'}${isFlagged ? ', Flagged' : ''})`;
+            bubble.title = isLockedPast 
+                ? `Question ${i + 1} (Locked: Cannot reopen past items in Sequential Mode)`
+                : `Question ${i + 1} (${isAnswered ? 'Answered' : 'Unanswered'}${isFlagged ? ', Flagged' : ''})`;
 
             bubble.addEventListener('click', () => {
+                if (isLockedPast) {
+                    this.showToast('Sequential Restriction: Answered past questions cannot be modified.', 'warning');
+                    return;
+                }
                 this.loadQuestion(i);
             });
 
@@ -1597,10 +1742,38 @@ class AppController {
 
             let actionHtml = '';
             let badgeHtml = '';
+            let restrictionPills = '';
+
+            const res = exam.restrictions;
+            if (res) {
+                if (res.requiresAccessCode) {
+                    restrictionPills += `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 flex items-center gap-1"><i class="fas fa-key text-[9px]"></i> Passcode Restricted</span>`;
+                }
+                if (res.navigationMode === 'SEQUENTIAL') {
+                    restrictionPills += `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-300 flex items-center gap-1"><i class="fas fa-arrow-right text-[9px]"></i> Sequential Mode</span>`;
+                }
+                if (res.maxAttempts) {
+                    restrictionPills += `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 flex items-center gap-1"><i class="fas fa-lock text-[9px]"></i> ${res.maxAttempts} Attempt Max</span>`;
+                }
+            }
 
             if (exam.status === 'AVAILABLE') {
                 badgeHtml = '<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300">Available Now</span>';
-                actionHtml = `<button class="px-6 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 font-semibold text-sm transition-colors shadow-sm" onclick="app.startExamInstruction('${exam.code}')">Start Exam</button>`;
+                if (res && res.requiresAccessCode) {
+                    actionHtml = `<button class="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm transition-colors shadow-sm flex items-center gap-2" onclick="app.promptExamAccessCode('${exam.code}')"><i class="fas fa-lock"></i> Enter Code & Start</button>`;
+                } else {
+                    actionHtml = `<button class="px-6 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 font-semibold text-sm transition-colors shadow-sm" onclick="app.startExamInstruction('${exam.code}')">Start Exam</button>`;
+                }
+            } else if (exam.status === 'RESTRICTED') {
+                badgeHtml = '<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 flex items-center gap-1"><i class="fas fa-lock text-[10px]"></i> Restricted Access</span>';
+                actionHtml = `
+                    <div class="flex flex-col items-end gap-1">
+                        <button class="px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 font-semibold text-xs cursor-not-allowed flex items-center gap-1.5" onclick="app.showToast('${exam.restrictionReason || 'Prerequisite conditions not met.'}', 'danger')">
+                            <i class="fas fa-lock"></i> Locked (Prerequisite)
+                        </button>
+                        <span class="text-[10px] text-rose-500 font-medium">${exam.restrictionReason || 'Prerequisite unmet'}</span>
+                    </div>
+                `;
             } else if (exam.status === 'UPCOMING') {
                 badgeHtml = '<span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300">Upcoming</span>';
                 actionHtml = `
@@ -1616,11 +1789,12 @@ class AppController {
 
             card.innerHTML = `
                 <div class="space-y-1.5">
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2.5 flex-wrap">
                         <span class="px-2 py-0.5 text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded">${exam.code}</span>
                         <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100">${exam.title}</h4>
                         ${badgeHtml}
                         ${exam.isMasterExam ? `<span class="px-2 py-0.5 text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200 rounded" title="Standardized by Exam Leader"><i class="fas fa-crown text-[9px] text-amber-500"></i> Standardized</span>` : ''}
+                        ${restrictionPills}
                     </div>
                     <div class="text-xs text-slate-500 dark:text-slate-400 space-x-2">
                         <span>Exam Leader: <strong>${exam.examLeaderName || exam.professor}</strong></span>
@@ -1630,7 +1804,7 @@ class AppController {
                         <span>Total Items: <strong>${exam.totalItems} Questions</strong></span>
                     </div>
                     <div class="text-xs text-slate-400">
-                        ${exam.status === 'AVAILABLE' ? `<span class="text-emerald-600 dark:text-emerald-400 font-medium"><i class="far fa-clock mr-1"></i> Deadline: ${exam.deadline}</span>` : `<span class="text-amber-600 dark:text-amber-400"><i class="far fa-calendar-clock mr-1"></i> ${exam.scheduledTime}</span>`}
+                        ${exam.status === 'AVAILABLE' ? `<span class="text-emerald-600 dark:text-emerald-400 font-medium"><i class="far fa-clock mr-1"></i> Deadline: ${exam.deadline}</span>` : (exam.status === 'RESTRICTED' ? `<span class="text-rose-600 font-medium"><i class="fas fa-circle-exclamation mr-1"></i> ${exam.restrictionReason}</span>` : `<span class="text-amber-600 dark:text-amber-400"><i class="far fa-calendar-clock mr-1"></i> ${exam.scheduledTime}</span>`)}
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -1830,6 +2004,14 @@ class AppController {
         const subjectCode = subject.split(' ')[0] || "NEW-101";
         const subjectObj = this.data.subjects.find(s => s.code === subjectCode);
 
+        // Read configured Exam Restrictions
+        const accessCode = document.getElementById('examRestrictionAccessCode')?.value.trim();
+        const isSequential = document.getElementById('examRestrictionSequential')?.checked || false;
+        const attempts = parseInt(document.getElementById('examRestrictionAttempts')?.value) || 1;
+        const prereq = document.getElementById('examRestrictionPrereq')?.value || 'NONE';
+        const blockAntiCopy = document.getElementById('examRestrictionAntiCopy')?.checked !== false;
+        const blockTabLock = document.getElementById('examRestrictionTabLock')?.checked !== false;
+
         const newExam = {
             id: `EXAM-${Date.now()}`,
             code: subjectCode,
@@ -1846,7 +2028,18 @@ class AppController {
             scheduledTime: "Published Today",
             deadline: "Next Week",
             domain: "Computer Science",
+            restrictions: {
+                requiresAccessCode: !!accessCode,
+                accessCode: accessCode || null,
+                navigationMode: isSequential ? 'SEQUENTIAL' : 'FREE',
+                maxAttempts: attempts,
+                prerequisiteCode: prereq === 'NONE' ? null : prereq,
+                blockClipboard: blockAntiCopy,
+                blockTabSwitch: blockTabLock
+            },
             instructions: [
+                accessCode ? `Proctor PIN Restriction: Protected with authorization code '${accessCode}'.` : "Open exam session.",
+                isSequential ? "Sequential Navigation Restriction: You cannot revisit past questions once answered." : "Free navigation allowed.",
                 "Automated proctoring session is recorded.",
                 "Standardized Master Exam: Authored by Exam Leader and distributed across course sections.",
                 "Session will submit when timer finishes."

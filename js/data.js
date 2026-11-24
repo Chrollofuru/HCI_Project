@@ -417,11 +417,23 @@ const INITIAL_DATA = {
             scheduledTime: "Available Now",
             deadline: "Today, 11:59 PM",
             domain: "Computer Science",
+            // Exam Access & Academic Integrity Restrictions
+            restrictions: {
+                requiresAccessCode: true,
+                accessCode: "CS202-QUIZ",
+                navigationMode: "SEQUENTIAL", // Restricts backtracking: students cannot revisit past questions
+                maxAttempts: 1,
+                blockClipboard: true,
+                blockTabSwitch: true,
+                prerequisiteCode: null,
+                cohortAllowed: "3BSCS-1"
+            },
             instructions: [
-                "No tab or window switching: Browser activity is continuously tracked by the proctoring engine.",
-                "Automated session backup: Answers are saved dynamically as you select them.",
-                "Standardized Master Exam: This exam was authored by Exam Leader Prof. Maria Santos and distributed across all CS202 sections.",
-                "Sequential Submission: Once you submit the exam, your attempt is final and cannot be reopened."
+                "Proctor PIN Restriction: This exam is locked by default and requires the proctor access code (CS202-QUIZ) to open.",
+                "Sequential Navigation Restriction: Once you answer a question and click Next, you are restricted from returning to previous questions.",
+                "Clipboard & Context Restriction: Copying, pasting, text highlighting, and right-click context menus are disabled.",
+                "Tab Lockout Restriction: Leaving the test tab more than 3 times will trigger automatic submission and a security violation alert.",
+                "Attempt Restriction: You are restricted to exactly 1 attempt."
             ]
         },
         {
@@ -445,11 +457,55 @@ const INITIAL_DATA = {
             scheduledTime: "Today, 2:00 PM (Starts in 2 hours)",
             deadline: "Today, 4:00 PM",
             domain: "Computer Science Basics",
+            restrictions: {
+                requiresAccessCode: false,
+                accessCode: null,
+                navigationMode: "FREE",
+                maxAttempts: 1,
+                blockClipboard: true,
+                blockTabSwitch: true,
+                prerequisiteCode: null,
+                cohortAllowed: "All CS-101 Enrollees"
+            },
             instructions: [
+                "Schedule Window Restriction: Examination access opens strictly at 2:00 PM today.",
                 "Standardized Master Exam: Authored by Exam Leader Dr. Rachel Green and distributed to all CS-101 sections.",
-                "No tab or window switching: Switching tabs more than 3 times triggers an automatic exam lock-out.",
+                "Tab Lockout Restriction: Switching tabs more than 3 times triggers an automatic exam lock-out.",
                 "Automated session backup: Answers are saved dynamically. In case of network drops, reconnect to resume.",
-                "Final Submission: You cannot return to the exam after submitting."
+                "Attempt Restriction: Once submitted, your score is final and cannot be retaken."
+            ]
+        },
+        {
+            id: "EXAM-2024-04",
+            code: "CS-303",
+            title: "CS303 - Advanced Relational Modeling Practicum",
+            subjectName: "Database Management Systems",
+            isMasterExam: false,
+            examLeaderId: "FAC-124",
+            examLeaderName: "Prof. Maria Santos",
+            professor: "Prof. Maria Santos",
+            durationMins: 90,
+            totalItems: 25,
+            passingScore: 75,
+            status: "RESTRICTED",
+            restrictionReason: "Prerequisite Unmet: Requires CS-101 Final Assessment score >= 90%",
+            scheduledTime: "Prerequisite Check Required",
+            deadline: "Term Exam Period",
+            domain: "Database Systems",
+            restrictions: {
+                requiresAccessCode: true,
+                accessCode: "DB-HONORS",
+                navigationMode: "SEQUENTIAL",
+                maxAttempts: 1,
+                blockClipboard: true,
+                blockTabSwitch: true,
+                prerequisiteCode: "CS-101 (Score >= 90%)",
+                prerequisiteMet: false,
+                cohortAllowed: "Honors Track"
+            },
+            instructions: [
+                "Prerequisite Access Restriction: Restricted to students who have achieved a verified score of 90% or higher in CS-101.",
+                "Access Code Restriction: Requires the honors lab authorization code."
             ]
         },
         {
@@ -471,6 +527,13 @@ const INITIAL_DATA = {
             scheduledTime: "Completed on Jan 14",
             deadline: "Expired",
             domain: "Database Systems",
+            restrictions: {
+                requiresAccessCode: false,
+                navigationMode: "FREE",
+                maxAttempts: 1,
+                blockClipboard: true,
+                blockTabSwitch: true
+            },
             instructions: []
         }
     ],
